@@ -173,7 +173,7 @@ class _ItemsState extends State<Items> {
                                       SizedBox(height: 10,),
                                       Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         children: [
-                                          Subhead(text: "Bill No", colo: Colors.black, weight: FontWeight.w500,),
+                                          Subhead(text: "Bill ", colo: Colors.black, weight: FontWeight.w500,),
                                           Mytext(text: item.binNo.toString(), color: Colors.green)
                                         ],
                                       ),
