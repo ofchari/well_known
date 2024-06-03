@@ -25,6 +25,13 @@ class _ProformaInvoiceeState extends State<ProformaInvoicee> {
   late double width;
 
   @override
+  void initState() {
+    binding();
+    super.initState();
+
+  }
+
+  @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     height = size.height;

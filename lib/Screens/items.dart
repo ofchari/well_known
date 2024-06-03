@@ -30,15 +30,23 @@ class _ItemsState extends State<Items> {
   late double width;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
+  @override
+  void initState() {
+    fetchItems();
+    super.initState();
+
+  }
+
   Future<List<Item>> fetchItems() async {
     final response = await http.get(
-      Uri.parse('https://erp.wellknownssyndicate.com/api/resource/Item?fields=["name","item_name","item_group","sales_person","rack_name","item_sub_group","bin_no"]'),
+      Uri.parse('https://erp.wellknownssyndicate.com/api/resource/Item?fields=["name","item_name","item_group","part_no","brand","stock_uom","gst_hsn_code","image"]'),
       headers: {"Authorization": "token c5a479b60dd48ad:d8413be73e709b6"},
     );
 
     if (response.statusCode == 200) {
       List<dynamic> data = jsonDecode(response.body)['data'];
       return data.map((item) => Item.fromJson(item)).toList();
+
     } else {
       throw Exception('Failed to load items');
     }
@@ -166,15 +174,15 @@ class _ItemsState extends State<Items> {
                                       SizedBox(height: 10,),
                                       Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         children: [
-                                          Subhead(text: "sales Person", colo: Colors.black, weight: FontWeight.w500,),
-                                          Mytext(text: item.salesPerson.toString(), color: Colors.green)
+                                          Subhead(text: "Part No :", colo: Colors.black, weight: FontWeight.w500,),
+                                          Mytext(text: item.part_no.toString(), color: Colors.green)
                                         ],
                                       ),
                                       SizedBox(height: 10,),
                                       Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         children: [
-                                          Subhead(text: "Bill ", colo: Colors.black, weight: FontWeight.w500,),
-                                          Mytext(text: item.binNo.toString(), color: Colors.green)
+                                          Subhead(text: "HSN/SAC ", colo: Colors.black, weight: FontWeight.w500,),
+                                          Mytext(text: item.gst_hsn_code.toString(), color: Colors.green)
                                         ],
                                       ),
                                     ],
@@ -182,7 +190,7 @@ class _ItemsState extends State<Items> {
                                 ),
                                 Positioned(
                                   bottom: 10,
-                                    right: 30,
+                                    right: 20,
                                     child: GestureDetector(
                                       onTap: (){
                                         _shareContent();

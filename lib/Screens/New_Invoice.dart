@@ -105,46 +105,44 @@ class _NewinvoiceState extends State<Newinvoice> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: IntrinsicHeight(
-                        child: Row(
-                          children: [
-                            Container(
-                              height: height/9.h,
-                              width: width/4.w,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  image: DecorationImage(
-                                      image: NetworkImage("https://img.freepik.com/premium-photo/close-up-sewing-machine-with-hands-working_41969-2495.jpg"),fit: BoxFit.cover
-                                  )
-                              ),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: height/9.h,
+                            width: width/4.w,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                image: DecorationImage(
+                                    image: NetworkImage("https://img.freepik.com/premium-photo/close-up-sewing-machine-with-hands-working_41969-2495.jpg"),fit: BoxFit.cover
+                                )
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: SizedBox(
-                                height: 113,
-                                child: VerticalDivider(
-                                  width: 2,
-                                  thickness: 2,
-                                  color: Colors.green,
-                                ),
-                              ),
+                          ),
+                          // Padding(
+                          //   padding: const EdgeInsets.only(left: 8.0),
+                          //   child: SizedBox(
+                          //     height: 113,
+                          //     child: VerticalDivider(
+                          //       width: 2,
+                          //       thickness: 2,
+                          //       color: Colors.green,
+                          //     ),
+                          //   ),
+                          // ),
+
+                          Padding(
+                            padding: const EdgeInsets.only(left: 30.0),
+                            child: Column(
+                              children: [
+                                SizedBox(height: 10,),
+                                Mytext(text: "Code : 100", color: Colors.black),
+                                SizedBox(height: 10,),
+                                Mytext(text: "Item Group", color: Colors.black),
+                                SizedBox(height: 10,),
+                                Mytext(text: "UOM - PCS", color: Colors.black),
+                              ],
                             ),
-                            
-                            Padding(
-                              padding: const EdgeInsets.only(left: 30.0),
-                              child: Column(
-                                children: [
-                                  SizedBox(height: 10,),
-                                  Mytext(text: "Code : 100", color: Colors.black),
-                                  SizedBox(height: 10,),
-                                  Mytext(text: "Item Group", color: Colors.black),
-                                  SizedBox(height: 10,),
-                                  Mytext(text: "UOM - PCS", color: Colors.black),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
+                          )
+                        ],
                       ),
                     )
                   ],
@@ -244,45 +242,43 @@ class _NewinvoiceState extends State<Newinvoice> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: IntrinsicHeight(
-                        child: Row(
-                          children: [
-                            Container(
-                              height: height/9.h,
-                              width: width/4.w,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  image: DecorationImage(
-                                      image: NetworkImage("https://www.shutterstock.com/shutterstock/videos/991390/thumb/1.jpg?ip=x480"),fit: BoxFit.cover
-                                  )
-                              ),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: height/9.h,
+                            width: width/4.w,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                image: DecorationImage(
+                                    image: NetworkImage("https://www.shutterstock.com/shutterstock/videos/991390/thumb/1.jpg?ip=x480"),fit: BoxFit.cover
+                                )
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: SizedBox(
-                                height: 113,
-                                child: VerticalDivider(
-                                  width: 2,
-                                  thickness: 2,
-                                  color: Colors.green,
-                                ),
-                              ),
+                          ),
+                          // Padding(
+                          //   padding: const EdgeInsets.only(left: 8.0),
+                          //   child: SizedBox(
+                          //     height: 113,
+                          //     child: VerticalDivider(
+                          //       width: 2,
+                          //       thickness: 2,
+                          //       color: Colors.green,
+                          //     ),
+                          //   ),
+                          // ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 30.0),
+                            child: Column(
+                              children: [
+                                SizedBox(height: 10,),
+                                Mytext(text: "Code : 2000", color: Colors.black),
+                                SizedBox(height: 10,),
+                                Mytext(text: "Item Group", color: Colors.black),
+                                SizedBox(height: 10,),
+                                Mytext(text: "UOM - PCS", color: Colors.black),
+                              ],
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 30.0),
-                              child: Column(
-                                children: [
-                                  SizedBox(height: 10,),
-                                  Mytext(text: "Code : 2000", color: Colors.black),
-                                  SizedBox(height: 10,),
-                                  Mytext(text: "Item Group", color: Colors.black),
-                                  SizedBox(height: 10,),
-                                  Mytext(text: "UOM - PCS", color: Colors.black),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
+                          )
+                        ],
                       ),
                     ),
                   ],
@@ -384,45 +380,43 @@ class _NewinvoiceState extends State<Newinvoice> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: IntrinsicHeight(
-                        child: Row(
-                          children: [
-                            Container(
-                              height: height/9.h,
-                              width: width/4.w,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  image: DecorationImage(
-                                      image: NetworkImage("https://p0.pxfuel.com/preview/30/696/865/sewing-machine-fabric-cloth.jpg"),fit: BoxFit.cover
-                                  )
-                              ),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: height/9.h,
+                            width: width/4.w,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                image: DecorationImage(
+                                    image: NetworkImage("https://p0.pxfuel.com/preview/30/696/865/sewing-machine-fabric-cloth.jpg"),fit: BoxFit.cover
+                                )
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: SizedBox(
-                                height: 113,
-                                child: VerticalDivider(
-                                  width: 2,
-                                  thickness: 2,
-                                  color: Colors.green,
-                                ),
-                              ),
+                          ),
+                          // Padding(
+                          //   padding: const EdgeInsets.only(left: 8.0),
+                          //   child: SizedBox(
+                          //     height: 113,
+                          //     child: VerticalDivider(
+                          //       width: 2,
+                          //       thickness: 2,
+                          //       color: Colors.green,
+                          //     ),
+                          //   ),
+                          // ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 30.0),
+                            child: Column(
+                              children: [
+                                SizedBox(height: 10,),
+                                Mytext(text: "Code : 1000", color: Colors.black),
+                                SizedBox(height: 10,),
+                                Mytext(text: "Item Group", color: Colors.black),
+                                SizedBox(height: 10,),
+                                Mytext(text: "UOM - PCS", color: Colors.black),
+                              ],
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 30.0),
-                              child: Column(
-                                children: [
-                                  SizedBox(height: 10,),
-                                  Mytext(text: "Code : 1000", color: Colors.black),
-                                  SizedBox(height: 10,),
-                                  Mytext(text: "Item Group", color: Colors.black),
-                                  SizedBox(height: 10,),
-                                  Mytext(text: "UOM - PCS", color: Colors.black),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
+                          )
+                        ],
                       ),
                     )
                   ],
@@ -524,45 +518,43 @@ class _NewinvoiceState extends State<Newinvoice> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: IntrinsicHeight(
-                        child: Row(
-                          children: [
-                            Container(
-                              height: height/9.h,
-                              width: width/4.w,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  image: DecorationImage(
-                                      image: NetworkImage("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9_J7qTBKFZH4KDtGjQBgyeMrvoXFfC3Cm-tdzNtODdz1cDOj21c1VSjGfMwoxylee06c&usqp=CAU"),fit: BoxFit.cover
-                                  )
-                              ),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: height/9.h,
+                            width: width/4.w,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                image: DecorationImage(
+                                    image: NetworkImage("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9_J7qTBKFZH4KDtGjQBgyeMrvoXFfC3Cm-tdzNtODdz1cDOj21c1VSjGfMwoxylee06c&usqp=CAU"),fit: BoxFit.cover
+                                )
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: SizedBox(
-                                height: 113,
-                                child: VerticalDivider(
-                                  width: 2,
-                                  thickness: 2,
-                                  color: Colors.green,
-                                ),
-                              ),
+                          ),
+                          // Padding(
+                          //   padding: const EdgeInsets.only(left: 8.0),
+                          //   child: SizedBox(
+                          //     height: 113,
+                          //     child: VerticalDivider(
+                          //       width: 2,
+                          //       thickness: 2,
+                          //       color: Colors.green,
+                          //     ),
+                          //   ),
+                          // ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 30.0),
+                            child: Column(
+                              children: [
+                                SizedBox(height: 10,),
+                                Mytext(text: "Code : 1000", color: Colors.black),
+                                SizedBox(height: 10,),
+                                Mytext(text: "Item Group", color: Colors.black),
+                                SizedBox(height: 10,),
+                                Mytext(text: "UOM - PCS", color: Colors.black),
+                              ],
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 30.0),
-                              child: Column(
-                                children: [
-                                  SizedBox(height: 10,),
-                                  Mytext(text: "Code : 1000", color: Colors.black),
-                                  SizedBox(height: 10,),
-                                  Mytext(text: "Item Group", color: Colors.black),
-                                  SizedBox(height: 10,),
-                                  Mytext(text: "UOM - PCS", color: Colors.black),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
+                          )
+                        ],
                       ),
                     )
                   ],

@@ -194,7 +194,7 @@ class _InvoiceState extends State<Invoice> {
                             ],
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 15.0),
+                            padding:  EdgeInsets.only(left: ScreenUtil().setWidth(15.0)),
                             child: SizedBox(
                               height: 66,
                               child: VerticalDivider(
@@ -204,7 +204,7 @@ class _InvoiceState extends State<Invoice> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 30.0),
+                            padding: EdgeInsets.only(left: ScreenUtil().setWidth(30.0)),
                             child: Column(
                               children: [
                                 Mytext(text: "Address", color: Colors.black),
@@ -295,7 +295,7 @@ class _InvoiceState extends State<Invoice> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding:  EdgeInsets.all(8.0),
                             child: Column(
                               children: [
                                 Mytext(text: "Order Type", color: Colors.black),
@@ -327,7 +327,7 @@ class _InvoiceState extends State<Invoice> {
                           SizedBox(
                             height: 58,
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
+                              padding:  EdgeInsets.only(left: ScreenUtil().setWidth(8.0)),
                               child: VerticalDivider(
                                 thickness: 2,
                                 color: Colors.green,
@@ -363,7 +363,7 @@ class _InvoiceState extends State<Invoice> {
                           SizedBox(
                             height: 65,
                             child: Padding(
-                              padding: const EdgeInsets.only(right: 30.2),
+                              padding:  EdgeInsets.only(right: ScreenUtil().setWidth(30.2)),
                               child: VerticalDivider(
                                 thickness: 2,
                                 color: Colors.green,

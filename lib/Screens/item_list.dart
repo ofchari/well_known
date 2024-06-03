@@ -4,10 +4,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:well_known/Screens/New_Invoice.dart';
+import 'package:well_known/Services/items_api.dart';
+import 'package:well_known/Utils/items_util.dart'; // assuming fetchItems is defined here
 import 'package:well_known/Widgets/buttons.dart';
 import 'package:well_known/Widgets/subhead.dart';
 import 'package:well_known/Widgets/text.dart';
 import 'package:well_known/models/item_listss.dart';
+import 'dart:math';
 
 import '../Widgets/heading_text.dart';
 
@@ -21,22 +24,25 @@ class Itemlist extends StatefulWidget {
 class _ItemlistState extends State<Itemlist> {
   late double height;
   late double width;
-
-  // List to hold the quantity of each item
+  List<Item> items = [];
   List<int> quantities = [];
 
   @override
   void initState() {
     super.initState();
-    // Initialize the quantities list with default values (1 for each item)
-    quantities = List<int>.generate(lis.length, (index) => 0);
+    _initializeItems();
   }
 
-  Future<void> refreshdata() async{
-    await Future.delayed(Duration(seconds: 2));
+  Future<void> _initializeItems() async {
+    List<Item> fetchedItems = await fetchItems();
     setState(() {
-      quantities = quantities;
+      items = fetchedItems;
+      quantities = List<int>.filled(items.length, 0);
     });
+  }
+
+  Future<void> refreshdata() async {
+    await Future.delayed(Duration(seconds: 2));
   }
 
   @override
@@ -74,181 +80,301 @@ class _ItemlistState extends State<Itemlist> {
               Get.back();
             },
             child: Icon(Icons.arrow_back, color: Colors.black)),
-        title: Headingtext(text: "  Item List", color: Colors.black, weight: FontWeight.w400),
+        title: Headingtext(
+            text: "  Item List", color: Colors.black, weight: FontWeight.w400),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  height: height / 18.h,
-                  width: width / 1.5.w,
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                        hintText: "Search",
-                        hintStyle: GoogleFonts.poppins(
-                            textStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.grey)),
-                        suffixIcon: Icon(
-                          Icons.search,
-                          color: Colors.grey,
-                        ),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20))),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: 20),
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    height: height / 18.h,
+                    width: width / 1.5.w,
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                          hintText: "Search",
+                          hintStyle: GoogleFonts.poppins(
+                              textStyle: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey)),
+                          suffixIcon: Icon(
+                            Icons.search,
+                            color: Colors.grey,
+                          ),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15))),
+                    ),
                   ),
-                ),
-                GestureDetector(
-                    onTap: () {
-                      var snackbar = SnackBar(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          backgroundColor: Color(0xffFF035e32),
-                          content: Mytext(text: "Added Successfully", color: Colors.white));
-                      ScaffoldMessenger.of(context).showSnackBar(snackbar);
-                      Get.off(Newinvoice());
-                    },
-                    child: Buttons(
-                        heigh: height / 20,
-                        width: width / 4.5,
-                        color: Color(0xffFF035e32),
-                        text: "Finish",
-                        radius: BorderRadius.circular(12)))
-              ],
+                  GestureDetector(
+                      onTap: () {
+                        var snackbar = SnackBar(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            backgroundColor: Color(0xffFF035e32),
+                            content: Mytext(
+                                text: "Added Successfully",
+                                color: Colors.white));
+                        ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                        Get.off(Newinvoice());
+                      },
+                      child: Buttons(
+                          heigh: height / 20,
+                          width: width / 4.5,
+                          color: Color(0xffFF035e32),
+                          text: "Finish",
+                          radius: BorderRadius.circular(12)))
+                ],
+              ),
             ),
-          ),
-          SizedBox(height: 20),
-          Expanded(
-            child: ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: lis.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Container(
-                            height: height / 4.h,
-                            width: width / 1.1.w,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                border: Border.all(
-                                  color: Colors.green,
-                                  width: 2,
-                                )),
-                            child: Column(
-                              children: [
-                                SizedBox(height: 10),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        height: height / 9.h,
-                                        width: width / 4.w,
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(15),
-                                            image: DecorationImage(
-                                                image: NetworkImage(lis[index].image), fit: BoxFit.cover)),
+            SizedBox(height: 20),
+            items.isNotEmpty
+                ? Container(
+              height: height / 1.1.h,
+              width: width / 1.w,
+              child: ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    Item itemliss = items[index];
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        height: height / 3.6.h,
+                        width: width / 1.98.w,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                              color: Colors.green,
+                              width: 2,
+                            )),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 7),
+                            Mytext(
+                                text: itemliss.itemName.toString(),
+                                color: Colors.green),
+                            Divider(
+                              height: 1,
+                              thickness: 0.1,
+                              color: Colors.black,
+                            ),
+                            SizedBox(height: 20),
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Transform.rotate(
+                                    angle: 0 * pi / 180,
+                                    child: Container(
+                                      height: height / 7.h,
+                                      width: width / 3.4.w,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(15),
+
+                                          image: DecorationImage(
+                                            image: NetworkImage(
+                                              'https://erp.wellknownssyndicate.com${itemliss.image?.toString() ?? "/files/bimage.png"}',
+                                              headers: {"Authorization": "token c5a479b60dd48ad:d8413be73e709b6"},
+                                            ),
+                                            fit: BoxFit.cover,
+                                          )
                                       ),
-                                      Column(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(left: 15.0),
-                                            child: Subhead(text: lis[index].text, colo: Colors.black, weight: FontWeight.w400),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(left: 8.0),
-                                            child: Mytext(text: lis[index].text1, color: Colors.black),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(left: 8.0),
-                                            child: Mytext(text: lis[index].text2, color: Colors.black),
-                                          ),
-                                        ],
-                                      )
-                                    ],
+                                    ),
                                   ),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Column(
-                                      children: [
-                                        Subhead(text: "Qty", colo: Colors.black, weight: FontWeight.w300),
-                                        Container(
-                                          height: height / 22.h,
-                                          width: width / 3.5.w,
-                                          decoration: BoxDecoration(
-                                              color: Colors.grey, borderRadius: BorderRadius.circular(5)),
-                                          child: Column(
-                                            children: [
-                                              SizedBox(height: 4),
-                                              Mytext(text: "${quantities[index]}", color: Colors.black),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    Column(
-                                      children: [
-                                        Subhead(text: "UOM", colo: Colors.black, weight: FontWeight.w300),
-                                        Container(
-                                          height: height / 22.h,
-                                          width: width / 3.8.w,
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(20),
-                                              border: Border.all(
-                                                color: Colors.black,
-                                                width: 2,
-                                              )),
-                                          child: Column(
-                                            children: [
-                                              SizedBox(height: 4),
-                                              Center(child: Mytext(text: "PCS", color: Colors.black)),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 22.0, left: 8.0),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            quantities[index]++;
-                                          });
-                                        },
-                                        child: Container(
-                                          height: height / 22.h,
-                                          width: width / 6.w,
-                                          decoration: BoxDecoration(
-                                            color: Color(0xffFF035e32),
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                          child: Center(
-                                              child: Icon(
-                                                Icons.add,
-                                                color: Colors.white,
-                                                size: 28,
-                                              )),
+                                  Column(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: ScreenUtil()
+                                                .setWidth(30.0)),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment
+                                              .spaceBetween,
+                                          children: [
+                                            Subhead(
+                                              text: "Part-No : ",
+                                              colo: Colors.black,
+                                              weight: FontWeight.w500,
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: ScreenUtil()
+                                                      .setWidth(8.0)),
+                                              child: Mytext(
+                                                text: itemliss.part_no
+                                                    .toString(),
+                                                color: Colors.blue,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    )
-                                  ],
-                                )
-                              ],
+                                      SizedBox(height: 10),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: ScreenUtil()
+                                                .setWidth(30.0)),
+                                        child: Row(
+                                          children: [
+                                            Mytext(
+                                                text: "HSN/SAC :",
+                                                color: Colors.black),
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: ScreenUtil()
+                                                      .setWidth(8.0)),
+                                              child: Mytext(
+                                                  text: itemliss
+                                                      .gst_hsn_code
+                                                      .toString(),
+                                                  color: Colors.blue),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: ScreenUtil()
+                                                .setWidth(30.0)),
+                                        child: Row(
+                                          children: [
+                                            Mytext(
+                                                text: "UOM :",
+                                                color: Colors.black),
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: ScreenUtil()
+                                                      .setWidth(8.0)),
+                                              child: Mytext(
+                                                  text: itemliss.stock_uom
+                                                      .toString(),
+                                                  color: Colors.blue),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Subhead(
+                                          text: "Qty",
+                                          colo: Colors.black,
+                                          weight: FontWeight.w500),
+                                      Row(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                if (quantities[index] >
+                                                    0) {
+                                                  quantities[index]--;
+                                                }
+                                              });
+                                            },
+                                            child: Padding(
+                                              padding: EdgeInsets.only(
+                                                  right: ScreenUtil()
+                                                      .setWidth(8.0)),
+                                              child: Container(
+                                                height: height / 26.h,
+                                                width: width / 8.w,
+                                                decoration: BoxDecoration(
+                                                  color: Color(
+                                                      0xffFF035e32),
+                                                  borderRadius:
+                                                  BorderRadius
+                                                      .circular(5),
+                                                ),
+                                                child: Center(
+                                                    child: Padding(
+                                                      padding: EdgeInsets.only(
+                                                          bottom: ScreenUtil()
+                                                              .setWidth(3.0)),
+                                                      child: Icon(
+                                                        Icons
+                                                            .exposure_minus_1,
+                                                        color: Colors.white,
+                                                        size: 20,
+                                                      ),
+                                                    )),
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            height: height / 26.h,
+                                            width: width / 8.w,
+                                            decoration: BoxDecoration(
+                                                color: Colors.grey.shade200,
+                                                borderRadius:
+                                                BorderRadius
+                                                    .circular(5)),
+                                            child: Column(
+                                              children: [
+                                                SizedBox(height: 4),
+                                                Mytext(
+                                                    text:
+                                                    "${quantities[index]}",
+                                                    color: Colors.black),
+                                              ],
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                quantities[index]++;
+                                              });
+                                            },
+                                            child: Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: ScreenUtil()
+                                                      .setWidth(8.0)),
+                                              child: Container(
+                                                height: height / 26.h,
+                                                width: width / 8.w,
+                                                decoration: BoxDecoration(
+                                                  color: Color(
+                                                      0xffFF035e32),
+                                                  borderRadius:
+                                                  BorderRadius
+                                                      .circular(5),
+                                                ),
+                                                child: Center(
+                                                    child: Padding(
+                                                      padding: EdgeInsets.only(
+                                                          bottom: ScreenUtil()
+                                                              .setWidth(3.0)),
+                                                      child: Icon(
+                                                        Icons.add,
+                                                        color: Colors.white,
+                                                        size: 20,
+                                                      ),
+                                                    )),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                }),
-          ),
-        ],
+                    );
+                  }),
+            )
+                : Center(child: CircularProgressIndicator())
+          ],
+        ),
       ),
     );
   }

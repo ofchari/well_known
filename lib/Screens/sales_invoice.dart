@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:well_known/Utils/refreshdata.dart';
 import 'package:well_known/Utils/sales_util.dart';
 import 'package:well_known/Widgets/heading_text.dart';
 import 'package:well_known/Widgets/subhead.dart';
@@ -18,6 +19,15 @@ class SalesInvoice extends StatefulWidget {
 class _SalesInvoiceState extends State<SalesInvoice> {
   late double height;
   late double width;
+
+  @override
+  void initState() {
+    fetch();
+    super.initState();
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -25,17 +35,20 @@ class _SalesInvoiceState extends State<SalesInvoice> {
     width = size.width;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-        height = constraints.maxHeight;
-        width = constraints.maxWidth;
-        ScreenUtil.init(context,designSize: Size(width, height),minTextAdapt: true);
-        if(width<=600){
-          return _smallbuildlayout();
-        }
-        else{
-          return Text("Large");
-        }
-      },
+      body: RefreshIndicator(
+        onRefresh: refreshdata,
+        child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+          height = constraints.maxHeight;
+          width = constraints.maxWidth;
+          ScreenUtil.init(context,designSize: Size(width, height),minTextAdapt: true);
+          if(width<=600){
+            return _smallbuildlayout();
+          }
+          else{
+            return Text("Large");
+          }
+        },
+        ),
       ),
 
     );

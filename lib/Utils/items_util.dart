@@ -14,8 +14,8 @@ Future<List<Item>> fetchItems() async {
   client.badCertificateCallback =
   ((X509Certificate cert, String host, int port) => true);
   IOClient ioClient = IOClient(client);
-  final response = await http.get(
-    Uri.parse('https://erp.wellknownssyndicate.com/api/resource/Item?fields=["name","item_name","item_group","sales_person","rack_name","item_sub_group","bin_no"]'),
+  final response = await ioClient.get(
+    Uri.parse('https://erp.wellknownssyndicate.com/api/resource/Item?fields=["name","item_name","item_group","part_no","brand","stock_uom","gst_hsn_code","image"]'),
     headers: {"Authorization": "token c5a479b60dd48ad:d8413be73e709b6"},
   );
 

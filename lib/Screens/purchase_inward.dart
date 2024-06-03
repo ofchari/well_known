@@ -19,6 +19,14 @@ class Purchaseinward extends StatefulWidget {
 class _PurchaseinwardState extends State<Purchaseinward> {
   late double height;
   late double width;
+
+  @override
+  void initState() {
+    fetching();
+    super.initState();
+
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
