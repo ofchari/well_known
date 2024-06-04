@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:well_known/Screens/New_Invoice.dart';
 import 'package:well_known/Services/items_api.dart';
 import 'package:well_known/Utils/items_util.dart'; // assuming fetchItems is defined here
+import 'package:well_known/Utils/refreshdata.dart';
 import 'package:well_known/Widgets/buttons.dart';
 import 'package:well_known/Widgets/subhead.dart';
 import 'package:well_known/Widgets/text.dart';
@@ -41,9 +42,6 @@ class _ItemlistState extends State<Itemlist> {
     });
   }
 
-  Future<void> refreshdata() async {
-    await Future.delayed(Duration(seconds: 2));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +83,7 @@ class _ItemlistState extends State<Itemlist> {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
         child: Column(
           children: [
             SizedBox(height: 20),
@@ -171,7 +170,8 @@ class _ItemlistState extends State<Itemlist> {
                                 children: [
                                   Transform.rotate(
                                     angle: 0 * pi / 180,
-                                    child: Container(
+                                    child:
+                                    Container(
                                       height: height / 7.h,
                                       width: width / 3.4.w,
                                       decoration: BoxDecoration(
@@ -252,8 +252,7 @@ class _ItemlistState extends State<Itemlist> {
                                                 color: Colors.black),
                                             Padding(
                                               padding: EdgeInsets.only(
-                                                  left: ScreenUtil()
-                                                      .setWidth(8.0)),
+                                                  left: ScreenUtil().setWidth(8.0)),
                                               child: Mytext(
                                                   text: itemliss.stock_uom
                                                       .toString(),
@@ -286,8 +285,7 @@ class _ItemlistState extends State<Itemlist> {
                                                 height: height / 26.h,
                                                 width: width / 8.w,
                                                 decoration: BoxDecoration(
-                                                  color: Color(
-                                                      0xffFF035e32),
+                                                  color: Colors.blue,
                                                   borderRadius:
                                                   BorderRadius
                                                       .circular(5),
@@ -309,9 +307,9 @@ class _ItemlistState extends State<Itemlist> {
                                           ),
                                           Container(
                                             height: height / 26.h,
-                                            width: width / 8.w,
+                                            width: width / 7.w,
                                             decoration: BoxDecoration(
-                                                color: Colors.grey.shade200,
+                                                color: Colors.grey.shade100,
                                                 borderRadius:
                                                 BorderRadius
                                                     .circular(5)),
@@ -339,8 +337,7 @@ class _ItemlistState extends State<Itemlist> {
                                                 height: height / 26.h,
                                                 width: width / 8.w,
                                                 decoration: BoxDecoration(
-                                                  color: Color(
-                                                      0xffFF035e32),
+                                                  color: Colors.blue,
                                                   borderRadius:
                                                   BorderRadius
                                                       .circular(5),
@@ -371,8 +368,8 @@ class _ItemlistState extends State<Itemlist> {
                       ),
                     );
                   }),
-            )
-                : Center(child: CircularProgressIndicator())
+            ): Center(child: CircularProgressIndicator()),
+
           ],
         ),
       ),

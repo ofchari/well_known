@@ -13,6 +13,6 @@ class Mytext extends StatefulWidget {
 class _MytextState extends State<Mytext> {
   @override
   Widget build(BuildContext context) {
-    return Text(widget.text,style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 15.8,fontWeight: FontWeight.w500,color: widget.color)),);
+    return Text(widget.text,style: GoogleFonts.dmSans(textStyle: TextStyle(fontSize: 15.2,fontWeight: FontWeight.w500,color: widget.color)),);
   }
 }

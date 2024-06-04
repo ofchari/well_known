@@ -27,7 +27,6 @@ class _SalesInvoiceState extends State<SalesInvoice> {
   }
 
 
-
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;

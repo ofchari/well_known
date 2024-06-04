@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -163,48 +164,70 @@ class _ItemsState extends State<Items> {
                                   child: Column(
                                     children: [
                                       SizedBox(height: 10,),
-                                      Mytext(text: item.itemName.toString(), color: Colors.blue),
-                                      SizedBox(height: 10,),
-                                      Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Subhead(text: "Item Group", colo: Colors.black, weight: FontWeight.w500,),
-                                          Mytext(text: item.itemGroup.toString(), color: Colors.green)
-                                        ],
+                                      Mytext(text: item.itemName.toString(), color:  Color(0xffFF035e32)),
+                                      Divider(
+                                        height: 1,
+                                        thickness: 1,
+                                        color: Colors.black,
                                       ),
                                       SizedBox(height: 10,),
-                                      Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      Row(
                                         children: [
-                                          Subhead(text: "Part No :", colo: Colors.black, weight: FontWeight.w500,),
-                                          Mytext(text: item.part_no.toString(), color: Colors.green)
+                                          Container(
+                                            height: height / 10.h,
+                                            width: width / 4.2.w,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                BorderRadius.circular(15),
+                                                image: DecorationImage(
+                                                  image: NetworkImage(
+                                                    'https://erp.wellknownssyndicate.com${item.image?.toString() ?? "/files/bimage.png"}',
+                                                    headers: {"Authorization": "token c5a479b60dd48ad:d8413be73e709b6"},
+                                                  ),
+                                                  fit: BoxFit.cover,
+                                                )
+                                            ),
+                                          ),
+                                          Column(
+                                            children: [
+                                              SizedBox(height: 10,),
+                                              Text(item.itemGroup.toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 15,fontWeight: FontWeight.w500,color: Colors.lightBlue.shade400)),),
+                                              SizedBox(height: 15,),
+                                              Row(
+                                                children: [
+                                                  Padding(
+                                                    padding:  EdgeInsets.only(right: ScreenUtil().setWidth(10.0)),
+                                                    child: Mytext(text: "Part No : ", color: Colors.black),
+                                                  ),
+                                                  Padding(
+                                                    padding:  EdgeInsets.only(right: ScreenUtil().setWidth(20.0)),
+                                                    child: Text(item.part_no.toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14,fontWeight: FontWeight.w500,color: Colors.lightGreen)),),
+                                                  )
+                                                ],
+                                              ),
+                                              SizedBox(height: 10,),
+                                              Row(
+                                                children: [
+                                                  Mytext(text: "  HSC/SAC : ", color: Colors.black),
+                                                  Text(item.gst_hsn_code.toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14,fontWeight: FontWeight.w500,color: Colors.lightGreen)),)
+                                                ],
+                                              ),
+                                            ],
+                                          )
                                         ],
                                       ),
-                                      SizedBox(height: 10,),
-                                      Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Subhead(text: "HSN/SAC ", colo: Colors.black, weight: FontWeight.w500,),
-                                          Mytext(text: item.gst_hsn_code.toString(), color: Colors.green)
-                                        ],
-                                      ),
+
                                     ],
                                   ),
                                 ),
                                 Positioned(
-                                  bottom: 10,
+                                  bottom: 60,
                                     right: 20,
                                     child: GestureDetector(
                                       onTap: (){
                                         _shareContent();
                                       },
-                                      child: Container(
-                                        height: height/18.h,
-                                        width: width/8.w,
-                                        decoration: BoxDecoration(
-                                          color: Color((0xffFF035e32)),
-                                          shape: BoxShape.circle
-                                        ),
-                                        child: Center(child: Icon(Icons.share,color: Colors.white,size: 20,)),
-
-                                      ),
+                                      child: Center(child: Icon(Icons.share,color: Colors.black,size: 30,)),
                                     )
                                 )
                               ],

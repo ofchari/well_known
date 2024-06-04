@@ -57,7 +57,7 @@ class _WelcomeState extends State<Welcome> {
               Image.asset(
                 height: 300,
                   width: 300,
-                  "assets/well_known.jpg"),
+                  "assets/well_know.png"),
               SizedBox(height: 20,),
               Text("Get Start",style: GoogleFonts.outfit(textStyle: TextStyle(fontSize: 23,fontWeight: FontWeight.w600,color: Colors.black)),),
               SizedBox(height: 20,),
@@ -77,8 +77,6 @@ class _WelcomeState extends State<Welcome> {
                   child: Center(child: Mytext(text: "Start Now", color: Colors.white)),
                 ),
               )
-
-
             ],
           ),
         ),

@@ -372,7 +372,10 @@ class _InvoiceState extends State<Invoice> {
                           ),
                           Column(
                             children: [
-                              Mytext(text: "Price List", color: Colors.black),
+                              Padding(
+                                padding:  EdgeInsets.only(right: ScreenUtil().setWidth(6.0)),
+                                child: Mytext(text: "Price List", color: Colors.black),
+                              ),
                               SizedBox(height: 4,),
                               Mytext(text: "100", color: Colors.black),
                             ],
