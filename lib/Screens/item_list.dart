@@ -26,22 +26,40 @@ class _ItemlistState extends State<Itemlist> {
   late double height;
   late double width;
   List<Item> items = [];
+  List<Item> filteredItems = [];
   List<int> quantities = [];
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _initializeItems();
+    searchController.addListener(_filterItems);
   }
 
   Future<void> _initializeItems() async {
     List<Item> fetchedItems = await fetchItems();
     setState(() {
       items = fetchedItems;
+      filteredItems = fetchedItems;
       quantities = List<int>.filled(items.length, 0);
     });
   }
 
+  void _filterItems() {
+    String query = searchController.text.toLowerCase();
+    setState(() {
+      filteredItems = items.where((item) {
+        return item.itemName!.toLowerCase().contains(query);
+      }).toList();
+    });
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +114,7 @@ class _ItemlistState extends State<Itemlist> {
                     height: height / 18.h,
                     width: width / 1.5.w,
                     child: TextFormField(
+                      controller: searchController,
                       decoration: InputDecoration(
                           hintText: "Search",
                           hintStyle: GoogleFonts.poppins(
@@ -113,14 +132,13 @@ class _ItemlistState extends State<Itemlist> {
                   ),
                   GestureDetector(
                       onTap: () {
-                        var snackbar = SnackBar(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                            backgroundColor: Color(0xffFF035e32),
-                            content: Mytext(
-                                text: "Added Successfully",
-                                color: Colors.white));
-                        ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                        Get.snackbar(
+                            "Added Successfully",
+                            "Thank you",
+                          colorText: Colors.white,
+                          snackPosition: SnackPosition.BOTTOM
+                        );
+
                         Get.off(Newinvoice());
                       },
                       child: Buttons(
@@ -133,14 +151,14 @@ class _ItemlistState extends State<Itemlist> {
               ),
             ),
             SizedBox(height: 20),
-            items.isNotEmpty
+            filteredItems.isNotEmpty
                 ? Container(
               height: height / 1.1.h,
               width: width / 1.w,
               child: ListView.builder(
-                  itemCount: items.length,
+                  itemCount: filteredItems.length,
                   itemBuilder: (context, index) {
-                    Item itemliss = items[index];
+                    Item itemliss = filteredItems[index];
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(

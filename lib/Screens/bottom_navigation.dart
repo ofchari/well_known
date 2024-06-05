@@ -61,8 +61,6 @@ class _navigatState extends State<navigat> {
         backgroundColor: Color(0xffFF035e32),
         onPressed: () {  },child: Icon(Icons.search,color: Colors.white,),
       ),
-
-
     );
   }
 }

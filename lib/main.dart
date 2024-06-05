@@ -14,6 +14,8 @@ import 'package:well_known/Screens/purchase_inward.dart';
 import 'package:well_known/Screens/sales_invoice.dart';
 import 'package:well_known/Screens/welcome.dart';
 
+import 'Screens/new.dart';
+
 void main() {
   runApp(const MyApp());
 }
