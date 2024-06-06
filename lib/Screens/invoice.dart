@@ -35,7 +35,7 @@ class _InvoiceState extends State<Invoice> {
           height =  constraints.maxHeight;
           width =  constraints.maxWidth;
           ScreenUtil.init(context,designSize: Size(width, height),minTextAdapt: true);
-          if(width<=600){
+          if(width<=450){
             return _smallBuildLayout();
           }
           else{

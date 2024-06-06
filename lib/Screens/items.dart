@@ -97,7 +97,7 @@ class _ItemsState extends State<Items> {
               designSize: Size(width, height),
               minTextAdapt: true,
             );
-            if (width <= 600) {
+            if (width <= 450) {
               return _smallBuildLayout();
             } else {
               return Text("Large");
