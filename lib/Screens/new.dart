@@ -26,9 +26,9 @@ class _NewsprofoState extends State<Newsprofo> {
         height = constraints.maxHeight;
         width = constraints.maxWidth;
         ScreenUtil.init(context,designSize: Size(width, height),minTextAdapt: true);
-        if(width <=600){
+        if(width <=450){
           return _smallBuildLayout();
-          // Medium screen sizes //
+          // Mobile screen sizes //
         }
         else{
           return const Text("Large");
@@ -82,6 +82,7 @@ class _NewsprofoState extends State<Newsprofo> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
                 image: const DecorationImage(
+                  // The images comes from the Network //
                   image: NetworkImage("https://cdn.pixabay.com/photo/2022/01/30/13/33/github-6980894_1280.png"),fit: BoxFit.cover
                 )
               ),

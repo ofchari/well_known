@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:well_known/Utils/refreshdata.dart';
 import 'package:well_known/utils/refreshdata.dart';
 
 class Home extends StatefulWidget {
@@ -16,18 +17,15 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: refreshdata,
-        child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-          height = constraints.maxHeight;
-          width = constraints.maxWidth;
-          ScreenUtil.init(context,designSize: Size(width, height),minTextAdapt: true);
-          if(width <=600){
-            return _smallbuildlayout();
-          }
-          return Text("Large");
-        },
-        ),
+      body: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+        height = constraints.maxHeight;
+        width = constraints.maxWidth;
+        ScreenUtil.init(context,designSize: Size(width, height),minTextAdapt: true);
+        if(width <=600){
+          return _smallbuildlayout();
+        }
+        return Text("Large");
+      },
       ),
     );
   }

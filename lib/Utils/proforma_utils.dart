@@ -7,7 +7,7 @@ import 'package:http/io_client.dart';
 import '../Services/proforma_api.dart';
 
 
-Future<List<SalesOrder>> binding() async{
+Future<List<SalesOrder>> fetchProforma() async{
   HttpClient client = HttpClient();
   client.badCertificateCallback =
   ((X509Certificate cert, String host, int port) => true);

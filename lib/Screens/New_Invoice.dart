@@ -7,6 +7,7 @@ import 'package:well_known/Screens/item_list.dart';
 import 'package:well_known/Widgets/subhead.dart';
 import 'package:well_known/Widgets/text.dart';
 import 'package:well_known/utils/refreshdata.dart';
+import '../Utils/refreshdata.dart';
 import '../Widgets/buttons.dart';
 
 class Newinvoice extends StatefulWidget {
@@ -27,24 +28,21 @@ class _NewinvoiceState extends State<Newinvoice> {
     width = size.width;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: RefreshIndicator(
-        onRefresh: refreshdata,
-        child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-          height = constraints.maxHeight;
-          width = constraints.maxWidth;
-          ScreenUtil.init(context,designSize: Size(width, height),minTextAdapt: true);
-          if(width<=600){
-            return _smallbuildlayout();
-          }
-          else{
-            return Text("Large");
-          }
-        },
-        ),
+      body: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+        height = constraints.maxHeight;
+        width = constraints.maxWidth;
+        ScreenUtil.init(context,designSize: Size(width, height),minTextAdapt: true);
+        if(width<=600){
+          return _smallBuildLayout();
+        }
+        else{
+          return Text("Large");
+        }
+      },
       ),
     );
   }
-  Widget _smallbuildlayout(){
+  Widget _smallBuildLayout(){
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: Container(
@@ -529,17 +527,6 @@ class _NewinvoiceState extends State<Newinvoice> {
                                 )
                             ),
                           ),
-                          // Padding(
-                          //   padding: const EdgeInsets.only(left: 8.0),
-                          //   child: SizedBox(
-                          //     height: 113,
-                          //     child: VerticalDivider(
-                          //       width: 2,
-                          //       thickness: 2,
-                          //       color: Colors.green,
-                          //     ),
-                          //   ),
-                          // ),
                           Padding(
                             padding: const EdgeInsets.only(left: 30.0),
                             child: Column(

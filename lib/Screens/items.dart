@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -8,13 +7,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/io_client.dart';
 import 'package:share/share.dart';
 import 'package:well_known/Services/sample.dart';
+import 'package:well_known/Utils/refreshdata.dart';
 import 'package:well_known/Widgets/heading_text.dart';
 import 'package:well_known/Widgets/subhead.dart';
 import 'package:well_known/Widgets/text.dart';
 import 'package:well_known/models/item_products.dart';
 import 'package:http/http.dart' as http;
 import 'package:well_known/utils/items_util.dart';
-import 'package:well_known/utils/refreshdata.dart';
 
 import '../Services/items_api.dart';
 import '../Utils/items_util.dart';
@@ -63,14 +62,19 @@ class _ItemsState extends State<Items> {
     }
   }
 
+  String _preprocessString(String input) {
+    return input.replaceAll(RegExp(r'[\s,%."]'), '').toLowerCase();
+  }
+
   List<Item> _filterItems(String searchTerm) {
     if (searchTerm.isEmpty) {
       return _items;
     } else {
-      return _items
-          .where((item) =>
-          item.itemName!.toLowerCase().startsWith(searchTerm.toLowerCase()))
-          .toList();
+      String processedSearchTerm = _preprocessString(searchTerm);
+      return _items.where((item) {
+        String itemName = item.itemName ?? '';
+        return _preprocessString(itemName).contains(processedSearchTerm);
+      }).toList();
     }
   }
 
@@ -83,7 +87,7 @@ class _ItemsState extends State<Items> {
       key: scaffoldKey,
       resizeToAvoidBottomInset: false,
       body: RefreshIndicator(
-        onRefresh: fetchItems,
+        onRefresh: refreshData,
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
             height = constraints.maxHeight;
@@ -94,7 +98,7 @@ class _ItemsState extends State<Items> {
               minTextAdapt: true,
             );
             if (width <= 600) {
-              return _smallbuildlayout();
+              return _smallBuildLayout();
             } else {
               return Text("Large");
             }
@@ -104,7 +108,7 @@ class _ItemsState extends State<Items> {
     );
   }
 
-  Widget _smallbuildlayout() {
+  Widget _smallBuildLayout() {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
@@ -308,67 +312,4 @@ class _ItemsState extends State<Items> {
     );
   }
 }
-
-//
-
-class Sample extends StatefulWidget {
-  const Sample({super.key});
-
-  @override
-  State<Sample> createState() => _SampleState();
-}
-
-class _SampleState extends State<Sample> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        height: double.infinity,
-        width: double.infinity,
-        child: Column(
-          children: [
-            FutureBuilder<List<CategoryList>>(
-                future: fetchhes(),
-                builder: (context,snapshot){
-                  if(snapshot.connectionState == ConnectionState.waiting){
-                    return CircularProgressIndicator();
-                  }
-                  else if(snapshot.hasError){
-                    return Text("${snapshot.error}");
-                  }
-                  else{
-                    return SingleChildScrollView(
-                      child: Container(
-                        height: 300,
-                        width: 400,
-                        child: ListView.builder(
-                          scrollDirection: Axis.vertical,
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (context,int index){
-                            CategoryList categ = snapshot.data![index];
-                            return Column(
-                              children: [
-                                Mytext(text: categ.categoryId.toString(), color: Colors.black),
-                                Mytext(text: categ.category.toString(), color: Colors.black),
-                              ],
-                            );
-
-                            }
-                        ),
-                      ),
-                    );
-                  }
-                }
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
-//
-
-
-
-
 

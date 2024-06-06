@@ -6,13 +6,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:well_known/Screens/New_Invoice.dart';
 import 'package:well_known/Services/items_api.dart';
 import 'package:well_known/Utils/items_util.dart'; // assuming fetchItems is defined here
-import 'package:well_known/Utils/refreshdata.dart';
 import 'package:well_known/Widgets/buttons.dart';
 import 'package:well_known/Widgets/subhead.dart';
 import 'package:well_known/Widgets/text.dart';
 import 'package:well_known/models/item_listss.dart';
 import 'dart:math';
 
+import '../Utils/refreshdata.dart';
 import '../Widgets/heading_text.dart';
 
 class Itemlist extends StatefulWidget {
@@ -47,12 +47,16 @@ class _ItemlistState extends State<Itemlist> {
   }
 
   void _filterItems() {
-    String query = searchController.text.toLowerCase();
+    String query = _preprocessString(searchController.text);
     setState(() {
       filteredItems = items.where((item) {
-        return item.itemName!.toLowerCase().contains(query);
+        return _preprocessString(item.itemName ?? '').contains(query);
       }).toList();
     });
+  }
+
+  String _preprocessString(String input) {
+    return input.replaceAll(RegExp(r'[\s,%."]'), '').toLowerCase();
   }
 
   @override
@@ -69,14 +73,14 @@ class _ItemlistState extends State<Itemlist> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: RefreshIndicator(
-        onRefresh: refreshdata,
+        onRefresh: refreshData,
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
             height = constraints.maxHeight;
             width = constraints.maxWidth;
             ScreenUtil.init(context, designSize: Size(width, height), minTextAdapt: true);
             if (width <= 600) {
-              return _smallbuildlayout();
+              return _smallBuildLayout();
             } else {
               return Text("Large");
             }
@@ -86,311 +90,333 @@ class _ItemlistState extends State<Itemlist> {
     );
   }
 
-  Widget _smallbuildlayout() {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        toolbarHeight: 80,
-        leading: GestureDetector(
-            onTap: () {
-              Get.back();
-            },
-            child: Icon(Icons.arrow_back, color: Colors.black)),
-        title: Headingtext(
-            text: "  Item List", color: Colors.black, weight: FontWeight.w400),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        physics: AlwaysScrollableScrollPhysics(),
-        child: Column(
-          children: [
-            SizedBox(height: 20),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    height: height / 18.h,
-                    width: width / 1.5.w,
-                    child: TextFormField(
-                      controller: searchController,
-                      decoration: InputDecoration(
-                          hintText: "Search",
-                          hintStyle: GoogleFonts.poppins(
-                              textStyle: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.grey)),
-                          suffixIcon: Icon(
-                            Icons.search,
-                            color: Colors.grey,
-                          ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15))),
-                    ),
+  Widget _smallBuildLayout() {
+    return Stack(
+      children: [
+        Positioned(
+          top: 20.h,
+          left: 0,
+          right: 0,
+            child: _buildAppBar(),
+        ),
+        Positioned(
+          top: 100.h,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: _buildBody(),
+        )
+      ],
+    );
+  }
+       // App Bar //
+  Widget _buildAppBar(){
+    return AppBar(
+      leading: GestureDetector(
+          onTap: () {
+            Get.back();
+          },
+          child: Icon(Icons.arrow_back, color: Colors.black)),
+      title: Headingtext(
+          text: "  Item List", color: Colors.black, weight: FontWeight.w400),
+      centerTitle: true,
+    );
+  }
+          // Body //
+  Widget _buildBody(){
+    return  SingleChildScrollView(
+      physics: AlwaysScrollableScrollPhysics(),
+      child: Column(
+        children: [
+          SizedBox(height: 40),
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  height: height / 18.h,
+                  width: width / 1.5.w,
+                  child: TextFormField(
+                    controller: searchController,
+                    decoration: InputDecoration(
+                        hintText: "Search",
+                        hintStyle: GoogleFonts.poppins(
+                            textStyle: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey)),
+                        suffixIcon: Icon(
+                          Icons.search,
+                          color: Colors.grey,
+                        ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15))),
                   ),
-                  GestureDetector(
-                      onTap: () {
-                        Get.snackbar(
-                            "Added Successfully",
-                            "Thank you",
+                ),
+                GestureDetector(
+                    onTap: () {
+                      Get.snackbar(
+                          "Added Successfully",
+                          "Thank you",
                           colorText: Colors.white,
                           snackPosition: SnackPosition.BOTTOM
-                        );
+                      );
 
-                        Get.off(Newinvoice());
-                      },
-                      child: Buttons(
-                          heigh: height / 20,
-                          width: width / 4.5,
-                          color: Color(0xffFF035e32),
-                          text: "Finish",
-                          radius: BorderRadius.circular(12)))
-                ],
-              ),
+                      Get.off(Newinvoice());
+                    },
+                    child: Buttons(
+                        heigh: height / 20,
+                        width: width / 4.5,
+                        color: Color(0xffFF035e32),
+                        text: "Finish",
+                        radius: BorderRadius.circular(12)))
+              ],
             ),
-            SizedBox(height: 20),
-            filteredItems.isNotEmpty
-                ? Container(
-              height: height / 1.1.h,
-              width: width / 1.w,
-              child: ListView.builder(
-                  itemCount: filteredItems.length,
-                  itemBuilder: (context, index) {
-                    Item itemliss = filteredItems[index];
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        height: height / 3.6.h,
-                        width: width / 1.98.w,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(
-                              color: Colors.green,
-                              width: 2,
-                            )),
-                        child: Column(
-                          children: [
-                            SizedBox(height: 7),
-                            Mytext(
-                                text: itemliss.itemName.toString(),
-                                color: Colors.green),
-                            Divider(
-                              height: 1,
-                              thickness: 0.1,
-                              color: Colors.black,
-                            ),
-                            SizedBox(height: 20),
-                            Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  Transform.rotate(
-                                    angle: 0 * pi / 180,
-                                    child:
-                                    Container(
-                                      height: height / 7.h,
-                                      width: width / 3.4.w,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                          BorderRadius.circular(15),
+          ),
+          filteredItems.isNotEmpty
+              ? Container(
+            height: height / 1.1.h,
+            width: width / 1.w,
+            child: ListView.builder(
+                itemCount: filteredItems.length,
+                itemBuilder: (context, index) {
+                  Item itemliss = filteredItems[index];
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      height: height / 3.6.h,
+                      width: width / 1.98.w,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                            color: Colors.green,
+                            width: 2,
+                          )),
+                      child: Column(
+                        children: [
+                          SizedBox(height: 7),
+                          Mytext(
+                              text: itemliss.itemName.toString(),
+                              color: Colors.green),
+                          Divider(
+                            height: 1,
+                            thickness: 0.1,
+                            color: Colors.black,
+                          ),
+                          SizedBox(height: 20),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Transform.rotate(
+                                  angle: 0 * pi / 180,
+                                  child:
+                                  Container(
+                                    height: height / 7.h,
+                                    width: width / 3.4.w,
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                        BorderRadius.circular(15),
 
-                                          image: DecorationImage(
-                                            image: NetworkImage(
-                                              'https://erp.wellknownssyndicate.com${itemliss.image?.toString() ?? "/files/bimage.png"}',
-                                              headers: {"Authorization": "token c5a479b60dd48ad:d8413be73e709b6"},
-                                            ),
-                                            fit: BoxFit.cover,
-                                          )
-                                      ),
+                                        image: DecorationImage(
+                                          image: NetworkImage(
+                                            'https://erp.wellknownssyndicate.com${itemliss.image?.toString() ?? "/files/bimage.png"}',
+                                            headers: {"Authorization": "token c5a479b60dd48ad:d8413be73e709b6"},
+                                          ),
+                                          fit: BoxFit.cover,
+                                        )
                                     ),
                                   ),
-                                  Column(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            left: ScreenUtil()
-                                                .setWidth(30.0)),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment
-                                              .spaceBetween,
-                                          children: [
-                                            Subhead(
-                                              text: "Part-No : ",
-                                              colo: Colors.black,
-                                              weight: FontWeight.w500,
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: ScreenUtil()
-                                                      .setWidth(8.0)),
-                                              child: Mytext(
-                                                text: itemliss.part_no
-                                                    .toString(),
-                                                color: Colors.blue,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            left: ScreenUtil()
-                                                .setWidth(30.0)),
-                                        child: Row(
-                                          children: [
-                                            Mytext(
-                                                text: "HSN/SAC :",
-                                                color: Colors.black),
-                                            Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: ScreenUtil()
-                                                      .setWidth(8.0)),
-                                              child: Mytext(
-                                                  text: itemliss
-                                                      .gst_hsn_code
-                                                      .toString(),
-                                                  color: Colors.blue),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            left: ScreenUtil()
-                                                .setWidth(30.0)),
-                                        child: Row(
-                                          children: [
-                                            Mytext(
-                                                text: "UOM :",
-                                                color: Colors.black),
-                                            Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: ScreenUtil().setWidth(8.0)),
-                                              child: Mytext(
-                                                  text: itemliss.stock_uom
-                                                      .toString(),
-                                                  color: Colors.blue),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                      Subhead(
-                                          text: "Qty",
-                                          colo: Colors.black,
-                                          weight: FontWeight.w500),
-                                      Row(
+                                ),
+                                Column(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          left: ScreenUtil()
+                                              .setWidth(30.0)),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment
+                                            .spaceBetween,
                                         children: [
-                                          GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                if (quantities[index] >
-                                                    0) {
-                                                  quantities[index]--;
-                                                }
-                                              });
-                                            },
-                                            child: Padding(
-                                              padding: EdgeInsets.only(
-                                                  right: ScreenUtil()
-                                                      .setWidth(8.0)),
-                                              child: Container(
-                                                height: height / 26.h,
-                                                width: width / 8.w,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.blue,
-                                                  borderRadius:
-                                                  BorderRadius
-                                                      .circular(5),
-                                                ),
-                                                child: Center(
-                                                    child: Padding(
-                                                      padding: EdgeInsets.only(
-                                                          bottom: ScreenUtil()
-                                                              .setWidth(3.0)),
-                                                      child: Icon(
-                                                        Icons
-                                                            .exposure_minus_1,
-                                                        color: Colors.white,
-                                                        size: 20,
-                                                      ),
-                                                    )),
-                                              ),
-                                            ),
+                                          Subhead(
+                                            text: "Part-No : ",
+                                            colo: Colors.black,
+                                            weight: FontWeight.w500,
                                           ),
-                                          Container(
-                                            height: height / 26.h,
-                                            width: width / 7.w,
-                                            decoration: BoxDecoration(
-                                                color: Colors.grey.shade100,
-                                                borderRadius:
-                                                BorderRadius
-                                                    .circular(5)),
-                                            child: Column(
-                                              children: [
-                                                SizedBox(height: 4),
-                                                Mytext(
-                                                    text:
-                                                    "${quantities[index]}",
-                                                    color: Colors.black),
-                                              ],
-                                            ),
-                                          ),
-                                          GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                quantities[index]++;
-                                              });
-                                            },
-                                            child: Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: ScreenUtil()
-                                                      .setWidth(8.0)),
-                                              child: Container(
-                                                height: height / 26.h,
-                                                width: width / 8.w,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.blue,
-                                                  borderRadius:
-                                                  BorderRadius
-                                                      .circular(5),
-                                                ),
-                                                child: Center(
-                                                    child: Padding(
-                                                      padding: EdgeInsets.only(
-                                                          bottom: ScreenUtil()
-                                                              .setWidth(3.0)),
-                                                      child: Icon(
-                                                        Icons.add,
-                                                        color: Colors.white,
-                                                        size: 20,
-                                                      ),
-                                                    )),
-                                              ),
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                left: ScreenUtil()
+                                                    .setWidth(8.0)),
+                                            child: Mytext(
+                                              text: itemliss.part_no
+                                                  .toString(),
+                                              color: Colors.blue,
                                             ),
                                           ),
                                         ],
                                       ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                                    ),
+                                    SizedBox(height: 10),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          left: ScreenUtil()
+                                              .setWidth(30.0)),
+                                      child: Row(
+                                        children: [
+                                          Mytext(
+                                              text: "HSN/SAC :",
+                                              color: Colors.black),
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                left: ScreenUtil()
+                                                    .setWidth(8.0)),
+                                            child: Mytext(
+                                                text: itemliss
+                                                    .gst_hsn_code
+                                                    .toString(),
+                                                color: Colors.blue),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 10),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          left: ScreenUtil()
+                                              .setWidth(30.0)),
+                                      child: Row(
+                                        children: [
+                                          Mytext(
+                                              text: "UOM :",
+                                              color: Colors.black),
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                left: ScreenUtil().setWidth(8.0)),
+                                            child: Mytext(
+                                                text: itemliss.stock_uom
+                                                    .toString(),
+                                                color: Colors.blue),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 10),
+                                    Subhead(
+                                        text: "Qty",
+                                        colo: Colors.black,
+                                        weight: FontWeight.w500),
+                                    Row(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              if (quantities[index] >
+                                                  0) {
+                                                quantities[index]--;
+                                              }
+                                            });
+                                          },
+                                          child: Padding(
+                                            padding: EdgeInsets.only(
+                                                right: ScreenUtil()
+                                                    .setWidth(8.0)),
+                                            child: Container(
+                                              height: height / 26.h,
+                                              width: width / 8.w,
+                                              decoration: BoxDecoration(
+                                                color: Colors.blue,
+                                                borderRadius:
+                                                BorderRadius
+                                                    .circular(5),
+                                              ),
+                                              child: Center(
+                                                  child: Padding(
+                                                    padding: EdgeInsets.only(
+                                                        bottom: ScreenUtil()
+                                                            .setWidth(3.0)),
+                                                    child: Icon(
+                                                      Icons
+                                                          .exposure_minus_1,
+                                                      color: Colors.white,
+                                                      size: 20,
+                                                    ),
+                                                  )),
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          height: height / 26.h,
+                                          width: width / 7.w,
+                                          decoration: BoxDecoration(
+                                              color: Colors.grey.shade100,
+                                              borderRadius:
+                                              BorderRadius
+                                                  .circular(5)),
+                                          child: Column(
+                                            children: [
+                                              SizedBox(height: 4),
+                                              Mytext(
+                                                  text:
+                                                  "${quantities[index]}",
+                                                  color: Colors.black),
+                                            ],
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              quantities[index]++;
+                                            });
+                                          },
+                                          child: Padding(
+                                            padding: EdgeInsets.only(
+                                                left: ScreenUtil()
+                                                    .setWidth(8.0)),
+                                            child: Container(
+                                              height: height / 26.h,
+                                              width: width / 8.w,
+                                              decoration: BoxDecoration(
+                                                color: Colors.blue,
+                                                borderRadius:
+                                                BorderRadius
+                                                    .circular(5),
+                                              ),
+                                              child: Center(
+                                                  child: Padding(
+                                                    padding: EdgeInsets.only(
+                                                        bottom: ScreenUtil()
+                                                            .setWidth(3.0)),
+                                                    child: Icon(
+                                                      Icons.add,
+                                                      color: Colors.white,
+                                                      size: 20,
+                                                    ),
+                                                  )),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    );
-                  }),
-            ): Center(child: CircularProgressIndicator()),
+                    ),
+                  );
+                }),
+          ): Center(child: CircularProgressIndicator()),
 
-          ],
-        ),
+        ],
       ),
     );
   }
 }
+
+
+
+

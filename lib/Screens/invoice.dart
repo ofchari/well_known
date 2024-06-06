@@ -6,10 +6,10 @@ import 'package:get/get.dart';
 import 'package:well_known/Screens/home.dart';
 import 'package:well_known/Services/sales_api.dart';
 import 'package:well_known/Utils/proforma_utils.dart';
+import 'package:well_known/Utils/refreshdata.dart';
 import 'package:well_known/Widgets/buttons.dart';
 import 'package:well_known/Widgets/subhead.dart';
 import 'package:well_known/Widgets/text.dart';
-import 'package:well_known/utils/refreshdata.dart';
 
 import '../Services/proforma_api.dart';
 import '../Widgets/heading_text.dart';
@@ -30,13 +30,13 @@ class _InvoiceState extends State<Invoice> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: RefreshIndicator(
-        onRefresh: refreshdata,
+        onRefresh: refreshData,
         child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
           height =  constraints.maxHeight;
           width =  constraints.maxWidth;
           ScreenUtil.init(context,designSize: Size(width, height),minTextAdapt: true);
           if(width<=600){
-            return _smallbuildlayout();
+            return _smallBuildLayout();
           }
           else{
             return Text("Large");
@@ -46,7 +46,7 @@ class _InvoiceState extends State<Invoice> {
       ),
     );
   }
-  Widget _smallbuildlayout(){
+  Widget _smallBuildLayout(){
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(

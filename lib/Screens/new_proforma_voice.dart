@@ -4,9 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:well_known/Screens/New_Invoice.dart';
+import 'package:well_known/Utils/refreshdata.dart';
 import 'package:well_known/Widgets/buttons.dart';
 import 'package:well_known/Widgets/text.dart';
-import 'package:well_known/utils/refreshdata.dart';
 import '../Widgets/heading_text.dart';
 
 class Newproformavoice extends StatefulWidget {
@@ -43,14 +43,15 @@ class _NewproformavoiceState extends State<Newproformavoice> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: RefreshIndicator(
-        onRefresh: refreshdata,
+        onRefresh: refreshData,
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
             height = constraints.maxHeight;
             width = constraints.maxWidth;
             ScreenUtil.init(context, designSize: Size(width, height), minTextAdapt: true);
-            if (width <= 600) {
-              return _smallbuildlayout();
+            if (width <= 450) {
+              return _smallBuildLayout();
+              // Mobile Screen Sizes //
             } else {
               return Text("Large");
             }
@@ -60,7 +61,7 @@ class _NewproformavoiceState extends State<Newproformavoice> {
     );
   }
 
-  Widget _smallbuildlayout() {
+  Widget _smallBuildLayout() {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Buttons extends StatefulWidget {
@@ -23,7 +24,7 @@ class _ButtonsState extends State<Buttons> {
         borderRadius: widget.radius,
         color: widget.color
       ),
-      child: Center(child: Text(widget.text,style: GoogleFonts.outfit(textStyle: TextStyle(fontSize: 15,fontWeight: FontWeight.w500,color: Colors.white)),)),
+      child: Center(child: Text(widget.text,style: GoogleFonts.outfit(textStyle: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w500,color: Colors.white)),)),
     );
   }
 }
