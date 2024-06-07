@@ -1,5 +1,5 @@
 
-// Sales Invoice//
+                                             // Sales Invoice//
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
@@ -14,6 +14,7 @@ Future<List<Sales>> fetch() async{
   final response = await http.get(
       Uri.parse('https://erp.wellknownssyndicate.com/api/resource/Sales Invoice?fields=["sales_person","billing_person","attended_by","attended_person","company","branch","customer","attended_person","customer_address","posting_date","due_date"]'),headers: {"Authorization": "token c5a479b60dd48ad:d8413be73e709b6"});
   if(response.statusCode == 200){
+    // Handle the responses //
     print(response.body);
     List<dynamic> data = jsonDecode(response.body)['data'];
     return data.map((e) => Sales.fromJson(e)).toList();

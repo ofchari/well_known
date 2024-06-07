@@ -27,8 +27,9 @@ class _ProformaInvoiceeState extends State<ProformaInvoicee> {
   void initState() {
     fetchProforma();
     super.initState();
-
   }
+
+  var sales_person = '';
 
   @override
   Widget build(BuildContext context) {
@@ -39,175 +40,224 @@ class _ProformaInvoiceeState extends State<ProformaInvoicee> {
       resizeToAvoidBottomInset: false,
       body: RefreshIndicator(
         onRefresh: refreshData,
-        child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-          height = constraints.maxHeight;
-          width = constraints.maxWidth;
-          ScreenUtil.init(context,designSize:Size(width, height),minTextAdapt: true);
-          if(width <=450){
-            return _smallBuildLayout();
-          }
-          else{
-            return Text("Large");
-          }
-        },
+        child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            height = constraints.maxHeight;
+            width = constraints.maxWidth;
+            ScreenUtil.init(context,
+                designSize: Size(width, height), minTextAdapt: true);
+            if (width <= 450) {
+              return _smallBuildLayout();
+            } else {
+              return Text("Large");
+            }
+          },
         ),
       ),
-
     );
   }
-  Widget _smallBuildLayout(){
-    return Stack(
-      children: [
-        Positioned(
-          top: 26.h,
-          left: 0,
-          right: 0,
-            child: _buildAppBar(),
-        ),
-        Positioned(
-          top: 100.h,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          child: _buildBody(),
-        ),
 
-      ]
-    );
+  Widget _smallBuildLayout() {
+    return Stack(children: [
+      Positioned(
+        top: 26.h,
+        left: 0,
+        right: 0,
+        child: _buildAppBar(),
+      ),
+      Positioned(
+        top: 100.h,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        child: _buildBody(),
+      ),
+    ]);
   }
-         // App Bar //
-  Widget _buildAppBar(){
+
+  // App Bar //
+  Widget _buildAppBar() {
     return AppBar(
       // toolbarHeight: 100,
       leading: GestureDetector(
-          onTap: (){
+          onTap: () {
             Get.back();
           },
-          child: Icon(Icons.arrow_back,color: Colors.black,)),
-      title: Headingtext(text: "     Proforma Invoice", color: Colors.black, weight: FontWeight.w500),
+          child: Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+          )),
+      title: Headingtext(
+          text: "     Proforma Invoice",
+          color: Colors.black,
+          weight: FontWeight.w500),
       centerTitle: true,
     );
   }
-       // Body //
-  Widget _buildBody(){
-    return Stack(
-        children: [
-          Container(
-            width: width.w,
-            child: SingleChildScrollView(
-              physics: AlwaysScrollableScrollPhysics(),
-              child: Column(
-                children: [
-                  FutureBuilder<List<SalesOrder>>(
-                      future: fetchProforma(),
-                      builder: (context,snapshot){
-                        if(snapshot.connectionState == ConnectionState.waiting){
-                          return Center(child: CircularProgressIndicator());
-                        }
-                        else if(snapshot.hasError){
-                          return Text("${snapshot.error}");
-                        }
-                        else{
-                          return Container(
-                            height: height/1.1.h,
-                            width: width/1.w,
-                            child: ListView.builder(
-                                scrollDirection: Axis.vertical,
-                                itemCount: snapshot.data!.length,
-                                itemBuilder: (context,index){
-                                  SalesOrder proforma = snapshot.data![index];
-                                  return Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      height: height/3.5.h,
-                                      width: width/1.3.w,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(15),
-                                          border: Border.all(
-                                              color: Colors.green,
-                                              width: 1.2
-                                          )
+
+  // Body //
+  Widget _buildBody() {
+    return Stack(children: [
+      Container(
+        width: width.w,
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              FutureBuilder<List<SalesOrder>>(
+                  future: fetchProforma(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Text("${snapshot.error}");
+                    } else {
+                      return Container(
+                        height: height / 1.1.h,
+                        width: width / 1.w,
+                        child: ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              SalesOrder proforma = snapshot.data![index];
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  height: height / 3.5.h,
+                                  width: width / 1.3.w,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                          color: Colors.green, width: 1.2)),
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 10.h,
                                       ),
-                                      child: Column(
+                                      Subhead(
+                                          text: proforma.name.toString(),
+                                          colo: Colors.black,
+                                          weight: FontWeight.w600),
+                                      SizedBox(
+                                        height: 5.h,
+                                      ),
+                                      Subhead(
+                                          text: proforma.billingPerson.toString(),
+                                          colo: Colors.black,
+                                          weight: FontWeight.w300),
+                                      SizedBox(
+                                        height: 10.h,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                         children: [
-                                          SizedBox(height: 10.h,),
-                                          Subhead(text: proforma.salesPerson.toString(), colo: Colors.black, weight: FontWeight.w600),
-                                          SizedBox(height: 5.h,),
-                                          Subhead(text: proforma.billingPerson.toString(), colo: Colors.black, weight: FontWeight.w300),
-                                          SizedBox(height: 10.h,),
-                                          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          Row(
                                             children: [
-                                              Row(
-                                                children: [
-                                                  Mytext(text: " DATE :", color: Colors.black),
-                                                  Mytext(text: proforma.postingdate.toString(), color: Colors.black),
-                                                ],
-                                              ),
-                                              SizedBox(height: 10.h,),
-                                              Padding(
-                                                padding:  EdgeInsets.all(8.0.w),
-                                                child: Row(
-                                                  children: [
-                                                    Mytext(text: "Due Date :", color: Colors.black),
-                                                    Mytext(text: proforma.deliveryDate.toString(), color: Colors.black),
-                                                  ],
-                                                ),
-                                              ),
+                                              Mytext(
+                                                  text: " DATE :",
+                                                  color: Colors.black),
+                                              Mytext(
+                                                  text: proforma.transactiondate
+                                                      .toString(),
+                                                  color: Colors.black),
                                             ],
                                           ),
-                                          SizedBox(height: 10.h,),
-                                          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              Mytext(text: "Company", color: Colors.black),
-                                              Mytext(text: proforma.company.toString(), color: Colors.green),
-                                            ],
+                                          SizedBox(
+                                            height: 10.h,
                                           ),
-                                          SizedBox(height: 30.h,),
-                                          GestureDetector(
-                                            onTap: (){
-                                              Get.to(Invoice());
-                                            },
-                                            child: Container(
-                                              height: height/18.h,
-                                              width: width/1.3.w,
-                                              decoration: BoxDecoration(
-                                                  color: Color(0xffFF035e32),
-                                                  borderRadius: BorderRadius.circular(10)
-                                              ),
-                                              child: Center(child: Subhead(text: "View", colo: Colors.white, weight: FontWeight.w500,)),
+                                          Padding(
+                                            padding: EdgeInsets.all(8.0.w),
+                                            child: Row(
+                                              children: [
+                                                Mytext(
+                                                    text: "Due Date :",
+                                                    color: Colors.black),
+                                                Mytext(
+                                                    text: proforma.deliveryDate
+                                                        .toString(),
+                                                    color: Colors.black),
+                                              ],
                                             ),
-                                          )
+                                          ),
                                         ],
                                       ),
-                                    ),
-                                  );
-                                }
-                            ),
-                          );
-                        }
-                      }
-                  ),
-                  SizedBox(height: 80.h,),
-                ],
+                                      SizedBox(
+                                        height: 10.h,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Mytext(
+                                              text: "Company",
+                                              color: Colors.black),
+                                          Mytext(
+                                              text: proforma.company.toString(),
+                                              color: Colors.green),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 30.h,
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            sales_person =
+                                                proforma.name.toString();
+                                          });
+                                          Get.to(Invoice(
+                                              salesPerson: sales_person));
+                                        },
+                                        child: Container(
+                                          height: height / 18.h,
+                                          width: width / 1.3.w,
+                                          decoration: BoxDecoration(
+                                              color: Color(0xffFF035e32),
+                                              borderRadius:
+                                              BorderRadius.circular(10)),
+                                          child: Center(
+                                              child: Subhead(
+                                                text: "View",
+                                                colo: Colors.white,
+                                                weight: FontWeight.w500,
+                                              )),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }),
+                      );
+                    }
+                  }),
+              SizedBox(
+                height: 80.h,
+              ),
+            ],
+          ),
+        ),
+      ),
+      Positioned(
+          bottom: 20,
+          right: 20,
+          child: SizedBox(
+            height: 50.h,
+            width: 50.w,
+            child: FloatingActionButton(
+              backgroundColor: Color(0xffFF035e32),
+              onPressed: () {
+                Get.to(Newproformavoice());
+              },
+              child: Icon(
+                Icons.add,
+                color: Colors.white,
               ),
             ),
-          ),
-          Positioned(
-              bottom: 20,
-              right: 20,
-              child: SizedBox(
-                height: 50.h,
-                width: 50.w,
-                child: FloatingActionButton(
-                  backgroundColor: Color(0xffFF035e32),
-                  onPressed: (){
-                    Get.to(Newproformavoice());
-                  },child: Icon(Icons.add,color: Colors.white,),),
-              ))
-        ]);
+          ))
+    ]);
   }
 }
-
-
 
 

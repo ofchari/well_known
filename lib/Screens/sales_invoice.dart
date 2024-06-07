@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:well_known/Services/salesorder_item.dart';
+import 'package:well_known/Services/taxbreakup_api.dart';
 import 'package:well_known/Utils/refreshdata.dart';
 import 'package:well_known/Utils/sales_util.dart';
+import 'package:well_known/Utils/salesorder_item_utils.dart';
+import 'package:well_known/Utils/taxbreakup_util.dart';
 import 'package:well_known/Widgets/heading_text.dart';
 import 'package:well_known/Widgets/subhead.dart';
 import 'package:well_known/Widgets/text.dart';
@@ -41,9 +45,11 @@ class _SalesInvoiceState extends State<SalesInvoice> {
           ScreenUtil.init(context,designSize: Size(width, height),minTextAdapt: true);
           if(width<=450){
             return _smallBuildLayout();
+            // Mobile Screen Sizes //
           }
           else{
             return Text("Large");
+
           }
         },
         ),
@@ -194,7 +200,61 @@ class _SalesInvoiceState extends State<SalesInvoice> {
                     );
                   }
                 }
-            )
+            ),
+            // FutureBuilder<List<TaxBreakup>>(
+            //     future: fetchTaxBreakup(),
+            //     builder: (context,snapshot){
+            //       if (snapshot.connectionState == ConnectionState.waiting) {
+            //         return Center(child: CircularProgressIndicator());
+            //       }
+            //       else if (snapshot.hasError) {
+            //         return Center(child: Text('Error: ${snapshot.error}'));
+            //       }
+            //       else{
+            //         return SingleChildScrollView(
+            //             child: Container(
+            //               height: height/1.2.h,
+            //               width: width/1.w,
+            //               child: ListView.builder(
+            //                   scrollDirection: Axis.vertical,
+            //                   itemCount: snapshot.data!.length,
+            //                   itemBuilder: (context,index){
+            //                     TaxBreakup upps = snapshot.data![index];
+            //                     return Padding(
+            //                       padding:  EdgeInsets.all(8.0.w),
+            //                       child: Container(
+            //                         height: height/3.2.h,
+            //                         width: width/1.1.w,
+            //                         decoration: BoxDecoration(
+            //                             borderRadius: BorderRadius.circular(15),
+            //                             border: Border.all(
+            //                               color: Colors.green,
+            //                               width: 2,
+            //                             )
+            //                         ),
+            //                         child: Column(
+            //                           children: [
+            //                             SizedBox(height: 10.h,),
+            //                             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //                               children: [
+            //                                 // Subhead(text: "Sales Person", colo: Colors.green, weight: FontWeight.w500),
+            //                                 Subhead(text: upps.tsStateTax.toString(), colo: Colors.green.shade900,weight: FontWeight.w500,),
+            //
+            //                               ],
+            //                             ),
+            //
+            //                           ],
+            //                         ),
+            //                       ),
+            //                     );
+            //                   }
+            //               ),
+            //             )
+            //
+            //         );
+            //       }
+            //     }
+            // )
           ],
         ),
       ),
