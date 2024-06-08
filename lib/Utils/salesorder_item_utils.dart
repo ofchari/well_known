@@ -14,7 +14,7 @@ Future<List<SalesOrderItem>> fetchSalesItem() async{
   if(response.statusCode == 200){
     print(response.body);
     // Handle responses //
-    List<dynamic> data = jsonDecode(response.body)['data'];
+    List<dynamic> data = jsonDecode(response.body);
     return data.map((e) =>SalesOrderItem.fromJson(e)).toList();
   }
   else{

@@ -12,6 +12,7 @@ Future<List<TaxBreakup>> fetchTaxBreakup() async{
   }
   );
   if(response.statusCode == 200){
+    print(response.body);
     // Handle the responses //
     List<dynamic> breakup = jsonDecode(response.body);
     return breakup.map((e)=> TaxBreakup.fromJson(e)).toList();

@@ -12,14 +12,14 @@ import 'package:well_known/models/invoice_data.dart';
 import '../Utils/refreshdata.dart';
 import '../Widgets/heading_text.dart';
 
-class ProformaInvoicee extends StatefulWidget {
-  const ProformaInvoicee({super.key});
+class ProformaInvoice extends StatefulWidget {
+  const ProformaInvoice({super.key});
 
   @override
-  State<ProformaInvoicee> createState() => _ProformaInvoiceeState();
+  State<ProformaInvoice> createState() => _ProformaInvoiceState();
 }
 
-class _ProformaInvoiceeState extends State<ProformaInvoicee> {
+class _ProformaInvoiceState extends State<ProformaInvoice> {
   late double height;
   late double width;
 
@@ -78,6 +78,7 @@ class _ProformaInvoiceeState extends State<ProformaInvoicee> {
   // App Bar //
   Widget _buildAppBar() {
     return AppBar(
+      backgroundColor: Colors.white,
       // toolbarHeight: 100,
       leading: GestureDetector(
           onTap: () {
@@ -97,147 +98,134 @@ class _ProformaInvoiceeState extends State<ProformaInvoicee> {
 
   // Body //
   Widget _buildBody() {
-    return Stack(children: [
-      Container(
+    return Stack(
+        children: [
+      SizedBox(
         width: width.w,
-        child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
-          child: Column(
-            children: [
-              FutureBuilder<List<SalesOrder>>(
-                  future: fetchProforma(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Text("${snapshot.error}");
-                    } else {
-                      return Container(
-                        height: height / 1.1.h,
-                        width: width / 1.w,
-                        child: ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (context, index) {
-                              SalesOrder proforma = snapshot.data![index];
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  height: height / 3.5.h,
-                                  width: width / 1.3.w,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      border: Border.all(
-                                          color: Colors.green, width: 1.2)),
-                                  child: Column(
+        child: FutureBuilder<List<SalesOrder>>(
+            future: fetchProforma(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Text("${snapshot.error}");
+              } else {
+                return ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      SalesOrder proforma = snapshot.data![index];
+                      return Padding(
+                        padding:  EdgeInsets.all(8.0.w),
+                        child: Container(
+                          height: height / 3.5.h,
+                          width: width / 1.3.w,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              border: Border.all(
+                                  color: Colors.green, width: 1.2)),
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 10.h,
+                              ),
+                              Subhead(
+                                  text: proforma.name.toString(),
+                                  colo: Colors.black,
+                                  weight: FontWeight.w600),
+                              SizedBox(
+                                height: 5.h,
+                              ),
+                              Subhead(
+                                  text: proforma.billingPerson.toString(),
+                                  colo: Colors.black,
+                                  weight: FontWeight.w300),
+                              SizedBox(
+                                height: 10.h,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
                                     children: [
-                                      SizedBox(
-                                        height: 10.h,
-                                      ),
-                                      Subhead(
-                                          text: proforma.name.toString(),
-                                          colo: Colors.black,
-                                          weight: FontWeight.w600),
-                                      SizedBox(
-                                        height: 5.h,
-                                      ),
-                                      Subhead(
-                                          text: proforma.billingPerson.toString(),
-                                          colo: Colors.black,
-                                          weight: FontWeight.w300),
-                                      SizedBox(
-                                        height: 10.h,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Mytext(
-                                                  text: " DATE :",
-                                                  color: Colors.black),
-                                              Mytext(
-                                                  text: proforma.transactiondate
-                                                      .toString(),
-                                                  color: Colors.black),
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            height: 10.h,
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.all(8.0.w),
-                                            child: Row(
-                                              children: [
-                                                Mytext(
-                                                    text: "Due Date :",
-                                                    color: Colors.black),
-                                                Mytext(
-                                                    text: proforma.deliveryDate
-                                                        .toString(),
-                                                    color: Colors.black),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 10.h,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Mytext(
-                                              text: "Company",
-                                              color: Colors.black),
-                                          Mytext(
-                                              text: proforma.company.toString(),
-                                              color: Colors.green),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 30.h,
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            sales_person =
-                                                proforma.name.toString();
-                                          });
-                                          Get.to(Invoice(
-                                              salesPerson: sales_person));
-                                        },
-                                        child: Container(
-                                          height: height / 18.h,
-                                          width: width / 1.3.w,
-                                          decoration: BoxDecoration(
-                                              color: Color(0xffFF035e32),
-                                              borderRadius:
-                                              BorderRadius.circular(10)),
-                                          child: Center(
-                                              child: Subhead(
-                                                text: "View",
-                                                colo: Colors.white,
-                                                weight: FontWeight.w500,
-                                              )),
-                                        ),
-                                      )
+                                      Mytext(
+                                          text: " DATE :",
+                                          color: Colors.black),
+                                      Mytext(
+                                          text: proforma.transactiondate
+                                              .toString(),
+                                          color: Colors.black),
                                     ],
                                   ),
+                                  SizedBox(
+                                    height: 10.h,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(8.0.w),
+                                    child: Row(
+                                      children: [
+                                        Mytext(
+                                            text: "Due Date :",
+                                            color: Colors.black),
+                                        Mytext(
+                                            text: proforma.deliveryDate
+                                                .toString(),
+                                            color: Colors.black),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 10.h,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Mytext(
+                                      text: "Company",
+                                      color: Colors.black),
+                                  Mytext(
+                                      text: proforma.company.toString(),
+                                      color: Colors.green),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 30.h,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    sales_person =
+                                        proforma.name.toString();
+                                  });
+                                  Get.to(Invoice(
+                                      salesPerson: sales_person));
+                                },
+                                child: Container(
+                                  height: height / 18.h,
+                                  width: width / 1.3.w,
+                                  decoration: BoxDecoration(
+                                      color: Color(0xffFF035e32),
+                                      borderRadius:
+                                      BorderRadius.circular(10)),
+                                  child: Center(
+                                      child: Subhead(
+                                        text: "View",
+                                        colo: Colors.white,
+                                        weight: FontWeight.w500,
+                                      )),
                                 ),
-                              );
-                            }),
+                              )
+                            ],
+                          ),
+                        ),
                       );
-                    }
-                  }),
-              SizedBox(
-                height: 80.h,
-              ),
-            ],
-          ),
-        ),
+                    });
+              }
+            }),
       ),
       Positioned(
           bottom: 20,

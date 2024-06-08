@@ -57,38 +57,35 @@ class _WelcomeState extends State<Welcome> {
     );
   }
   Widget _buildBody(){
-    return  SingleChildScrollView(
-      physics: AlwaysScrollableScrollPhysics(),
-      child: SizedBox(
-        width: double.infinity,
-        child: Column(
-          children: [
-            SizedBox(height: 70,),
-            Image.asset(
-                height: 300,
-                width: 300,
-                "assets/well_know.png"),
-            SizedBox(height: 20,),
-            Text("Get Start",style: GoogleFonts.outfit(textStyle: TextStyle(fontSize: 23,fontWeight: FontWeight.w600,color: Colors.black)),),
-            SizedBox(height: 20,),
-            Mytext(text: "Begin your journey to a better lifestyle  Fooffit", color: Colors.green.shade900),
-            SizedBox(height: 30,),
-            GestureDetector(
-              onTap: (){
-                Get.off(Login());
-              },
-              child: Container(
-                height: height/18,
-                width: width/1.2,
-                decoration: BoxDecoration(
-                    color: Color(0xffFF035e32),
-                    borderRadius: BorderRadius.circular(2)
-                ),
-                child: Center(child: Mytext(text: "Start Now", color: Colors.white)),
+    return  SizedBox(
+      width: width.w,
+      child: Column(
+        children: [
+          SizedBox(height: 70,),
+          Image.asset(
+              height: 300,
+              width: 300,
+              "assets/well_know.png"),
+          SizedBox(height: 20,),
+          Text("Get Start",style: GoogleFonts.outfit(textStyle: TextStyle(fontSize: 23,fontWeight: FontWeight.w600,color: Colors.black)),),
+          SizedBox(height: 20,),
+          Mytext(text: "Begin your journey to a better lifestyle  Fooffit", color: Colors.green.shade900),
+          SizedBox(height: 30,),
+          GestureDetector(
+            onTap: (){
+              Get.off(Login());
+            },
+            child: Container(
+              height: height/18,
+              width: width/1.2,
+              decoration: BoxDecoration(
+                  color: Color(0xffFF035e32),
+                  borderRadius: BorderRadius.circular(2)
               ),
-            )
-          ],
-        ),
+              child: Center(child: Mytext(text: "Start Now", color: Colors.white)),
+            ),
+          )
+        ],
       ),
     );
   }

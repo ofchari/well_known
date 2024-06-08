@@ -80,6 +80,7 @@ class _SalesInvoiceState extends State<SalesInvoice> {
            // App Bar //
   Widget _buildAppBar(){
     return AppBar(
+      backgroundColor: Colors.white,
       // toolbarHeight: 100,
       leading: GestureDetector(
         onTap: () {
@@ -102,162 +103,150 @@ class _SalesInvoiceState extends State<SalesInvoice> {
   Widget _buildBody(){
     return  SizedBox(
       width: width.w,
-      child: SingleChildScrollView(
-        physics: AlwaysScrollableScrollPhysics(),
-        child: Column(
-          children: [
-            SizedBox(height: 20.h,),
-            FutureBuilder<List<Sales>>(
-                future: fetch(),
-                builder: (context,snapshot){
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  else if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  }
-                  else{
-                    return SingleChildScrollView(
-                        child: Container(
-                          height: height/1.2.h,
-                          width: width/1.w,
-                          child: ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              itemCount: snapshot.data!.length,
-                              itemBuilder: (context,index){
-                                Sales sales = snapshot.data![index];
-                                return Padding(
-                                  padding:  EdgeInsets.all(8.0.w),
-                                  child: Container(
-                                    height: height/3.2.h,
-                                    width: width/1.1.w,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                        border: Border.all(
-                                          color: Colors.green,
-                                          width: 2,
-                                        )
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        SizedBox(height: 10.h,),
-                                        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            // Subhead(text: "Sales Person", colo: Colors.green, weight: FontWeight.w500),
-                                            Subhead(text: sales.sales_person.toString(), colo: Colors.green.shade900,weight: FontWeight.w500,),
-                                          ],
-                                        ),
-                                        SizedBox(height: 10.h,),
-                                        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Subhead(text: "Billing Person", colo: Colors.green, weight: FontWeight.w500),
-                                            Mytext(text: sales.billing_person.toString(), color: Colors.black),
-                                          ],
-                                        ),
-                                        SizedBox(height: 10.h,),
-                                        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Subhead(text: "Attended by", colo: Colors.green, weight: FontWeight.w500),
-                                            Mytext(text: sales.attended_by.toString(), color: Colors.black),
-                                          ],
-                                        ),
-                                        SizedBox(height: 10.h,),
-                                        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Subhead(text: "Attended person", colo: Colors.green, weight: FontWeight.w500),
-                                            Mytext(text: sales.attended_person.toString(), color: Colors.black),
-                                          ],
-                                        ),
-                                        SizedBox(height: 10.h),
-                                        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Subhead(text: "Company", colo: Colors.green, weight: FontWeight.w500),
-                                            Mytext(text: sales.company.toString(), color: Colors.black),
-                                          ],
-                                        ),
-                                        SizedBox(height: 10.h,),
-                                        Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                          children: [
-                                            const Subhead(text: "Branch", colo: Colors.green, weight: FontWeight.w500),
-                                            Mytext(text: sales.branch.toString(), color: Colors.black),
-                                          ],
-                                        ),
-                                        SizedBox(height: 10.h,),
-                                        Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                          children: [
-                                            const Subhead(text: "Customer", colo: Colors.green, weight: FontWeight.w500),
-                                            Mytext(text: sales.customer.toString(), color: Colors.black),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }
-                          ),
-                        )
-
+      child:
+      FutureBuilder<List<Sales>>(
+          future: fetch(),
+          builder: (context,snapshot){
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
+            else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+            else{
+              return ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context,index){
+                    Sales sales = snapshot.data![index];
+                    return Padding(
+                      padding:  EdgeInsets.all(8.0.w),
+                      child: Container(
+                        height: height/3.2.h,
+                        width: width/1.1.w,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                              color: Colors.green,
+                              width: 2,
+                            )
+                        ),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 10.h,),
+                            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                // Subhead(text: "Sales Person", colo: Colors.green, weight: FontWeight.w500),
+                                Subhead(text: sales.sales_person.toString(), colo: Colors.green.shade900,weight: FontWeight.w500,),
+                              ],
+                            ),
+                            SizedBox(height: 10.h,),
+                            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Subhead(text: "Billing Person", colo: Colors.green, weight: FontWeight.w500),
+                                Mytext(text: sales.billing_person.toString(), color: Colors.black),
+                              ],
+                            ),
+                            SizedBox(height: 10.h,),
+                            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Subhead(text: "Attended by", colo: Colors.green, weight: FontWeight.w500),
+                                Mytext(text: sales.attended_by.toString(), color: Colors.black),
+                              ],
+                            ),
+                            SizedBox(height: 10.h,),
+                            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Subhead(text: "Attended person", colo: Colors.green, weight: FontWeight.w500),
+                                Mytext(text: sales.attended_person.toString(), color: Colors.black),
+                              ],
+                            ),
+                            SizedBox(height: 10.h),
+                            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Subhead(text: "Company", colo: Colors.green, weight: FontWeight.w500),
+                                Mytext(text: sales.company.toString(), color: Colors.black),
+                              ],
+                            ),
+                            SizedBox(height: 10.h,),
+                            Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                const Subhead(text: "Branch", colo: Colors.green, weight: FontWeight.w500),
+                                Mytext(text: sales.branch.toString(), color: Colors.black),
+                              ],
+                            ),
+                            SizedBox(height: 10.h,),
+                            Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                const Subhead(text: "Customer", colo: Colors.green, weight: FontWeight.w500),
+                                Mytext(text: sales.customer.toString(), color: Colors.black),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
                     );
                   }
-                }
-            ),
-            // FutureBuilder<List<TaxBreakup>>(
-            //     future: fetchTaxBreakup(),
-            //     builder: (context,snapshot){
-            //       if (snapshot.connectionState == ConnectionState.waiting) {
-            //         return Center(child: CircularProgressIndicator());
-            //       }
-            //       else if (snapshot.hasError) {
-            //         return Center(child: Text('Error: ${snapshot.error}'));
-            //       }
-            //       else{
-            //         return SingleChildScrollView(
-            //             child: Container(
-            //               height: height/1.2.h,
-            //               width: width/1.w,
-            //               child: ListView.builder(
-            //                   scrollDirection: Axis.vertical,
-            //                   itemCount: snapshot.data!.length,
-            //                   itemBuilder: (context,index){
-            //                     TaxBreakup upps = snapshot.data![index];
-            //                     return Padding(
-            //                       padding:  EdgeInsets.all(8.0.w),
-            //                       child: Container(
-            //                         height: height/3.2.h,
-            //                         width: width/1.1.w,
-            //                         decoration: BoxDecoration(
-            //                             borderRadius: BorderRadius.circular(15),
-            //                             border: Border.all(
-            //                               color: Colors.green,
-            //                               width: 2,
-            //                             )
-            //                         ),
-            //                         child: Column(
-            //                           children: [
-            //                             SizedBox(height: 10.h,),
-            //                             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            //                               children: [
-            //                                 // Subhead(text: "Sales Person", colo: Colors.green, weight: FontWeight.w500),
-            //                                 Subhead(text: upps.tsStateTax.toString(), colo: Colors.green.shade900,weight: FontWeight.w500,),
-            //
-            //                               ],
-            //                             ),
-            //
-            //                           ],
-            //                         ),
-            //                       ),
-            //                     );
-            //                   }
-            //               ),
-            //             )
-            //
-            //         );
-            //       }
-            //     }
-            // )
-          ],
-        ),
+              );
+            }
+          }
       ),
+
+          // FutureBuilder<List<SalesOrderItem>>(
+          //     future: fetchSalesItem(),
+          //     builder: (context,snapshot){
+          //       if (snapshot.connectionState == ConnectionState.waiting) {
+          //         return Center(child: CircularProgressIndicator());
+          //       }
+          //       else if (snapshot.hasError) {
+          //         return Center(child: Text('Error: ${snapshot.error}'));
+          //       }
+          //       else{
+          //         return SingleChildScrollView(
+          //             child: Container(
+          //               height: height/1.2.h,
+          //               width: width/1.w,
+          //               child: ListView.builder(
+          //                   scrollDirection: Axis.vertical,
+          //                   itemCount: snapshot.data!.length,
+          //                   itemBuilder: (context,index){
+          //                     SalesOrderItem order = snapshot.data![index];
+          //                     return Padding(
+          //                       padding:  EdgeInsets.all(8.0.w),
+          //                       child: Container(
+          //                         height: height/3.2.h,
+          //                         width: width/1.1.w,
+          //                         decoration: BoxDecoration(
+          //                             borderRadius: BorderRadius.circular(15),
+          //                             border: Border.all(
+          //                               color: Colors.green,
+          //                               width: 2,
+          //                             )
+          //                         ),
+          //                         child: Column(
+          //                           children: [
+          //                             SizedBox(height: 10.h,),
+          //                             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          //                               children: [
+          //                                 // Subhead(text: "Sales Person", colo: Colors.green, weight: FontWeight.w500),
+          //                                 Subhead(text: order.pricingRules.toString(), colo: Colors.green.shade900,weight: FontWeight.w500,),
+          //
+          //                               ],
+          //                             ),
+          //
+          //                           ],
+          //                         ),
+          //                       ),
+          //                     );
+          //                   }
+          //               ),
+          //             )
+          //         );
+          //       }
+          //     }
+          // )
+
+
     );
   }
 }

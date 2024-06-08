@@ -183,7 +183,7 @@ class _DashboardState extends State<Dashboard> {
                           left: 28.3.w,
                           child:GestureDetector(
                             onTap: (){
-                              Get.to(ProformaInvoicee());
+                              Get.to(ProformaInvoice());
                             },
                             child: Container(
                               height: height/10.h,

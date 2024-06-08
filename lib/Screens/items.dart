@@ -129,40 +129,40 @@ class _ItemsState extends State<Items> {
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: TextFormField(
-                onChanged: (value) {
-                  setState(() {
-                    _searchTerm = value;
-                  });
-                },
-                decoration: InputDecoration(
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Colors.black,
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: TextFormField(
+              onChanged: (value) {
+                setState(() {
+                  _searchTerm = value;
+                });
+              },
+              decoration: InputDecoration(
+                prefixIcon: Icon(
+                  Icons.search,
+                  color: Colors.black,
+                ),
+                hintText: "Search Item",
+                hintStyle: GoogleFonts.dmSans(
+                  textStyle: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.green,
                   ),
-                  hintText: "Search Item",
-                  hintStyle: GoogleFonts.dmSans(
-                    textStyle: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.green,
-                    ),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
                 ),
               ),
             ),
-            SizedBox(height: 10),
-            _buildItemList(),
-          ],
-        ),
+          ),
+          SizedBox(height: 10),
+          Expanded(
+            child: _buildItemList(),
+          ),
+        ],
       ),
     );
   }
@@ -175,130 +175,126 @@ class _ItemsState extends State<Items> {
     } else if (filteredItems.isEmpty) {
       return Center(child: Text('No items found'));
     } else {
-      return Container(
-        height: height / 1.1.h,
-        child: ListView.builder(
-          scrollDirection: Axis.vertical,
-          itemCount: filteredItems.length,
-          itemBuilder: (context, index) {
-            Item item = filteredItems[index];
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Stack(
-                children: [
-                  Container(
-                    height: height / 5.h,
-                    width: width / 1.w,
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.green),
-                        borderRadius: BorderRadius.circular(15)),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 10),
-                        Mytext(
-                            text: item.itemName.toString(),
-                            color: Color(0xffFF035e32)),
-                        Divider(
-                          height: 1,
-                          thickness: 1,
-                          color: Colors.black,
-                        ),
-                        SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Container(
-                              height: height / 10.h,
-                              width: width / 4.2.w,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  image: DecorationImage(
-                                    image: NetworkImage(
-                                      'https://erp.wellknownssyndicate.com${item.image?.toString() ?? "/files/bimage.png"}',
-                                      headers: {
-                                        "Authorization":
-                                        "token c5a479b60dd48ad:d8413be73e709b6"
-                                      },
-                                    ),
-                                    fit: BoxFit.cover,
-                                  )),
-                            ),
-                            Column(
-                              children: [
-                                SizedBox(height: 10),
-                                Text(
-                                  item.itemGroup.toString(),
-                                  style: GoogleFonts.poppins(
-                                      textStyle: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.lightBlue.shade400)),
-                                ),
-                                SizedBox(height: 15),
-                                Row(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          right: ScreenUtil().setWidth(10.0)),
-                                      child: Mytext(
-                                          text: "Part No : ",
-                                          color: Colors.black),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          right: ScreenUtil().setWidth(20.0)),
-                                      child: Text(
-                                        item.part_no.toString(),
-                                        style: GoogleFonts.poppins(
-                                            textStyle: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.lightGreen)),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                SizedBox(height: 10),
-                                Row(
-                                  children: [
-                                    Mytext(
-                                        text: "  HSC/SAC : ",
+      return ListView.builder(
+        itemCount: filteredItems.length,
+        itemBuilder: (context, index) {
+          Item item = filteredItems[index];
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Stack(
+              children: [
+                Container(
+                  height: height / 5.h,
+                  width: width / 1.w,
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.green),
+                      borderRadius: BorderRadius.circular(15)),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 10),
+                      Mytext(
+                          text: item.itemName.toString(),
+                          color: Color(0xffFF035e32)),
+                      Divider(
+                        height: 1,
+                        thickness: 1,
+                        color: Colors.black,
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Container(
+                            height: height / 10.h,
+                            width: width / 4.2.w,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                image: DecorationImage(
+                                  image: NetworkImage(
+                                    'https://erp.wellknownssyndicate.com${item.image?.toString() ?? "/files/bimage.png"}',
+                                    headers: {
+                                      "Authorization":
+                                      "token c5a479b60dd48ad:d8413be73e709b6"
+                                    },
+                                  ),
+                                  fit: BoxFit.cover,
+                                )),
+                          ),
+                          Column(
+                            children: [
+                              SizedBox(height: 10),
+                              Text(
+                                item.itemGroup.toString(),
+                                style: GoogleFonts.poppins(
+                                    textStyle: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.lightBlue.shade400)),
+                              ),
+                              SizedBox(height: 15),
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        right: ScreenUtil().setWidth(10.0)),
+                                    child: Mytext(
+                                        text: "Part No : ",
                                         color: Colors.black),
-                                    Text(
-                                      item.gst_hsn_code.toString(),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        right: ScreenUtil().setWidth(20.0)),
+                                    child: Text(
+                                      item.part_no.toString(),
                                       style: GoogleFonts.poppins(
                                           textStyle: TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.w500,
                                               color: Colors.lightGreen)),
-                                    )
-                                  ],
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              SizedBox(height: 10),
+                              Row(
+                                children: [
+                                  Mytext(
+                                      text: "  HSC/SAC : ",
+                                      color: Colors.black),
+                                  Text(
+                                    item.gst_hsn_code.toString(),
+                                    style: GoogleFonts.poppins(
+                                        textStyle: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.lightGreen)),
+                                  )
+                                ],
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ],
                   ),
-                  Positioned(
-                      bottom: 60,
-                      right: 20,
-                      child: GestureDetector(
-                        onTap: () {
-                          _shareContent();
-                        },
-                        child: Center(
-                            child: Icon(
-                              Icons.share,
-                              color: Colors.black,
-                              size: 30,
-                            )),
-                      ))
-                ],
-              ),
-            );
-          },
-        ),
+                ),
+                Positioned(
+                    bottom: 60,
+                    right: 20,
+                    child: GestureDetector(
+                      onTap: () {
+                        _shareContent();
+                      },
+                      child: Center(
+                          child: Icon(
+                            Icons.share,
+                            color: Colors.black,
+                            size: 30,
+                          )),
+                    ))
+              ],
+            ),
+          );
+        },
       );
     }
   }
@@ -312,4 +308,3 @@ class _ItemsState extends State<Items> {
     );
   }
 }
-

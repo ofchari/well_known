@@ -112,6 +112,7 @@ class _ItemlistState extends State<Itemlist> {
        // App Bar //
   Widget _buildAppBar(){
     return AppBar(
+      backgroundColor: Colors.white,
       leading: GestureDetector(
           onTap: () {
             Get.back();
@@ -124,62 +125,61 @@ class _ItemlistState extends State<Itemlist> {
   }
           // Body //
   Widget _buildBody(){
-    return  SingleChildScrollView(
-      physics: AlwaysScrollableScrollPhysics(),
-      child: Column(
-        children: [
-          SizedBox(height: 40),
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  height: height / 18.h,
-                  width: width / 1.5.w,
-                  child: TextFormField(
-                    controller: searchController,
-                    decoration: InputDecoration(
-                        hintText: "Search",
-                        hintStyle: GoogleFonts.poppins(
-                            textStyle: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.grey)),
-                        suffixIcon: Icon(
-                          Icons.search,
-                          color: Colors.grey,
-                        ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15))),
-                  ),
+    return  Column(
+      children: [
+        SizedBox(height: 40),
+        Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                height: height / 18.h,
+                width: width / 1.5.w,
+                child: TextFormField(
+                  controller: searchController,
+                  decoration: InputDecoration(
+                      hintText: "Search",
+                      hintStyle: GoogleFonts.poppins(
+                          textStyle: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey)),
+                      suffixIcon: Icon(
+                        Icons.search,
+                        color: Colors.grey,
+                      ),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15))),
                 ),
-                GestureDetector(
-                    onTap: () {
-                      Get.snackbar(
-                          "Added Successfully",
-                          "Thank you",
-                          colorText: Colors.white,
-                          snackPosition: SnackPosition.BOTTOM
-                      );
+              ),
+              GestureDetector(
+                  onTap: () {
+                    Get.snackbar(
+                        "Added Successfully",
+                        "Thank you",
+                        colorText: Colors.white,
+                        snackPosition: SnackPosition.BOTTOM
+                    );
 
-                      Get.off(Newinvoice());
-                    },
-                    child: Buttons(
-                        heigh: height / 20,
-                        width: width / 4.5,
-                        color: Color(0xffFF035e32),
-                        text: "Finish",
-                        radius: BorderRadius.circular(12)))
-              ],
-            ),
+                    Get.off(Newinvoice());
+                  },
+                  child: Buttons(
+                      heigh: height / 20,
+                      width: width / 4.5,
+                      color: Color(0xffFF035e32),
+                      text: "Finish",
+                      radius: BorderRadius.circular(12)))
+            ],
           ),
-          filteredItems.isNotEmpty
+        ),
+        Expanded(
+          child: filteredItems.isNotEmpty
               ? Container(
-            height: height / 1.1.h,
-            width: width / 1.w,
-            child: ListView.builder(
-                itemCount: filteredItems.length,
+                  height: height / 1.1.h,
+                  width: width / 1.w,
+                  child: ListView.builder(
+                      itemCount: filteredItems.length,
                 itemBuilder: (context, index) {
                   Item itemliss = filteredItems[index];
                   return Padding(
@@ -218,7 +218,7 @@ class _ItemlistState extends State<Itemlist> {
                                     decoration: BoxDecoration(
                                         borderRadius:
                                         BorderRadius.circular(15),
-
+          
                                         image: DecorationImage(
                                           image: NetworkImage(
                                             'https://erp.wellknownssyndicate.com${itemliss.image?.toString() ?? "/files/bimage.png"}',
@@ -410,9 +410,9 @@ class _ItemlistState extends State<Itemlist> {
                   );
                 }),
           ): Center(child: CircularProgressIndicator()),
+        ),
 
-        ],
-      ),
+      ],
     );
   }
 }

@@ -12,8 +12,8 @@ Future<List<SalesOrder>> fetchProforma() async{
   client.badCertificateCallback =
   ((X509Certificate cert, String host, int port) => true);
   IOClient ioClient = IOClient(client);
-  final response = await http.get(
-      Uri.parse('https://erp.wellknownssyndicate.com/api/resource/Sales Order?fields=["name","billing_person","company","customer","customer_name","transaction_date","delivery_date"]'),
+  final response = await ioClient.get(
+      Uri.parse('https://erp.wellknownssyndicate.com/api/resource/Sales Order?fields=["name","billing_person","company","customer","customer_name","transaction_date","delivery_date"]&limit_page_length=50000&ord'),
       headers: {"Authorization": "token c5a479b60dd48ad:d8413be73e709b6"});
   if(response.statusCode == 200){
     // print(response.body);

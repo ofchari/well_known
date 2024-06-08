@@ -18,6 +18,10 @@ class SalesOrder {
   final String? pricelistcurrency;
   final String? currency;
   final String? deliveryDate;
+  final List? items;
+  final List? taxes;
+  final List? ts_tax_breakup_table;
+  final List? payment_schedule;
 
   SalesOrder({
     required this.name,
@@ -39,6 +43,10 @@ class SalesOrder {
     required this.currency,
     required this.ordertype,
     required this.deliveryDate,
+    required this.items,
+    required this.taxes,
+    required this.ts_tax_breakup_table,
+    required this.payment_schedule,
   });
 
   // Factory constructor to create a SalesOrder from JSON
@@ -54,7 +62,7 @@ class SalesOrder {
       customerName: json['customer_name']as String?,
       customeraddress: json['customer_address']as String?,
       contactnumber: json['contact_number']as String?,
-      transactiondate: json['transactiondate']as String?,
+      transactiondate: json['transaction_date']as String?,
       billingaddressgstin: json['billing_address_gstin']as String?,
       pricelistcurrency: json['price_list_currency']as String?,
       customeremail: json['customer_email']as String?,
@@ -63,6 +71,10 @@ class SalesOrder {
       sellingpricelist: json['selling_price_list']as String?,
       ordertype: json['order_type']as String?,
       deliveryDate: json['delivery_date']as String?,
+      items: json['items']as List?,
+      taxes: json['taxes']as List?,
+      ts_tax_breakup_table: json['ts_tax_breakup_table']as List?,
+      payment_schedule: json['payment_schedule']as List?,
     );
   }
 

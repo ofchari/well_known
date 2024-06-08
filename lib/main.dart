@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:well_known/Screens/bottom_navigation.dart';
 import 'package:well_known/Screens/dashboard.dart';
 import 'package:well_known/Screens/home.dart';
+import 'package:well_known/Screens/message.dart';
 import 'package:well_known/Screens/proforma_invoice.dart';
 import 'package:well_known/Screens/item_list.dart';
 import 'package:well_known/Screens/items.dart';
@@ -33,7 +34,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-        home: Dashboard()
+        // home: Welcome()
+        home: ProformaInvoice()
     );
   }
 }
