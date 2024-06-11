@@ -61,7 +61,7 @@ class _NewsprofoState extends State<Newsprofo> {
     return AppBar(
       toolbarHeight: 80.h,
       title: const Mytext(text: "Hello Team members", color: Colors.black),
-      actions: [
+      actions: const [
         Icon(Icons.filter_alt_sharp,color: Colors.blue,)
       ],
     );
@@ -73,9 +73,9 @@ class _NewsprofoState extends State<Newsprofo> {
         width: double.infinity,
         child: Column(
           children: [
-            Headingtext(text: "Hey!>", color: Colors.blue, weight: FontWeight.w500),
+            const Headingtext(text: "Hey!>", color: Colors.blue, weight: FontWeight.w500),
             const SizedBox(height: 20,),
-            Mytext(text: "Hello", color: Colors.blue),
+            const Mytext(text: "Hello", color: Colors.blue),
             Container(
               height: height/5.h,
               width: width/3.w,

@@ -1,16 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/io_client.dart';
-import 'package:well_known/Screens/home.dart';
-import 'package:well_known/Services/sales_api.dart';
-import 'package:well_known/Utils/proforma_utils.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:well_known/Utils/refreshdata.dart';
 import 'package:well_known/Widgets/buttons.dart';
 import 'package:well_known/Widgets/subhead.dart';
@@ -19,6 +14,7 @@ import 'package:http/http.dart' as http;
 
 import '../Services/proforma_api.dart';
 import '../Widgets/heading_text.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Invoice extends StatefulWidget {
   final String salesPerson;
@@ -67,6 +63,37 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
     }
   }
 
+
+
+  Future<void> invoice_print() async {
+    HttpClient client = HttpClient();
+    client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+    IOClient ioClient = IOClient(client);
+
+    final response = await ioClient.get(
+      Uri.parse(
+          'https://erp.wellknownssyndicate.com/api/method/frappe.utils.print_format.download_pdf?doctype=Sales%20Order&name=WKS-PI-0624-00262&format=PIC%20PDF&no_letterhead=0&letterhead=WKS%20Letter%20Head%201&settings=%7B%7D&_lang=en-US'),
+      headers: {
+        "Authorization": "token c5a479b60dd48ad:d8413be73e709b6"
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final directory = await getApplicationDocumentsDirectory();
+      final file = File('${directory.path}/invoice.pdf');
+      await file.writeAsBytes(response.bodyBytes);
+
+      final url = file.path;
+      if (await canLaunch(url)) {
+        await launch(url);
+      } else {
+        throw Exception('Could not launch $url');
+      }
+    } else {
+      throw Exception("Failed to load data : ${response.statusCode}");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,7 +109,7 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
             if (width <= 450) {
               return _smallBuildLayout();
             } else {
-              return Text("Large");
+              return const Text("Large");
             }
           },
         ),
@@ -123,21 +150,28 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
           onTap: () {
             Get.back();
           },
-          child: Icon(
+          child: const Icon(
             Icons.arrow_back,
             color: Colors.black,
           )),
-      title: Headingtext(
+      title: const Headingtext(
           text: "Invoice", color: Colors.black, weight: FontWeight.w400),
       centerTitle: true,
       actions: [
-        Icon(
+        const Icon(
           Icons.home,
           color: Colors.black,
         ),
+        GestureDetector(
+          onTap: (){invoice_print();},
+          child: const Icon(
+            Icons.print,
+            color: Colors.black,
+          ),
+        ),
         Padding(
           padding: EdgeInsets.all(8.0.w),
-          child: Icon(
+          child: const Icon(
             Icons.more_vert,
             color: Colors.black,
           ),
@@ -148,16 +182,18 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
 
   Widget _buildBody() {
     return SingleChildScrollView(
-      child: FutureBuilder<SalesOrder>(
+      child:
+      FutureBuilder<SalesOrder>(
           future: fetchInvoice(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Text("${snapshot.error}");
             } else {
               SalesOrder invoices = snapshot.data!;
-              return Container(
+              return
+                Container(
                 padding: EdgeInsets.all(8.0.w),
                 child: Column(
                   children: [
@@ -170,7 +206,7 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Align(
                               alignment: Alignment.topRight,
                               child: Padding(
@@ -183,34 +219,34 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                                   radius: BorderRadius.circular(26),
                                 ),
                               )),
-                          SizedBox(height: 5),
-                          Subhead(
+                          const SizedBox(height: 5),
+                          const Subhead(
                             text: "Sales Person",
                             colo: Colors.black,
                             weight: FontWeight.w500,
                           ),
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           Mytext(
                               text: invoices.name.toString(),
                               color: Colors.black),
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           Mytext(
                               text:
                               "Customer : ${invoices.customer
                                   .toString()}",
                               color: Colors.black),
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           Mytext(
                               text:
                               "Company : ${invoices.company.toString()}",
                               color: Colors.black),
-                          SizedBox(height: 15),
-                          Divider(
+                          const SizedBox(height: 15),
+                          const Divider(
                             height: 1,
                             thickness: 2,
                             color: Colors.blue,
                           ),
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           IntrinsicHeight(
                             child: Row(
                               mainAxisAlignment:
@@ -219,10 +255,10 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                                 Expanded(
                                   child: Column(
                                     children: [
-                                      Mytext(
+                                      const Mytext(
                                           text: "Date",
                                           color: Colors.black),
-                                      SizedBox(height: 4),
+                                      const SizedBox(height: 4),
                                       Mytext(
                                           text: invoices.transactiondate
                                               .toString(),
@@ -230,17 +266,17 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                                     ],
                                   ),
                                 ),
-                                VerticalDivider(
+                                const VerticalDivider(
                                   thickness: 2,
                                   color: Colors.blue,
                                 ),
                                 Expanded(
                                   child: Column(
                                     children: [
-                                      Mytext(
+                                      const Mytext(
                                           text: "Delivery Date",
                                           color: Colors.black),
-                                      SizedBox(height: 4),
+                                      const SizedBox(height: 4),
                                       Mytext(
                                           text: invoices.deliveryDate
                                               .toString(),
@@ -251,13 +287,13 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                               ],
                             ),
                           ),
-                          SizedBox(height: 10),
-                          Divider(
+                          const SizedBox(height: 10),
+                          const Divider(
                             height: 2,
                             thickness: 2,
                             color: Colors.blue,
                           ),
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           IntrinsicHeight(
                             child: Row(
                               mainAxisAlignment:
@@ -266,10 +302,10 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                                 Expanded(
                                   child: Column(
                                     children: [
-                                      Mytext(
+                                      const Mytext(
                                           text: "Status",
                                           color: Colors.black),
-                                      SizedBox(height: 4),
+                                      const SizedBox(height: 4),
                                       Mytext(
                                           text: invoices.status
                                               .toString(),
@@ -277,17 +313,17 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                                     ],
                                   ),
                                 ),
-                                VerticalDivider(
+                                const VerticalDivider(
                                   thickness: 2,
                                   color: Colors.blue,
                                 ),
                                 Expanded(
                                   child: Column(
                                     children: [
-                                      Mytext(
+                                      const Mytext(
                                           text: "Gst Category",
                                           color: Colors.black),
-                                      SizedBox(height: 4),
+                                      const SizedBox(height: 4),
                                       Mytext(
                                           text: invoices.gstcategory
                                               .toString(),
@@ -298,37 +334,37 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                               ],
                             ),
                           ),
-                          Divider(
+                          const Divider(
                             height: 2,
                             thickness: 2,
                             color: Colors.blue,
                           ),
-                          SizedBox(height: 10),
-                          Center(
+                          const SizedBox(height: 10),
+                          const Center(
                               child: Mytext(
                                   text: "Customer Name",
                                   color: Colors.black)),
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           Center(
                               child: Mytext(
                                   text: invoices.customerName.toString(),
                                   color: Colors.black)),
-                          Divider(
+                          const Divider(
                             height: 2,
                             thickness: 2,
                             color: Colors.blue,
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           IntrinsicHeight(
                             child: Row(
                               children: [
                                 Expanded(
                                   child: Column(
                                     children: [
-                                      Mytext(
+                                      const Mytext(
                                           text: "Billing Person",
                                           color: Colors.black),
-                                      SizedBox(height: 4),
+                                      const SizedBox(height: 4),
                                       Mytext(
                                           text: invoices.billingPerson
                                               .toString(),
@@ -336,17 +372,17 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                                     ],
                                   ),
                                 ),
-                                VerticalDivider(
+                                const VerticalDivider(
                                   thickness: 2,
                                   color: Colors.blue,
                                 ),
                                 Expanded(
                                   child: Column(
                                     children: [
-                                      Mytext(
+                                      const Mytext(
                                           text: "Customer Group",
                                           color: Colors.black),
-                                      SizedBox(height: 4),
+                                      const SizedBox(height: 4),
                                       Mytext(
                                           text: invoices.customer_group
                                               .toString(),
@@ -357,13 +393,13 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                               ],
                             ),
                           ),
-                          SizedBox(height: 10),
-                          Divider(
+                          const SizedBox(height: 10),
+                          const Divider(
                             height: 2,
                             thickness: 2,
                             color: Colors.blue,
                           ),
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           IntrinsicHeight(
                             child: Row(
                               mainAxisAlignment:
@@ -372,27 +408,27 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                                 Expanded(
                                   child: Column(
                                     children: [
-                                      Mytext(
+                                      const Mytext(
                                           text: "Contact owner",
                                           color: Colors.black),
-                                      SizedBox(height: 4),
+                                      const SizedBox(height: 4),
                                       Mytext(
                                           text: invoices.owner.toString(),
                                           color: Colors.black),
                                     ],
                                   ),
                                 ),
-                                VerticalDivider(
+                                const VerticalDivider(
                                   thickness: 2,
                                   color: Colors.blue,
                                 ),
                                 Expanded(
                                   child: Column(
                                     children: [
-                                      Mytext(
+                                      const Mytext(
                                           text: "Mobile No",
                                           color: Colors.black),
-                                      SizedBox(height: 4),
+                                      const SizedBox(height: 4),
                                       Mytext(
                                           text: invoices.contactnumber
                                               .toString(),
@@ -403,17 +439,17 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                               ],
                             ),
                           ),
-                          Divider(
+                          const Divider(
                             height: 2,
                             thickness: 2,
                             color: Colors.blue,
                           ),
-                          SizedBox(height: 10),
-                          Center(
+                          const SizedBox(height: 10),
+                          const Center(
                               child: Mytext(
                                   text: "Contact Email",
                                   color: Colors.black)),
-                          SizedBox(height: 2),
+                          const SizedBox(height: 2),
                           Center(
                               child: Mytext(
                                   text: invoices.customeremail.toString(),
@@ -421,7 +457,7 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                         ],
                       ),
                     ),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     // Sales Container //
                     Container(
                       padding: EdgeInsets.all(8.0.w),
@@ -430,13 +466,13 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                           border: Border.all(color: Colors.blue)),
                       child: Column(
                         children: [
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           IntrinsicHeight(
                             child: Row(
                               mainAxisAlignment:
                               MainAxisAlignment.spaceEvenly,
                               children: [
-                                Expanded(
+                                const Expanded(
                                   child: Column(
                                     children: [
                                       SizedBox(height: 10),
@@ -450,19 +486,19 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                                     ],
                                   ),
                                 ),
-                                VerticalDivider(
+                                const VerticalDivider(
                                   thickness: 2,
                                   color: Colors.blue,
                                 ),
                                 Expanded(
                                   child: Padding(
-                                    padding: EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.all(8.0),
                                     child: Column(
                                       children: [
-                                        Mytext(
+                                        const Mytext(
                                             text: "Order Type",
                                             color: Colors.black),
-                                        SizedBox(height: 4),
+                                        const SizedBox(height: 4),
                                         Mytext(
                                             text: invoices.ordertype
                                                 .toString(),
@@ -474,13 +510,13 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                               ],
                             ),
                           ),
-                          SizedBox(height: 10),
-                          Divider(
+                          const SizedBox(height: 10),
+                          const Divider(
                             height: 2,
                             thickness: 2,
                             color: Colors.blue,
                           ),
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           IntrinsicHeight(
                             child: Row(
                               mainAxisAlignment:
@@ -489,10 +525,10 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                                 Expanded(
                                   child: Column(
                                     children: [
-                                      Mytext(
+                                      const Mytext(
                                           text: "Currency",
                                           color: Colors.black),
-                                      SizedBox(height: 4),
+                                      const SizedBox(height: 4),
                                       Mytext(
                                           text: invoices.currency
                                               .toString(),
@@ -500,11 +536,11 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                                     ],
                                   ),
                                 ),
-                                VerticalDivider(
+                                const VerticalDivider(
                                   thickness: 2,
                                   color: Colors.blue,
                                 ),
-                                Expanded(
+                                const Expanded(
                                   child: Column(
                                     children: [
                                       Mytext(
@@ -520,12 +556,12 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                               ],
                             ),
                           ),
-                          Divider(
+                          const Divider(
                             height: 2,
                             thickness: 2,
                             color: Colors.blue,
                           ),
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           IntrinsicHeight(
                             child: Row(
                               mainAxisAlignment:
@@ -534,10 +570,10 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                                 Expanded(
                                   child: Column(
                                     children: [
-                                      Mytext(
+                                      const Mytext(
                                           text: "Selling Price List",
                                           color: Colors.black),
-                                      SizedBox(height: 4),
+                                      const SizedBox(height: 4),
                                       Mytext(
                                           text: invoices.sellingpricelist
                                               .toString(),
@@ -545,17 +581,17 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                                     ],
                                   ),
                                 ),
-                                VerticalDivider(
+                                const VerticalDivider(
                                   thickness: 2,
                                   color: Colors.blue,
                                 ),
                                 Expanded(
                                   child: Column(
                                     children: [
-                                      Mytext(
+                                      const Mytext(
                                           text: "Price List",
                                           color: Colors.black),
-                                      SizedBox(height: 4),
+                                      const SizedBox(height: 4),
                                       Mytext(
                                           text: invoices.pricelistcurrency
                                               .toString(),
@@ -573,421 +609,1077 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                     SizedBox(height: 20.h,),
                     TabBar(
                       controller: _tabController,
-                      tabs: [
+                      tabs: const [
                         Tab(text: 'Items'),
                         Tab(text: 'Taxes'),
                         Tab(text: 'HSN Tax'),
                         Tab(text: 'Payment'),
                       ],
                     ),
-                    SizedBox(height: 40,),
+                    const SizedBox(height: 40,),
                     SizedBox(
                         height: MediaQuery.of(context).size.height * 0.8, // Adjust the height as needed
                         child: TabBarView(
                             controller: _tabController,
                             children: [SingleChildScrollView(
-              child: Column(
-                children: [
-                  Container(
-                    // height: 3000.h, // Set a fixed height here or calculate dynamically based on the items count
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: invoices.items!.length,
-                      itemBuilder: (context, index) {
-                        final item = invoices.items?[index];
-                        return Container(
-                          margin: EdgeInsets.all(8),
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.blue, width: 2),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-
-                              Text(
-                                'Item Name',
-                                style: GoogleFonts.poppins(
-                                  textStyle: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                              // ITEMS //
+                              Container(
+                                // height: 3000.h, // Set a fixed height here or calculate dynamically based on the items count
+                                child:
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: invoices.items!.length,
+                                  itemBuilder: (context, index) {
+                                    final item = invoices.items?[index];
+                                    return Container(
+                                      margin: const EdgeInsets.all(8),
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Colors.blue, width: 2),
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'Item Name',
+                                            style: GoogleFonts.poppins(
+                                              textStyle: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+                                          Text(
+                                            '${item['item_code']}',
+                                            style: GoogleFonts.poppins(
+                                              textStyle: const TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ),
+                                          const Divider(),
+                                          const SizedBox(height: 8),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                'Row #${item['idx']}',
+                                                style: GoogleFonts.poppins(
+                                                  textStyle: const TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                              ),
+                                              Text(
+                                                'HSN: ${item['gst_hsn_code']}',
+                                                style: GoogleFonts.poppins(
+                                                  textStyle: const TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          IntrinsicHeight(
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Expanded(
+                                                  child: Container(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Text(
+                                                          'Quantity:',
+                                                          style: GoogleFonts
+                                                              .poppins(
+                                                            textStyle:
+                                                                const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '${item['qty']}',
+                                                          style: GoogleFonts
+                                                              .poppins(
+                                                            textStyle:
+                                                                const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                const VerticalDivider(
+                                                  width: 5,
+                                                ),
+                                                Expanded(
+                                                  child: Container(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Text(
+                                                          'Rate:',
+                                                          style: GoogleFonts
+                                                              .poppins(
+                                                            textStyle:
+                                                                const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '${item['rate']}',
+                                                          style: GoogleFonts
+                                                              .poppins(
+                                                            textStyle:
+                                                                const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                const VerticalDivider(
+                                                  width: 5,
+                                                ),
+                                                Expanded(
+                                                  child: Container(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Text(
+                                                          'Amount:',
+                                                          style: GoogleFonts
+                                                              .poppins(
+                                                            textStyle:
+                                                                const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '${item['amount']}',
+                                                          style: GoogleFonts
+                                                              .poppins(
+                                                            textStyle:
+                                                                const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          const Divider(),
+                                          IntrinsicHeight(
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Expanded(
+                                                  child: Container(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Text(
+                                                          'Discount:',
+                                                          style: GoogleFonts
+                                                              .poppins(
+                                                            textStyle:
+                                                                const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '${item['discount_amount']}',
+                                                          style: GoogleFonts
+                                                              .poppins(
+                                                            textStyle:
+                                                                const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                const VerticalDivider(
+                                                  width: 5,
+                                                ),
+                                                Expanded(
+                                                  child: Container(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Text(
+                                                          'GST:',
+                                                          style: GoogleFonts
+                                                              .poppins(
+                                                            textStyle:
+                                                                const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '${item['gst_per']}',
+                                                          style: GoogleFonts
+                                                              .poppins(
+                                                            textStyle:
+                                                                const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                const VerticalDivider(
+                                                  width: 5,
+                                                ),
+                                                Expanded(
+                                                  child: Container(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Text(
+                                                          'Uom:',
+                                                          style: GoogleFonts
+                                                              .poppins(
+                                                            textStyle:
+                                                                const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '${item['uom']}',
+                                                          style: GoogleFonts
+                                                              .poppins(
+                                                            textStyle:
+                                                                const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
-                              Text(
-                                '${item['item_code']}',
-                                style: GoogleFonts.poppins(
-                                  textStyle: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                              Divider(),
-                              SizedBox(height: 8),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Row #${item['idx']}',
-                                    style: GoogleFonts.poppins(
-                                      textStyle: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ),
-                                  Text(
-                                    'HSN: ${item['gst_hsn_code']}',
-                                    style: GoogleFonts.poppins(
-                                      textStyle: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                              IntrinsicHeight(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Expanded(
-                                      child: Container(
-
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              'Quantity:',
-                                              style: GoogleFonts.poppins(
-                                                textStyle: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                            Text(
-                                              '${item['qty']}',
-                                              style: GoogleFonts.poppins(
-                                                textStyle: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    VerticalDivider(
-                                      width: 5,
-                                    ),
-                                    Expanded(
-                                      child: Container(
-
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              'Rate:',
-                                              style: GoogleFonts.poppins(
-                                                textStyle: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                            Text(
-                                              '${item['rate']}',
-                                              style: GoogleFonts.poppins(
-                                                textStyle: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    VerticalDivider(
-                                      width: 5,
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              'Amount:',
-                                              style: GoogleFonts.poppins(
-                                                textStyle: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                            Text(
-                                              '${item['amount']}',
-                                              style: GoogleFonts.poppins(
-                                                textStyle: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Divider(),
-                              IntrinsicHeight(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Expanded(
-                                      child: Container(
-
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              'Discount:',
-                                              style: GoogleFonts.poppins(
-                                                textStyle: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                            Text(
-                                              '${item['discount_amount']}',
-                                              style: GoogleFonts.poppins(
-                                                textStyle: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    VerticalDivider(
-                                      width: 5,
-                                    ),
-                                    Expanded(
-                                      child: Container(
-
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              'GST:',
-                                              style: GoogleFonts.poppins(
-                                                textStyle: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                            Text(
-                                              '${item['gst_per']}',
-                                              style: GoogleFonts.poppins(
-                                                textStyle: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    VerticalDivider(
-                                      width: 5,
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              'Uom:',
-                                              style: GoogleFonts.poppins(
-                                                textStyle: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                            Text(
-                                              '${item['uom']}',
-                                              style: GoogleFonts.poppins(
-                                                textStyle: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
                             ],
                           ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-              SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      // physics: NeverScrollableScrollPhysics(),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                color: Colors.blue,
-                                width: 2
-                            ),
-                            borderRadius: BorderRadius.circular(15)
                         ),
-                        child: DataTable(
-                          headingTextStyle: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w500,color: Colors.grey)),
-                          columns: <DataColumn>[
-                            DataColumn(label: Text('TYPE')),
-                            DataColumn(label: Text('ACC_HEAD')),
-                            DataColumn(label: Text('RATE')),
-                            DataColumn(label: Text('AMOUNT')),
-                            DataColumn(label: Text('TOTAL')),
-                          ],
-                          rows: (invoices.taxes)!.map((item) {
-                            return DataRow(
-                              cells: <DataCell>[
-                                DataCell(Text(item['charge_type'],style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                                DataCell(Text(item['account_head'],style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                                DataCell(Text(item['rate'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                                DataCell(Text(item['tax_amount'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                                DataCell(Text(item['total'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
+                         // Taxes //
+                        Container(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: invoices.taxes!.length,
+                            itemBuilder: (context, index) {
+                              final taxes = invoices.taxes?[index];
+                              return Container(
+                                margin: const EdgeInsets.all(8),
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  border:
+                                      Border.all(color: Colors.blue, width: 2),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'TYPE',
+                                      style: GoogleFonts.poppins(
+                                        textStyle: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      '${taxes['charge_type']}',
+                                      style: GoogleFonts.poppins(
+                                        textStyle: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                    const Divider(),
+                                    SizedBox(height: 8.h),
+                                    IntrinsicHeight(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Expanded(
+                                            child: Container(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    'ACC-HEAD:',
+                                                    style: GoogleFonts.poppins(
+                                                      textStyle: const TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    '${taxes['account_head']}',
+                                                    style: GoogleFonts.poppins(
+                                                      textStyle: const TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          const VerticalDivider(
+                                            width: 5,
+                                          ),
+                                          Expanded(
+                                            child: Container(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    'RATE :',
+                                                    style: GoogleFonts.poppins(
+                                                      textStyle: const TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    '${taxes['rate']}',
+                                                    style: GoogleFonts.poppins(
+                                                      textStyle: const TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 15.h,
+                                    ),
+                                    IntrinsicHeight(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Expanded(
+                                            child: Container(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    'Tax_Amount:',
+                                                    style: GoogleFonts.poppins(
+                                                      textStyle: const TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    '${taxes['tax_amount']}',
+                                                    style: GoogleFonts.poppins(
+                                                      textStyle: const TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          const VerticalDivider(
+                                            width: 5,
+                                          ),
+                                          Expanded(
+                                            child: Container(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    'Total:',
+                                                    style: GoogleFonts.poppins(
+                                                      textStyle: const TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    '${taxes['total']}',
+                                                    style: GoogleFonts.poppins(
+                                                      textStyle: const TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
 
-                              ],
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                color: Colors.blue,
-                                width: 2
-                            ),
-                            borderRadius: BorderRadius.circular(15)
-                        ),
-                        child: DataTable(
-                          headingTextStyle: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w500,color: Colors.grey)),
-                          columns: <DataColumn>[
-                            DataColumn(label: Text('GST')),
-                            DataColumn(label: Text('RATE')),
-                            DataColumn(label: Text('TAXABLE')),
-                            DataColumn(label: Text('CGST_Tax')),
-                            DataColumn(label: Text('CGST_Amount')),
-                            DataColumn(label: Text('SGST_Tax')),
-                            DataColumn(label: Text('SGST_Tax')),
-                            DataColumn(label: Text('IGST_Tax')),
-                            DataColumn(label: Text('IGST_Tax')),
-                            DataColumn(label: Text('TotalAmount')),
-                          ],
-                          rows: invoices.ts_tax_breakup_table!.map((item) {
-                            return DataRow(
-                              cells: <DataCell>[
-                                DataCell(Text(item['ts_gst_hsn'] ,style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                                DataCell(Text(item['ts_gst_rate'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)), )),
-                                DataCell(Text(item['ts_taxable_values'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                                DataCell(Text(item['ts_central_tax'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                                DataCell(Text(item['ts_central_amount'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                                DataCell(Text(item['ts_state_tax'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                                DataCell(Text(item['ts_state_amount'].toString())),
-                                DataCell(Text(item['ts_igst_tax'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                                DataCell(Text(item['ts_igst_amount'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                                DataCell(Text(item['ts_total_tax_amount'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                              ],
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                color: Colors.blue,
-                                width: 2
-                            ),
-                            borderRadius: BorderRadius.circular(15)
-                        ),
-                        child: DataTable(
-                          headingTextStyle: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w500,color: Colors.grey)),
-                          columns: <DataColumn>
-                          [
-                            DataColumn(label: Text('PAYMENT_TERM',)),
-                            DataColumn(label: Text('DESCRIPTION')),
-                            DataColumn(label: Text('DUE_DATE')),
-                            DataColumn(label: Text('INVOICE_PORTION')),
-                            DataColumn(label: Text('PAYMENT_AMOUNT')),
+                        // HSN - TAX //
+                              Container(
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: invoices.ts_tax_breakup_table!.length,
+                                  itemBuilder: (context, index) {
+                                    final tsTaxBreakupTable = invoices.ts_tax_breakup_table?[index];
+                                    return Container(
+                                      margin: const EdgeInsets.all(8),
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.blue, width: 2),
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
 
-                          ],
-                          rows: invoices.payment_schedule!.map((item) {
-                            return DataRow(
-                              cells: <DataCell>[
-                                DataCell(Text(item['payment_term'],style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)), )),
-                                DataCell(Text(item['description'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)), )),
-                                DataCell(Text(item['due_date'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                                DataCell(Text(item['invoice_portion'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                                DataCell(Text(item['payment_amount'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
+                                          Text(
+                                            'HSN',
+                                            style: GoogleFonts.poppins(
+                                              textStyle: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+                                          Text(
+                                            '${tsTaxBreakupTable['ts_gst_hsn']}',
+                                            style: GoogleFonts.poppins(
+                                              textStyle: const TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ),
+                                          const Divider(),
+                                          SizedBox(height: 8.h),
+                                          IntrinsicHeight(
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Expanded(
+                                                  child: Container(
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        Text(
+                                                          'RATE:',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '${tsTaxBreakupTable['ts_gst_rate']}',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                const VerticalDivider(
+                                                  width: 5,
+                                                ),
+                                                Expanded(
+                                                  child: Container(
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        Text(
+                                                          'TAXABLE:',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '${tsTaxBreakupTable['ts_taxable_values']}',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                const Divider(
+                                                  thickness: 1,
+                                                ),
 
-                              ],
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),]))
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(height: 15.h,),
+                                          // Row(
+                                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          //   children: [
+                                          //     Text(
+                                          //       'RATE ${ts_tax_breakup_table['ts_gst_rate']}',
+                                          //       style: GoogleFonts.poppins(
+                                          //         textStyle: TextStyle(
+                                          //           fontSize: 15,
+                                          //           fontWeight: FontWeight.w500,
+                                          //           color: Colors.black,
+                                          //         ),
+                                          //       ),
+                                          //     ),
+                                          //     Text(
+                                          //       'TAXABLE: ${ts_tax_breakup_table['ts_taxable_values']}',
+                                          //       style: GoogleFonts.poppins(
+                                          //         textStyle: TextStyle(
+                                          //           fontSize: 14,
+                                          //           fontWeight: FontWeight.w500,
+                                          //           color: Colors.grey,
+                                          //         ),
+                                          //       ),
+                                          //     ),
+                                          //   ],
+                                          // ),
+
+                                          IntrinsicHeight(
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Expanded(
+                                                  child: Container(
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        Text(
+                                                          'CGST_TAX:',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '${tsTaxBreakupTable['ts_central_tax']}',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                const VerticalDivider(
+                                                  width: 5,
+                                                ),
+                                                Expanded(
+                                                  child: Container(
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        Text(
+                                                          'CGST_AMOUNT:',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '${tsTaxBreakupTable['ts_central_amount']}',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(height: 10.h,),
+                                          IntrinsicHeight(
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Expanded(
+                                                  child: Container(
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        Text(
+                                                          'SGST_TAX:',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '${tsTaxBreakupTable['ts_state_tax']}',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                const VerticalDivider(
+                                                  width: 5,
+                                                ),
+                                                Expanded(
+                                                  child: Container(
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        Text(
+                                                          'SGST_AMOUNT:',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '${tsTaxBreakupTable['ts_state_amount']}',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                const Divider(
+                                                  thickness: 1,
+                                                ),
+
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(height: 10.h,),
+                                          IntrinsicHeight(
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Expanded(
+                                                  child: Container(
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        Text(
+                                                          'IGST_TAX:',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '${tsTaxBreakupTable['ts_igst_tax']}',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                const VerticalDivider(
+                                                  width: 5,
+                                                ),
+                                                Expanded(
+                                                  child: Container(
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        Text(
+                                                          'IGST_AMOUNT:',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '${tsTaxBreakupTable['ts_igst_amount']}',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                const Divider(
+                                                  thickness: 1,
+                                                ),
+
+                                              ],
+                                            ),
+                                          ),
+                                          const Divider(
+                                            thickness: 1,
+                                          ),
+                                          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              const Subhead(text: "Total", colo: Colors.black, weight: FontWeight.w500),
+                                              Mytext(text: '${tsTaxBreakupTable['ts_total_tax_amount']}', color: Colors.black)
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              // Payment Term //
+                              Container(
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: invoices.payment_schedule!.length,
+                                  itemBuilder: (context, index) {
+                                    final paymentSchedule = invoices.payment_schedule?[index];
+                                    return Container(
+                                      margin: const EdgeInsets.all(8),
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.blue, width: 2),
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+
+                                          Text(
+                                            'PAYMENT TERM',
+                                            style: GoogleFonts.poppins(
+                                              textStyle: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+                                          Text(
+                                            '${paymentSchedule['payment_term']}',
+                                            style: GoogleFonts.poppins(
+                                              textStyle: const TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ),
+                                          const Divider(),
+                                          const SizedBox(height: 8),
+                                          IntrinsicHeight(
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Expanded(
+                                                  child: Container(
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        Text(
+                                                          'DESCRIPTION :',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '${paymentSchedule['description']}',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                const VerticalDivider(
+                                                  width: 5,
+                                                ),
+                                                Expanded(
+                                                  child: Container(
+
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        Text(
+                                                          'DUE-DATE :',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '${paymentSchedule['due_date']}',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(height: 15.h,),
+
+                                          IntrinsicHeight(
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Expanded(
+                                                  child: Container(
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        Text(
+                                                          'INVOICE-PORTION :',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '${paymentSchedule['invoice_portion']}',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                const VerticalDivider(
+                                                  width: 5,
+                                                ),
+                                                Expanded(
+                                                  child: Container(
+
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        Text(
+                                                          'PAYMENT_AMOUNT:',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          '${paymentSchedule['payment_amount']}',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.w500,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+
+                                              ],
+                                            ),
+                                          ),
+
+
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+
+
+                            ]
+                        )
+                    )
 
                 ]
                 ),
@@ -1001,434 +1693,6 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
 
 
 
-                  // DefaultTabController(
-                  //   length: 4, // Number of tabs
-                  //   child: Column(
-                  //     children: [
-                  //       SizedBox(height: 20.h),
-                  //       TabBar(
-                  //         tabs: [
-                  //           Tab(text: 'Items'),
-                  //           Tab(text: 'Tax Charges'),
-                  //           Tab(text: 'Breakup'),
-                  //           Tab(text: 'Payment'),
-                  //         ],
-                  //       ),
-                  //       Expanded(
-                  //         child: Container(
-                  //           constraints: BoxConstraints.expand(),
-                  //           child:
-                  //           TabBarView(
-                  //             children: [
-                  //               SingleChildScrollView(
-                  //                 child: Column(
-                  //                   children: [
-                  //                     Container(
-                  //                       // height: 3000.h, // Set a fixed height here or calculate dynamically based on the items count
-                  //                       child: ListView.builder(
-                  //                         shrinkWrap: true,
-                  //                         physics: NeverScrollableScrollPhysics(),
-                  //                         itemCount: invoices.items!.length,
-                  //                         itemBuilder: (context, index) {
-                  //                           final item = invoices.items?[index];
-                  //                           return Container(
-                  //                             margin: EdgeInsets.all(8),
-                  //                             padding: EdgeInsets.all(8),
-                  //                             decoration: BoxDecoration(
-                  //                               border: Border.all(color: Colors.blue, width: 2),
-                  //                               borderRadius: BorderRadius.circular(15),
-                  //                             ),
-                  //                             child: Column(
-                  //                               crossAxisAlignment: CrossAxisAlignment.center,
-                  //                               children: [
-                  //
-                  //                                 Text(
-                  //                                   'Item Name',
-                  //                                   style: GoogleFonts.poppins(
-                  //                                     textStyle: TextStyle(
-                  //                                       fontSize: 14,
-                  //                                       fontWeight: FontWeight.w500,
-                  //                                     ),
-                  //                                   ),
-                  //                                 ),
-                  //                                 Text(
-                  //                                   '${item['item_code']}',
-                  //                                   style: GoogleFonts.poppins(
-                  //                                     textStyle: TextStyle(
-                  //                                       fontSize: 14,
-                  //                                       fontWeight: FontWeight.w500,
-                  //                                     ),
-                  //                                   ),
-                  //                                 ),
-                  //                                 Divider(),
-                  //                                 SizedBox(height: 8),
-                  //                                 Row(
-                  //                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //                                   children: [
-                  //                                     Text(
-                  //                                       'Row #${item['idx']}',
-                  //                                       style: GoogleFonts.poppins(
-                  //                                         textStyle: TextStyle(
-                  //                                           fontSize: 15,
-                  //                                           fontWeight: FontWeight.w500,
-                  //                                           color: Colors.grey,
-                  //                                         ),
-                  //                                       ),
-                  //                                     ),
-                  //                                     Text(
-                  //                                       'HSN: ${item['gst_hsn_code']}',
-                  //                                       style: GoogleFonts.poppins(
-                  //                                         textStyle: TextStyle(
-                  //                                           fontSize: 14,
-                  //                                           fontWeight: FontWeight.w500,
-                  //                                           color: Colors.grey,
-                  //                                         ),
-                  //                                       ),
-                  //                                     ),
-                  //                                   ],
-                  //                                 ),
-                  //
-                  //                                 IntrinsicHeight(
-                  //                                   child: Row(
-                  //                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  //                                     children: [
-                  //                                       Expanded(
-                  //                                         child: Container(
-                  //
-                  //                                           child: Column(
-                  //                                             crossAxisAlignment: CrossAxisAlignment.center,
-                  //                                             children: [
-                  //                                               Text(
-                  //                                                 'Quantity:',
-                  //                                                 style: GoogleFonts.poppins(
-                  //                                                   textStyle: TextStyle(
-                  //                                                     fontSize: 14,
-                  //                                                     fontWeight: FontWeight.bold,
-                  //                                                   ),
-                  //                                                 ),
-                  //                                               ),
-                  //                                               Text(
-                  //                                                 '${item['qty']}',
-                  //                                                 style: GoogleFonts.poppins(
-                  //                                                   textStyle: TextStyle(
-                  //                                                     fontSize: 14,
-                  //                                                     fontWeight: FontWeight.w500,
-                  //                                                   ),
-                  //                                                 ),
-                  //                                               ),
-                  //                                             ],
-                  //                                           ),
-                  //                                         ),
-                  //                                       ),
-                  //                                       VerticalDivider(
-                  //                                         width: 5,
-                  //                                       ),
-                  //                                       Expanded(
-                  //                                         child: Container(
-                  //
-                  //                                           child: Column(
-                  //                                             crossAxisAlignment: CrossAxisAlignment.center,
-                  //                                             children: [
-                  //                                               Text(
-                  //                                                 'Rate:',
-                  //                                                 style: GoogleFonts.poppins(
-                  //                                                   textStyle: TextStyle(
-                  //                                                     fontSize: 14,
-                  //                                                     fontWeight: FontWeight.bold,
-                  //                                                   ),
-                  //                                                 ),
-                  //                                               ),
-                  //                                               Text(
-                  //                                                 '${item['rate']}',
-                  //                                                 style: GoogleFonts.poppins(
-                  //                                                   textStyle: TextStyle(
-                  //                                                     fontSize: 14,
-                  //                                                     fontWeight: FontWeight.w500,
-                  //                                                   ),
-                  //                                                 ),
-                  //                                               ),
-                  //                                             ],
-                  //                                           ),
-                  //                                         ),
-                  //                                       ),
-                  //                                       VerticalDivider(
-                  //                                         width: 5,
-                  //                                       ),
-                  //                                       Expanded(
-                  //                                         child: Container(
-                  //                                           child: Column(
-                  //                                             crossAxisAlignment: CrossAxisAlignment.center,
-                  //                                             children: [
-                  //                                               Text(
-                  //                                                 'Amount:',
-                  //                                                 style: GoogleFonts.poppins(
-                  //                                                   textStyle: TextStyle(
-                  //                                                     fontSize: 14,
-                  //                                                     fontWeight: FontWeight.bold,
-                  //                                                   ),
-                  //                                                 ),
-                  //                                               ),
-                  //                                               Text(
-                  //                                                 '${item['amount']}',
-                  //                                                 style: GoogleFonts.poppins(
-                  //                                                   textStyle: TextStyle(
-                  //                                                     fontSize: 14,
-                  //                                                     fontWeight: FontWeight.w500,
-                  //                                                   ),
-                  //                                                 ),
-                  //                                               ),
-                  //                                             ],
-                  //                                           ),
-                  //                                         ),
-                  //                                       ),
-                  //                                     ],
-                  //                                   ),
-                  //                                 ),
-                  //                                 Divider(),
-                  //                                 IntrinsicHeight(
-                  //                                   child: Row(
-                  //                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  //                                     children: [
-                  //                                       Expanded(
-                  //                                         child: Container(
-                  //
-                  //                                           child: Column(
-                  //                                             crossAxisAlignment: CrossAxisAlignment.center,
-                  //                                             children: [
-                  //                                               Text(
-                  //                                                 'Discount:',
-                  //                                                 style: GoogleFonts.poppins(
-                  //                                                   textStyle: TextStyle(
-                  //                                                     fontSize: 14,
-                  //                                                     fontWeight: FontWeight.bold,
-                  //                                                   ),
-                  //                                                 ),
-                  //                                               ),
-                  //                                               Text(
-                  //                                                 '${item['discount_amount']}',
-                  //                                                 style: GoogleFonts.poppins(
-                  //                                                   textStyle: TextStyle(
-                  //                                                     fontSize: 14,
-                  //                                                     fontWeight: FontWeight.w500,
-                  //                                                   ),
-                  //                                                 ),
-                  //                                               ),
-                  //                                             ],
-                  //                                           ),
-                  //                                         ),
-                  //                                       ),
-                  //                                       VerticalDivider(
-                  //                                         width: 5,
-                  //                                       ),
-                  //                                       Expanded(
-                  //                                         child: Container(
-                  //
-                  //                                           child: Column(
-                  //                                             crossAxisAlignment: CrossAxisAlignment.center,
-                  //                                             children: [
-                  //                                               Text(
-                  //                                                 'GST:',
-                  //                                                 style: GoogleFonts.poppins(
-                  //                                                   textStyle: TextStyle(
-                  //                                                     fontSize: 14,
-                  //                                                     fontWeight: FontWeight.bold,
-                  //                                                   ),
-                  //                                                 ),
-                  //                                               ),
-                  //                                               Text(
-                  //                                                 '${item['gst_per']}',
-                  //                                                 style: GoogleFonts.poppins(
-                  //                                                   textStyle: TextStyle(
-                  //                                                     fontSize: 14,
-                  //                                                     fontWeight: FontWeight.w500,
-                  //                                                   ),
-                  //                                                 ),
-                  //                                               ),
-                  //                                             ],
-                  //                                           ),
-                  //                                         ),
-                  //                                       ),
-                  //                                       VerticalDivider(
-                  //                                         width: 5,
-                  //                                       ),
-                  //                                       Expanded(
-                  //                                         child: Container(
-                  //                                           child: Column(
-                  //                                             crossAxisAlignment: CrossAxisAlignment.center,
-                  //                                             children: [
-                  //                                               Text(
-                  //                                                 'Uom:',
-                  //                                                 style: GoogleFonts.poppins(
-                  //                                                   textStyle: TextStyle(
-                  //                                                     fontSize: 14,
-                  //                                                     fontWeight: FontWeight.bold,
-                  //                                                   ),
-                  //                                                 ),
-                  //                                               ),
-                  //                                               Text(
-                  //                                                 '${item['uom']}',
-                  //                                                 style: GoogleFonts.poppins(
-                  //                                                   textStyle: TextStyle(
-                  //                                                     fontSize: 14,
-                  //                                                     fontWeight: FontWeight.w500,
-                  //                                                   ),
-                  //                                                 ),
-                  //                                               ),
-                  //                                             ],
-                  //                                           ),
-                  //                                         ),
-                  //                                       ),
-                  //                                     ],
-                  //                                   ),
-                  //                                 ),
-                  //
-                  //                               ],
-                  //                             ),
-                  //                           );
-                  //                         },
-                  //                       ),
-                  //                     ),
-                  //                   ],
-                  //                 ),
-                  //               ),
-                  //               SingleChildScrollView(
-                  //                 child: Column(
-                  //                   children: [
-                  //                     SingleChildScrollView(
-                  //                       scrollDirection: Axis.horizontal,
-                  //                       // physics: NeverScrollableScrollPhysics(),
-                  //                       child: Container(
-                  //                         decoration: BoxDecoration(
-                  //                             border: Border.all(
-                  //                                 color: Colors.blue,
-                  //                                 width: 2
-                  //                             ),
-                  //                             borderRadius: BorderRadius.circular(15)
-                  //                         ),
-                  //                         child: DataTable(
-                  //                           headingTextStyle: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w500,color: Colors.grey)),
-                  //                           columns: <DataColumn>[
-                  //                             DataColumn(label: Text('TYPE')),
-                  //                             DataColumn(label: Text('ACC_HEAD')),
-                  //                             DataColumn(label: Text('RATE')),
-                  //                             DataColumn(label: Text('AMOUNT')),
-                  //                             DataColumn(label: Text('TOTAL')),
-                  //                           ],
-                  //                           rows: (invoices.taxes)!.map((item) {
-                  //                             return DataRow(
-                  //                               cells: <DataCell>[
-                  //                                 DataCell(Text(item['charge_type'],style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                  //                                 DataCell(Text(item['account_head'],style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                  //                                 DataCell(Text(item['rate'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                  //                                 DataCell(Text(item['tax_amount'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                  //                                 DataCell(Text(item['total'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                  //
-                  //                               ],
-                  //                             );
-                  //                           }).toList(),
-                  //                         ),
-                  //                       ),
-                  //                     ),
-                  //                   ],
-                  //                 ),
-                  //               ),
-                  //               SingleChildScrollView(
-                  //                 child: Column(
-                  //                   children: [
-                  //                     SingleChildScrollView(
-                  //                       scrollDirection: Axis.horizontal,
-                  //                       child: Container(
-                  //                         decoration: BoxDecoration(
-                  //                             border: Border.all(
-                  //                                 color: Colors.blue,
-                  //                                 width: 2
-                  //                             ),
-                  //                             borderRadius: BorderRadius.circular(15)
-                  //                         ),
-                  //                         child: DataTable(
-                  //                           headingTextStyle: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w500,color: Colors.grey)),
-                  //                           columns: <DataColumn>[
-                  //                             DataColumn(label: Text('GST')),
-                  //                             DataColumn(label: Text('RATE')),
-                  //                             DataColumn(label: Text('TAXABLE')),
-                  //                             DataColumn(label: Text('CGST_Tax')),
-                  //                             DataColumn(label: Text('CGST_Amount')),
-                  //                             DataColumn(label: Text('SGST_Tax')),
-                  //                             DataColumn(label: Text('SGST_Tax')),
-                  //                             DataColumn(label: Text('IGST_Tax')),
-                  //                             DataColumn(label: Text('IGST_Tax')),
-                  //                             DataColumn(label: Text('TotalAmount')),
-                  //                           ],
-                  //                           rows: invoices.ts_tax_breakup_table!.map((item) {
-                  //                             return DataRow(
-                  //                               cells: <DataCell>[
-                  //                                 DataCell(Text(item['ts_gst_hsn'] ,style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                  //                                 DataCell(Text(item['ts_gst_rate'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)), )),
-                  //                                 DataCell(Text(item['ts_taxable_values'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                  //                                 DataCell(Text(item['ts_central_tax'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                  //                                 DataCell(Text(item['ts_central_amount'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                  //                                 DataCell(Text(item['ts_state_tax'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                  //                                 DataCell(Text(item['ts_state_amount'].toString())),
-                  //                                 DataCell(Text(item['ts_igst_tax'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                  //                                 DataCell(Text(item['ts_igst_amount'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                  //                                 DataCell(Text(item['ts_total_tax_amount'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                  //                               ],
-                  //                             );
-                  //                           }).toList(),
-                  //                         ),
-                  //                       ),
-                  //                     ),
-                  //                   ],
-                  //                 ),
-                  //               ),
-                  //               SingleChildScrollView(
-                  //                 child: Column(
-                  //                   children: [
-                  //                     SingleChildScrollView(
-                  //                       scrollDirection: Axis.horizontal,
-                  //                       child: Container(
-                  //                         decoration: BoxDecoration(
-                  //                             border: Border.all(
-                  //                                 color: Colors.blue,
-                  //                                 width: 2
-                  //                             ),
-                  //                             borderRadius: BorderRadius.circular(15)
-                  //                         ),
-                  //                         child: DataTable(
-                  //                           headingTextStyle: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w500,color: Colors.grey)),
-                  //                           columns: <DataColumn>
-                  //                           [
-                  //                             DataColumn(label: Text('PAYMENT_TERM',)),
-                  //                             DataColumn(label: Text('DESCRIPTION')),
-                  //                             DataColumn(label: Text('DUE_DATE')),
-                  //                             DataColumn(label: Text('INVOICE_PORTION')),
-                  //                             DataColumn(label: Text('PAYMENT_AMOUNT')),
-                  //
-                  //                           ],
-                  //                           rows: invoices.payment_schedule!.map((item) {
-                  //                             return DataRow(
-                  //                               cells: <DataCell>[
-                  //                                 DataCell(Text(item['payment_term'],style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)), )),
-                  //                                 DataCell(Text(item['description'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)), )),
-                  //                                 DataCell(Text(item['due_date'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                  //                                 DataCell(Text(item['invoice_portion'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                  //                                 DataCell(Text(item['payment_amount'].toString(),style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-                  //
-                  //                               ],
-                  //                             );
-                  //                           }).toList(),
-                  //                         ),
-                  //                       ),
-                  //                     ),
-                  //                   ],
-                  //                 ),
-                  //               ),
-                  //             ],
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
+
 
 

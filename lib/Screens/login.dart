@@ -40,7 +40,7 @@ class _LoginState extends State<Login> {
           if (width <= 450) {
             return _smallBuildLayout();
           } else {
-            return Text("Large");
+            return const Text("Large");
           }
         },
         ),
@@ -65,14 +65,14 @@ class _LoginState extends State<Login> {
   Widget _buildBody(){
     return Container(
       width: double.infinity,
-      color: Color(0xffFF035e32),
+      color: const Color(0xffff035e32),
       child: SingleChildScrollView(
-        physics: AlwaysScrollableScrollPhysics(),
+        physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
           children: [
-            SizedBox(height: 60,),
-            Center(child: Subhead(text: "LOGIN", colo: Colors.white, weight: FontWeight.w500)),
-            SizedBox(height: 30,),
+            const SizedBox(height: 60,),
+            const Center(child: Subhead(text: "LOGIN", colo: Colors.white, weight: FontWeight.w500)),
+            const SizedBox(height: 30,),
             Form(
               key: _key,
               child: Container(
@@ -85,8 +85,8 @@ class _LoginState extends State<Login> {
                 child: Center(
                   child: Column(
                     children: [
-                      SizedBox(height: 50,),
-                      Align(
+                      const SizedBox(height: 50,),
+                      const Align(
                         alignment: Alignment.topLeft,
                         child: Mytext(text: "  EMAIL", color: Colors.black,),
                       ),
@@ -94,7 +94,7 @@ class _LoginState extends State<Login> {
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
                           controller: _emailController,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             prefixIcon: Icon(Icons.mail_lock_outlined, color: Colors.grey,),
                           ),
                           validator: (email) {
@@ -105,8 +105,8 @@ class _LoginState extends State<Login> {
                           },
                         ),
                       ),
-                      SizedBox(height: 10,),
-                      Align(
+                      const SizedBox(height: 10,),
+                      const Align(
                         alignment: Alignment.topLeft,
                         child: Mytext(text: "  PASSWORD", color: Colors.black,),
                       ),
@@ -114,7 +114,7 @@ class _LoginState extends State<Login> {
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
                           controller: _passwordController,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             prefixIcon: Icon(Icons.lock_person_outlined, color: Colors.grey,),
                           ),
                           validator: (password) {
@@ -125,14 +125,14 @@ class _LoginState extends State<Login> {
                           },
                         ),
                       ),
-                      SizedBox(height: 10,),
+                      const SizedBox(height: 10,),
                       const Align(
                           alignment: Alignment.topRight,
                           child: Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Mytext(text: "Forgot Password? ", color: Colors.green),
                           )),
-                      SizedBox(height: 10,),
+                      const SizedBox(height: 10,),
                       Align(
                           alignment: Alignment.topRight,
                           child: Padding(
@@ -142,7 +142,7 @@ class _LoginState extends State<Login> {
                                 if (_key.currentState!.validate()) {
                                   if (_emailController.text == "regent@gmail.com" &&
                                       _passwordController.text == "abc@123") {
-                                    Get.off(Dashboard());
+                                    Get.off(const Dashboard());
                                   } else {
                                     Get.snackbar(
                                       "Error",
@@ -155,11 +155,11 @@ class _LoginState extends State<Login> {
                               child: Container(
                                 height: height / 16.h,
                                 width: width / 6.w,
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: Colors.green
                                 ),
-                                child: Icon(Icons.arrow_forward, color: Colors.white,),
+                                child: const Icon(Icons.arrow_forward, color: Colors.white,),
                               ),
                             ),
                           )),
@@ -168,7 +168,7 @@ class _LoginState extends State<Login> {
                 ),
               ),
             ),
-            SizedBox(height: 20,),
+            const SizedBox(height: 20,),
             Container(
               height: height / 5.5.h,
               width: width / 1.2.w,
@@ -178,14 +178,14 @@ class _LoginState extends State<Login> {
               ),
               child: Column(
                 children: [
-                  SizedBox(height: 10,),
-                  Align(
+                  const SizedBox(height: 10,),
+                  const Align(
                       alignment: Alignment.topLeft,
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
                         child: Subhead(text: "Contact Us", colo: Colors.black, weight: FontWeight.w600),
                       )),
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10,),
                   Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Image.asset(

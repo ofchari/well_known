@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:well_known/Utils/refreshdata.dart';
-import 'package:well_known/utils/refreshdata.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -24,7 +22,7 @@ class _HomeState extends State<Home> {
         if(width <=600){
           return _smallbuildlayout();
         }
-        return Text("Large");
+        return const Text("Large");
       },
       ),
     );
@@ -33,7 +31,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
       ),
-      body: Container(
+      body: const SizedBox(
         height: double.infinity,
         width: double.infinity,
         child: Column(

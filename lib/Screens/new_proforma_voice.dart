@@ -9,14 +9,14 @@ import 'package:well_known/Widgets/buttons.dart';
 import 'package:well_known/Widgets/text.dart';
 import '../Widgets/heading_text.dart';
 
-class Newproformavoice extends StatefulWidget {
-  const Newproformavoice({super.key});
+class NewproformaVoice extends StatefulWidget {
+  const NewproformaVoice({super.key});
 
   @override
-  State<Newproformavoice> createState() => _NewproformavoiceState();
+  State<NewproformaVoice> createState() => _NewproformaVoiceState();
 }
 
-class _NewproformavoiceState extends State<Newproformavoice> {
+class _NewproformaVoiceState extends State<NewproformaVoice> {
   DateTime _selectedDate = DateTime.now();
 
   Future<void> _selectDate(BuildContext context) async {
@@ -53,7 +53,7 @@ class _NewproformavoiceState extends State<Newproformavoice> {
               return _smallBuildLayout();
               // Mobile Screen Sizes //
             } else {
-              return Text("Large");
+              return const Text("Large");
             }
           },
         ),
@@ -70,22 +70,22 @@ class _NewproformavoiceState extends State<Newproformavoice> {
           onTap: (){
             Get.back();
           },
-            child: Icon(Icons.arrow_back, color: Colors.black)),
-        title: Headingtext(text: "  New Proforma Invoice", color: Colors.black, weight: FontWeight.w400),
+            child: const Icon(Icons.arrow_back, color: Colors.black)),
+        title: const Headingtext(text: "  New Proforma Invoice", color: Colors.black, weight: FontWeight.w400),
         centerTitle: true,
       ),
-      body: Container(
+      body: SizedBox(
         height: double.infinity,
         width: double.infinity,
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: TextFormField(
                   decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.person, color: Color(0xffFF035e32)),
+                      prefixIcon: const Icon(Icons.person, color: Color(0xffff035e32)),
                       labelText: "  Customer",
                       labelStyle: GoogleFonts.poppins(
                           textStyle: const TextStyle(fontSize: 16.5, fontWeight: FontWeight.w500, color: Colors.black)),
@@ -110,12 +110,12 @@ class _NewproformavoiceState extends State<Newproformavoice> {
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           children: [
-                            Icon(Icons.date_range, color: Colors.blue),
-                            SizedBox(width: 8), // Added spacing for better UI
+                            const Icon(Icons.date_range, color: Colors.blue),
+                            const SizedBox(width: 8), // Added spacing for better UI
                             Text(
                               ' ${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
                               style: GoogleFonts.poppins(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 15.8,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.black,
@@ -141,12 +141,12 @@ class _NewproformavoiceState extends State<Newproformavoice> {
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           children: [
-                            Icon(Icons.date_range, color: Colors.blue),
-                            SizedBox(width: 8), // Added spacing for better UI
+                            const Icon(Icons.date_range, color: Colors.blue),
+                            const SizedBox(width: 8), // Added spacing for better UI
                             Text(
                               ' ${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
                               style: GoogleFonts.poppins(
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                   fontSize: 15.8,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.black,
@@ -165,7 +165,7 @@ class _NewproformavoiceState extends State<Newproformavoice> {
                 padding: const EdgeInsets.all(15.0),
                 child: TextFormField(
                   decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.group, color: Color(0xffFF035e32)),
+                      prefixIcon: const Icon(Icons.group, color: Color(0xffff035e32)),
                       labelText: "Customer group",
                       labelStyle: GoogleFonts.poppins(
                           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black)),
@@ -178,7 +178,7 @@ class _NewproformavoiceState extends State<Newproformavoice> {
                 padding: const EdgeInsets.all(15.0),
                 child: TextFormField(
                   decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.terrain, color: Color(0xffFF035e32)),
+                      prefixIcon: const Icon(Icons.terrain, color: Color(0xffff035e32)),
                       labelText: "Territory",
                       labelStyle: GoogleFonts.poppins(
                           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black)),
@@ -191,7 +191,7 @@ class _NewproformavoiceState extends State<Newproformavoice> {
                 padding: const EdgeInsets.all(15.0),
                 child: TextFormField(
                   decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.place_outlined, color: Color(0xffFF035e32)),
+                      prefixIcon: const Icon(Icons.place_outlined, color: Color(0xffff035e32)),
                       labelText: "Customer Address",
                       labelStyle: GoogleFonts.poppins(
                           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black)),
@@ -204,7 +204,7 @@ class _NewproformavoiceState extends State<Newproformavoice> {
                 padding: const EdgeInsets.all(15.0),
                 child: TextFormField(
                   decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.contact_mail, color: Color(0xffFF035e32)),
+                      prefixIcon: const Icon(Icons.contact_mail, color: Color(0xffff035e32)),
                       labelText: "Contact Person",
                       labelStyle: GoogleFonts.poppins(
                           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black)),
@@ -217,7 +217,7 @@ class _NewproformavoiceState extends State<Newproformavoice> {
                 padding: const EdgeInsets.all(15.0),
                 child: TextFormField(
                   decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.stacked_line_chart, color: Color(0xffFF035e32)),
+                      prefixIcon: const Icon(Icons.stacked_line_chart, color: Color(0xffff035e32)),
                       labelText: "Sales Person",
                       labelStyle: GoogleFonts.poppins(
                           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black)),
@@ -231,7 +231,7 @@ class _NewproformavoiceState extends State<Newproformavoice> {
                 child: TextFormField(
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.call, color: Color(0xffFF035e32)),
+                      prefixIcon: const Icon(Icons.call, color: Color(0xffff035e32)),
                       labelText: "Mobile No",
                       labelStyle: GoogleFonts.poppins(
                           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black)),
@@ -239,19 +239,19 @@ class _NewproformavoiceState extends State<Newproformavoice> {
                           borderRadius: BorderRadius.all(Radius.circular(12)))),
                 ),
               ),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
               GestureDetector(
                 onTap: (){
-                  Get.to(Newinvoice());
+                  Get.to(const Newinvoice());
                 },
                 child: Buttons(
                     heigh: height / 20,
                     width: width / 1.8,
-                    color: Color(0xffFF035e32),
+                    color: const Color(0xffff035e32),
                     text: "Next",
                     radius: BorderRadius.circular(16)),
               ),
-              SizedBox(height: 30,),
+              const SizedBox(height: 30,),
             ],
           ),
 

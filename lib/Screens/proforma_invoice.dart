@@ -49,7 +49,7 @@ class _ProformaInvoiceState extends State<ProformaInvoice> {
             if (width <= 450) {
               return _smallBuildLayout();
             } else {
-              return Text("Large");
+              return const Text("Large");
             }
           },
         ),
@@ -84,11 +84,11 @@ class _ProformaInvoiceState extends State<ProformaInvoice> {
           onTap: () {
             Get.back();
           },
-          child: Icon(
+          child: const Icon(
             Icons.arrow_back,
             color: Colors.black,
           )),
-      title: Headingtext(
+      title: const Headingtext(
           text: "     Proforma Invoice",
           color: Colors.black,
           weight: FontWeight.w500),
@@ -106,7 +106,7 @@ class _ProformaInvoiceState extends State<ProformaInvoice> {
             future: fetchProforma(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
                 return Text("${snapshot.error}");
               } else {
@@ -149,7 +149,7 @@ class _ProformaInvoiceState extends State<ProformaInvoice> {
                                 children: [
                                   Row(
                                     children: [
-                                      Mytext(
+                                      const Mytext(
                                           text: " DATE :",
                                           color: Colors.black),
                                       Mytext(
@@ -165,7 +165,7 @@ class _ProformaInvoiceState extends State<ProformaInvoice> {
                                     padding: EdgeInsets.all(8.0.w),
                                     child: Row(
                                       children: [
-                                        Mytext(
+                                        const Mytext(
                                             text: "Due Date :",
                                             color: Colors.black),
                                         Mytext(
@@ -184,7 +184,7 @@ class _ProformaInvoiceState extends State<ProformaInvoice> {
                                 mainAxisAlignment:
                                 MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  Mytext(
+                                  const Mytext(
                                       text: "Company",
                                       color: Colors.black),
                                   Mytext(
@@ -208,10 +208,10 @@ class _ProformaInvoiceState extends State<ProformaInvoice> {
                                   height: height / 18.h,
                                   width: width / 1.3.w,
                                   decoration: BoxDecoration(
-                                      color: Color(0xffFF035e32),
+                                      color: const Color(0xffff035e32),
                                       borderRadius:
                                       BorderRadius.circular(10)),
-                                  child: Center(
+                                  child: const Center(
                                       child: Subhead(
                                         text: "View",
                                         colo: Colors.white,
@@ -234,11 +234,11 @@ class _ProformaInvoiceState extends State<ProformaInvoice> {
             height: 50.h,
             width: 50.w,
             child: FloatingActionButton(
-              backgroundColor: Color(0xffFF035e32),
+              backgroundColor: const Color(0xffff035e32),
               onPressed: () {
-                Get.to(Newproformavoice());
+                Get.to(const NewproformaVoice());
               },
-              child: Icon(
+              child: const Icon(
                 Icons.add,
                 color: Colors.white,
               ),

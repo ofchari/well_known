@@ -1,23 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:well_known/Screens/New_Invoice.dart';
-import 'package:well_known/Screens/invoice.dart';
 import 'package:get/get.dart';
-import 'package:well_known/Screens/bottom_navigation.dart';
-import 'package:well_known/Screens/dashboard.dart';
-import 'package:well_known/Screens/home.dart';
-import 'package:well_known/Screens/message.dart';
-import 'package:well_known/Screens/proforma_invoice.dart';
-import 'package:well_known/Screens/item_list.dart';
-import 'package:well_known/Screens/items.dart';
-import 'package:well_known/Screens/login.dart';
-import 'package:well_known/Screens/new_proforma_voice.dart';
-import 'package:well_known/Screens/purchase_inward.dart';
-import 'package:well_known/Screens/sales_invoice.dart';
 import 'package:well_known/Screens/welcome.dart';
 
-import 'Screens/new.dart';
 
 void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -35,7 +22,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
         // home: Welcome()
-        home: ProformaInvoice()
+        home: const Welcome()
     );
   }
 }

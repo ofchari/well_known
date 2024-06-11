@@ -1,12 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:http/http.dart' as http;
-import '../Screens/items.dart';
 import '../Services/items_api.dart';
 import 'package:http/io_client.dart';
 
-import '../Services/sales_api.dart';
-import '../Services/sample.dart';
 
                              // Items_api //
 Future<List<Item>> fetchItems() async {

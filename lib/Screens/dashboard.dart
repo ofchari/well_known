@@ -3,16 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:well_known/Screens/New_Invoice.dart';
-import 'package:well_known/Screens/invoice.dart';
 import 'package:well_known/Screens/proforma_invoice.dart';
-import 'package:well_known/Screens/item_list.dart';
 import 'package:well_known/Screens/items.dart';
 import 'package:well_known/Screens/purchase_inward.dart';
-import 'package:well_known/Screens/sales_invoice.dart';
+import 'package:well_known/Screens/sales.dart';
 import 'package:well_known/Widgets/heading_text.dart';
-import 'package:well_known/Widgets/subhead.dart';
-import 'package:well_known/Widgets/text.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -44,7 +39,7 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Future<void> _refreshdata() async {
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
     setState(() {
       _chartData = getChartData();
     });
@@ -69,7 +64,7 @@ class _DashboardState extends State<Dashboard> {
               return _smallBuildLayout();
               // Mobile Screen Sizes //
             } else {
-              return Center(
+              return const Center(
                 child: Text("Large"),
               );
             }
@@ -102,11 +97,11 @@ class _DashboardState extends State<Dashboard> {
        // App Bar //
   Widget _buildAppBar(){
     return  AppBar(
-      leading: Icon(
+      leading: const Icon(
         Icons.menu,
         color: Colors.black,
       ),
-      title: Headingtext(
+      title: const Headingtext(
         text: "Dashboard",
         color: Colors.black,
         weight: FontWeight.w500,
@@ -120,13 +115,13 @@ class _DashboardState extends State<Dashboard> {
     return SizedBox(
       width: width.w,
       child: SingleChildScrollView(
-        physics: AlwaysScrollableScrollPhysics(),
+        physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
           children: [
             Padding(
               padding:  EdgeInsets.all(8.0.w),
               child: SfCartesianChart(
-                primaryXAxis: CategoryAxis(),
+                primaryXAxis: const CategoryAxis(),
                 series: <CartesianSeries>[
                   ColumnSeries<ChartData, String>(
                     color: Colors.blue,
@@ -134,7 +129,7 @@ class _DashboardState extends State<Dashboard> {
                     xValueMapper: (ChartData data, _) => data.x,
                     yValueMapper: (ChartData data, _) => data.y,
                     animationDuration: 2000, // Animation duration for pulsar effect
-                    dataLabelSettings: DataLabelSettings(isVisible: true),
+                    dataLabelSettings: const DataLabelSettings(isVisible: true),
                   ),
                 ],
               ),
@@ -171,7 +166,7 @@ class _DashboardState extends State<Dashboard> {
                                 child: Column(
                                   children: [
                                     SizedBox(height: 70.h,),
-                                    Text("Proforma Invoice",style: GoogleFonts.dmSans(textStyle: TextStyle(fontSize: 13.5,fontWeight: FontWeight.w500,color: Colors.black)),),
+                                    Text("Proforma Invoice",style: GoogleFonts.dmSans(textStyle: const TextStyle(fontSize: 13.5,fontWeight: FontWeight.w500,color: Colors.black)),),
                                   ],
                                 ),
                               ),
@@ -183,7 +178,7 @@ class _DashboardState extends State<Dashboard> {
                           left: 28.3.w,
                           child:GestureDetector(
                             onTap: (){
-                              Get.to(ProformaInvoice());
+                              Get.to(const ProformaInvoice());
                             },
                             child: Container(
                               height: height/10.h,
@@ -199,7 +194,7 @@ class _DashboardState extends State<Dashboard> {
                               child: Column(
                                 children: [
                                   SizedBox(height: 27.h,),
-                                  Icon(Icons.align_vertical_center,color: Colors.black,),
+                                  const Icon(Icons.align_vertical_center,color: Colors.black,),
                                 ],
                               ),
                             ),
@@ -233,7 +228,7 @@ class _DashboardState extends State<Dashboard> {
                               child: Column(
                                 children: [
                                   SizedBox(height: 70.h,),
-                                  Text("Item",style: GoogleFonts.dmSans(textStyle: TextStyle(fontSize: 13.5,fontWeight: FontWeight.w500,color: Colors.black)),),
+                                  Text("Item",style: GoogleFonts.dmSans(textStyle: const TextStyle(fontSize: 13.5,fontWeight: FontWeight.w500,color: Colors.black)),),
                                 ],
                               ),
                             ),
@@ -245,7 +240,7 @@ class _DashboardState extends State<Dashboard> {
                         left: 28.w,
                         child: GestureDetector(
                           onTap: (){
-                            Get.to(Items());
+                            Get.to(const Items());
                           },
                           child: Container(
                             height: height/10.h,
@@ -261,7 +256,7 @@ class _DashboardState extends State<Dashboard> {
                             child: Column(
                               children: [
                                 SizedBox(height: 26.h,),
-                                Icon(Icons.production_quantity_limits,color: Colors.black,),
+                                const Icon(Icons.production_quantity_limits,color: Colors.black,),
                               ],
                             ),
 
@@ -305,7 +300,7 @@ class _DashboardState extends State<Dashboard> {
                                 child: Column(
                                   children: [
                                     SizedBox(height: 70.h,),
-                                    Text("Purchase Inward",style: GoogleFonts.dmSans(textStyle: TextStyle(fontSize: 13.5,fontWeight: FontWeight.w500,color: Colors.black)),),
+                                    Text("Purchase Inward",style: GoogleFonts.dmSans(textStyle: const TextStyle(fontSize: 13.5,fontWeight: FontWeight.w500,color: Colors.black)),),
                                   ],
                                 ),
                               ),
@@ -317,7 +312,7 @@ class _DashboardState extends State<Dashboard> {
                           left: 28.3.w,
                           child:InkWell(
                             onTap: (){
-                              Get.to(Purchaseinward());
+                              Get.to(const Purchaseinward());
                             },
                             child: Container(
                               height: height/10.h,
@@ -333,7 +328,7 @@ class _DashboardState extends State<Dashboard> {
                               child: Column(
                                 children: [
                                   SizedBox(height: 26.h,),
-                                  Icon(Icons.safety_check,color: Colors.black,),
+                                  const Icon(Icons.safety_check,color: Colors.black,),
                                 ],
                               ),
                             ),
@@ -367,7 +362,7 @@ class _DashboardState extends State<Dashboard> {
                               child: Column(
                                 children: [
                                   SizedBox(height: 70.h,),
-                                  Text("Sales Invoice",style: GoogleFonts.dmSans(textStyle: TextStyle(fontSize: 13.5,fontWeight: FontWeight.w500,color: Colors.black)),),
+                                  Text("Sales Invoice",style: GoogleFonts.dmSans(textStyle: const TextStyle(fontSize: 13.5,fontWeight: FontWeight.w500,color: Colors.black)),),
                                 ],
                               ),
                             ),
@@ -379,7 +374,7 @@ class _DashboardState extends State<Dashboard> {
                         left: 27.3.h,
                         child: InkWell(
                           onTap: (){
-                            Get.to(SalesInvoice());
+                            Get.to(const SalesInvoice());
                           },
                           child: Container(
                             height: height/10.h,
@@ -394,7 +389,7 @@ class _DashboardState extends State<Dashboard> {
                             ),
                             child: SizedBox(
                                 height: 26.h,
-                                child: Icon(Icons.area_chart,color: Colors.black,)),
+                                child: const Icon(Icons.area_chart,color: Colors.black,)),
 
                           ),
                         ),

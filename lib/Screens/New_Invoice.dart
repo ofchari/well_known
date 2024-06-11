@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -7,7 +6,6 @@ import 'package:well_known/Screens/item_list.dart';
 import 'package:well_known/Widgets/subhead.dart';
 import 'package:well_known/Widgets/text.dart';
 import 'package:well_known/utils/refreshdata.dart';
-import '../Utils/refreshdata.dart';
 import '../Widgets/buttons.dart';
 
 class Newinvoice extends StatefulWidget {
@@ -36,7 +34,7 @@ class _NewinvoiceState extends State<Newinvoice> {
           return _smallBuildLayout();
         }
         else{
-          return Text("Large");
+          return const Text("Large");
         }
       },
       ),
@@ -45,17 +43,17 @@ class _NewinvoiceState extends State<Newinvoice> {
   Widget _smallBuildLayout(){
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      body: Container(
+      body: SizedBox(
         height: double.infinity,
         width: double.infinity,
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: 50,),
+              const SizedBox(height: 50,),
               Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Mytext(text: "Items", color: Colors.grey),
-                  Column(
+                  const Mytext(text: "Items", color: Colors.grey),
+                  const Column(
                     children: [
                       Mytext(text: "Net Total", color: Colors.black),
                       Mytext(text: "84.35", color: Colors.black),
@@ -65,22 +63,22 @@ class _NewinvoiceState extends State<Newinvoice> {
                     padding: const EdgeInsets.only(top: 22.0,left: 8.0),
                     child: GestureDetector(
                       onTap: (){
-                        Get.to(Itemlist());
+                        Get.to(const Itemlist());
                       },
                       child: Container(
                         height: height/26.h,
                         width: width/8.w,
                         decoration: BoxDecoration(
-                          color:  Color(0xffFF035e32),
+                          color:  const Color(0xffff035e32),
                           borderRadius: BorderRadius.circular(2),
                         ),
-                        child:  Center(child: Icon(Icons.add,color: Colors.white,size: 24,)),
+                        child:  const Center(child: Icon(Icons.add,color: Colors.white,size: 24,)),
                       ),
                     ),
                   )
                 ],
               ),
-              SizedBox(height: 50,),
+              const SizedBox(height: 50,),
               Container(
                 height: height/5.h,
                 width: width/1.1.w,
@@ -93,9 +91,9 @@ class _NewinvoiceState extends State<Newinvoice> {
                 ),
                 child:  Column(
                   children: [
-                    SizedBox(height: 10,),
-                    Subhead(text: "Item 1", colo: Colors.black, weight: FontWeight.w500),
-                    Divider(
+                    const SizedBox(height: 10,),
+                    const Subhead(text: "Item 1", colo: Colors.black, weight: FontWeight.w500),
+                    const Divider(
                       height: 1,
                       thickness: 1,
                       color: Colors.black,
@@ -109,7 +107,7 @@ class _NewinvoiceState extends State<Newinvoice> {
                             width: width/4.w,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
-                                image: DecorationImage(
+                                image: const DecorationImage(
                                     image: NetworkImage("https://img.freepik.com/premium-photo/close-up-sewing-machine-with-hands-working_41969-2495.jpg"),fit: BoxFit.cover
                                 )
                             ),
@@ -126,8 +124,8 @@ class _NewinvoiceState extends State<Newinvoice> {
                           //   ),
                           // ),
 
-                          Padding(
-                            padding: const EdgeInsets.only(left: 30.0),
+                          const Padding(
+                            padding: EdgeInsets.only(left: 30.0),
                             child: Column(
                               children: [
                                 SizedBox(height: 10,),
@@ -145,12 +143,12 @@ class _NewinvoiceState extends State<Newinvoice> {
                   ],
                 ),
               ),
-              SizedBox(height: 1.5,),
+              const SizedBox(height: 1.5,),
               Container(
                 height: height/10.27.h,
                 width: width/1.42.w,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                     bottomRight: Radius.circular(10),
                     bottomLeft: Radius.circular(10),
                   ),
@@ -166,15 +164,15 @@ class _NewinvoiceState extends State<Newinvoice> {
                       children: [
                         Column(
                           children: [
-                            SizedBox(height: 10,),
-                            Mytext(text: "Quantity", color: Colors.black),
-                            Container(
+                            const SizedBox(height: 10,),
+                            const Mytext(text: "Quantity", color: Colors.black),
+                            SizedBox(
                               // height: ,
                               width: width/10.w,
                               // color: Colors.yellow,
                               child: TextFormField(
                                 keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   contentPadding: EdgeInsets.symmetric(vertical: 0.0),
                                   hintText: "0",
                                   border: InputBorder.none
@@ -186,13 +184,13 @@ class _NewinvoiceState extends State<Newinvoice> {
                         ),
                         Column(
                           children: [
-                            SizedBox(height: 10,),
-                            Mytext(text: "Rate", color: Colors.black),
-                            Container(
+                            const SizedBox(height: 10,),
+                            const Mytext(text: "Rate", color: Colors.black),
+                            SizedBox(
                               width: width/10.w,
                               child: TextFormField(
                                 keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                     hintText: "0.0",
                                     border: InputBorder.none
                                 ),
@@ -200,13 +198,13 @@ class _NewinvoiceState extends State<Newinvoice> {
                             )
                           ],
                         ),
-                        Column(
+                        const Column(
                           children: [
                             Mytext(text: "Total", color: Colors.grey),
                             Mytext(text: "0.0", color: Colors.grey),
                           ],
                         ),
-                        Column(
+                        const Column(
                           children: [
                             Mytext(text: "UOM", color: Colors.grey),
                             Mytext(text: "SET", color: Colors.grey),
@@ -217,7 +215,7 @@ class _NewinvoiceState extends State<Newinvoice> {
                   ],
                 ),
               ),
-              SizedBox(height: 20,),
+              const SizedBox(height: 20,),
               Container(
                 height: height/5.h,
                 width: width/1.1.w,
@@ -230,9 +228,9 @@ class _NewinvoiceState extends State<Newinvoice> {
                 ),
                 child:  Column(
                   children: [
-                    SizedBox(height: 10,),
-                    Subhead(text: "Item 2", colo: Colors.black, weight: FontWeight.w500),
-                    Divider(
+                    const SizedBox(height: 10,),
+                    const Subhead(text: "Item 2", colo: Colors.black, weight: FontWeight.w500),
+                    const Divider(
                       height: 1,
                       thickness: 1,
                       color: Colors.black,
@@ -246,7 +244,7 @@ class _NewinvoiceState extends State<Newinvoice> {
                             width: width/4.w,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
-                                image: DecorationImage(
+                                image: const DecorationImage(
                                     image: NetworkImage("https://www.shutterstock.com/shutterstock/videos/991390/thumb/1.jpg?ip=x480"),fit: BoxFit.cover
                                 )
                             ),
@@ -262,8 +260,8 @@ class _NewinvoiceState extends State<Newinvoice> {
                           //     ),
                           //   ),
                           // ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 30.0),
+                          const Padding(
+                            padding: EdgeInsets.only(left: 30.0),
                             child: Column(
                               children: [
                                 SizedBox(height: 10,),
@@ -281,12 +279,12 @@ class _NewinvoiceState extends State<Newinvoice> {
                   ],
                 ),
               ),
-              SizedBox(height: 1.5,),
+              const SizedBox(height: 1.5,),
               Container(
                 height: height/10.27.h,
                 width: width/1.42.w,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       bottomRight: Radius.circular(10),
                       bottomLeft: Radius.circular(10),
                     ),
@@ -302,15 +300,15 @@ class _NewinvoiceState extends State<Newinvoice> {
                       children: [
                         Column(
                           children: [
-                            SizedBox(height: 10,),
-                            Mytext(text: "Quantity", color: Colors.black),
-                            Container(
+                            const SizedBox(height: 10,),
+                            const Mytext(text: "Quantity", color: Colors.black),
+                            SizedBox(
                               // height: ,
                               width: width/10.w,
                               // color: Colors.yellow,
                               child: TextFormField(
                                 keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                     contentPadding: EdgeInsets.symmetric(vertical: 0.0),
                                     hintText: "0",
                                     border: InputBorder.none
@@ -322,13 +320,13 @@ class _NewinvoiceState extends State<Newinvoice> {
                         ),
                         Column(
                           children: [
-                            SizedBox(height: 10,),
-                            Mytext(text: "Rate", color: Colors.black),
-                            Container(
+                            const SizedBox(height: 10,),
+                            const Mytext(text: "Rate", color: Colors.black),
+                            SizedBox(
                               width: width/10.w,
                               child: TextFormField(
                                 keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                     hintText: "0.0",
                                     border: InputBorder.none
                                 ),
@@ -337,13 +335,13 @@ class _NewinvoiceState extends State<Newinvoice> {
 
                           ],
                         ),
-                        Column(
+                        const Column(
                           children: [
                             Mytext(text: "Total", color: Colors.grey),
                             Mytext(text: "0.0", color: Colors.grey),
                           ],
                         ),
-                        Column(
+                        const Column(
                           children: [
                             Mytext(text: "UOM", color: Colors.grey),
                             Mytext(text: "SET", color: Colors.grey),
@@ -355,7 +353,7 @@ class _NewinvoiceState extends State<Newinvoice> {
                 ),
               ),
           
-              SizedBox(height: 20,),
+              const SizedBox(height: 20,),
               Container(
                 height: height/5.h,
                 width: width/1.1.w,
@@ -368,9 +366,9 @@ class _NewinvoiceState extends State<Newinvoice> {
                 ),
                 child:  Column(
                   children: [
-                    SizedBox(height: 10,),
-                    Subhead(text: "Item 3", colo: Colors.black, weight: FontWeight.w500),
-                    Divider(
+                    const SizedBox(height: 10,),
+                    const Subhead(text: "Item 3", colo: Colors.black, weight: FontWeight.w500),
+                    const Divider(
                       height: 1,
                       thickness: 1,
                       color: Colors.black,
@@ -384,7 +382,7 @@ class _NewinvoiceState extends State<Newinvoice> {
                             width: width/4.w,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
-                                image: DecorationImage(
+                                image: const DecorationImage(
                                     image: NetworkImage("https://p0.pxfuel.com/preview/30/696/865/sewing-machine-fabric-cloth.jpg"),fit: BoxFit.cover
                                 )
                             ),
@@ -400,8 +398,8 @@ class _NewinvoiceState extends State<Newinvoice> {
                           //     ),
                           //   ),
                           // ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 30.0),
+                          const Padding(
+                            padding: EdgeInsets.only(left: 30.0),
                             child: Column(
                               children: [
                                 SizedBox(height: 10,),
@@ -419,12 +417,12 @@ class _NewinvoiceState extends State<Newinvoice> {
                   ],
                 ),
               ),
-              SizedBox(height: 1.5,),
+              const SizedBox(height: 1.5,),
               Container(
                 height: height/10.27.h,
                 width: width/1.42.w,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       bottomRight: Radius.circular(10),
                       bottomLeft: Radius.circular(10),
                     ),
@@ -440,15 +438,15 @@ class _NewinvoiceState extends State<Newinvoice> {
                       children: [
                         Column(
                           children: [
-                            SizedBox(height: 10,),
-                            Mytext(text: "Quantity", color: Colors.black),
-                            Container(
+                            const SizedBox(height: 10,),
+                            const Mytext(text: "Quantity", color: Colors.black),
+                            SizedBox(
                               // height: ,
                               width: width/10.w,
                               // color: Colors.yellow,
                               child: TextFormField(
                                 keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                     contentPadding: EdgeInsets.symmetric(vertical: 0.0),
                                     hintText: "0",
                                     border: InputBorder.none
@@ -460,13 +458,13 @@ class _NewinvoiceState extends State<Newinvoice> {
                         ),
                         Column(
                           children: [
-                            SizedBox(height: 10,),
-                            Mytext(text: "Rate", color: Colors.black),
-                            Container(
+                            const SizedBox(height: 10,),
+                            const Mytext(text: "Rate", color: Colors.black),
+                            SizedBox(
                               width: width/10.w,
                               child: TextFormField(
                                 keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                     hintText: "0.0",
                                     border: InputBorder.none
                                 ),
@@ -475,13 +473,13 @@ class _NewinvoiceState extends State<Newinvoice> {
 
                           ],
                         ),
-                        Column(
+                        const Column(
                           children: [
                             Mytext(text: "Total", color: Colors.grey),
                             Mytext(text: "0.0", color: Colors.grey),
                           ],
                         ),
-                        Column(
+                        const Column(
                           children: [
                             Mytext(text: "UOM", color: Colors.grey),
                             Mytext(text: "SET", color: Colors.grey),
@@ -493,7 +491,7 @@ class _NewinvoiceState extends State<Newinvoice> {
                 ),
               ),
           
-              SizedBox(height: 20,),
+              const SizedBox(height: 20,),
               Container(
                 height: height/5.h,
                 width: width/1.1.w,
@@ -506,9 +504,9 @@ class _NewinvoiceState extends State<Newinvoice> {
                 ),
                 child:  Column(
                   children: [
-                    SizedBox(height: 10,),
-                    Subhead(text: "Item 4", colo: Colors.black, weight: FontWeight.w500),
-                    Divider(
+                    const SizedBox(height: 10,),
+                    const Subhead(text: "Item 4", colo: Colors.black, weight: FontWeight.w500),
+                    const Divider(
                       height: 1,
                       thickness: 1,
                       color: Colors.black,
@@ -522,13 +520,13 @@ class _NewinvoiceState extends State<Newinvoice> {
                             width: width/4.w,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
-                                image: DecorationImage(
+                                image: const DecorationImage(
                                     image: NetworkImage("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9_J7qTBKFZH4KDtGjQBgyeMrvoXFfC3Cm-tdzNtODdz1cDOj21c1VSjGfMwoxylee06c&usqp=CAU"),fit: BoxFit.cover
                                 )
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 30.0),
+                          const Padding(
+                            padding: EdgeInsets.only(left: 30.0),
                             child: Column(
                               children: [
                                 SizedBox(height: 10,),
@@ -546,12 +544,12 @@ class _NewinvoiceState extends State<Newinvoice> {
                   ],
                 ),
               ),
-              SizedBox(height: 1.6,),
+              const SizedBox(height: 1.6,),
               Container(
                 height: height/10.27.h,
                 width: width/1.42.w,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       bottomRight: Radius.circular(10),
                       bottomLeft: Radius.circular(10),
                     ),
@@ -567,15 +565,15 @@ class _NewinvoiceState extends State<Newinvoice> {
                       children: [
                         Column(
                           children: [
-                            SizedBox(height: 10,),
-                            Mytext(text: "Quantity", color: Colors.black),
-                            Container(
+                            const SizedBox(height: 10,),
+                            const Mytext(text: "Quantity", color: Colors.black),
+                            SizedBox(
                               // height: ,
                               width: width/10.w,
                               // color: Colors.yellow,
                               child: TextFormField(
                                 keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                     contentPadding: EdgeInsets.symmetric(vertical: 0.0),
                                     hintText: "0",
                                     border: InputBorder.none
@@ -587,13 +585,13 @@ class _NewinvoiceState extends State<Newinvoice> {
                         ),
                         Column(
                           children: [
-                            SizedBox(height: 10,),
-                            Mytext(text: "Rate", color: Colors.black),
-                            Container(
+                            const SizedBox(height: 10,),
+                            const Mytext(text: "Rate", color: Colors.black),
+                            SizedBox(
                               width: width/10.w,
                               child: TextFormField(
                                 keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                     hintText: "0.0",
                                     border: InputBorder.none
                                 ),
@@ -602,13 +600,13 @@ class _NewinvoiceState extends State<Newinvoice> {
 
                           ],
                         ),
-                        Column(
+                        const Column(
                           children: [
                             Mytext(text: "Total", color: Colors.grey),
                             Mytext(text: "0.0", color: Colors.grey),
                           ],
                         ),
-                        Column(
+                        const Column(
                           children: [
                             Mytext(text: "UOM", color: Colors.grey),
                             Mytext(text: "SET", color: Colors.grey),
@@ -619,13 +617,13 @@ class _NewinvoiceState extends State<Newinvoice> {
                   ],
                 ),
               ),
-              SizedBox(height: 20,),
+              const SizedBox(height: 20,),
               GestureDetector(
                 onTap: (){
-                  Get.off(Dashboard());
+                  Get.off(const Dashboard());
                 },
-                  child: Buttons(heigh: height/18.h, width: width/1.5.w, color: Color(0xffFF035e32), text: "Submit", radius: BorderRadius.circular(8))),
-              SizedBox(height: 50,),
+                  child: Buttons(heigh: height/18.h, width: width/1.5.w, color: const Color(0xffff035e32), text: "Submit", radius: BorderRadius.circular(8))),
+              const SizedBox(height: 50,),
             ],
           ),
         ),

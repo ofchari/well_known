@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:well_known/Screens/dashboard.dart';
 import 'package:well_known/Screens/login.dart';
 import 'package:well_known/Widgets/heading_text.dart';
 import 'package:well_known/Widgets/text.dart';
@@ -37,7 +38,7 @@ class _WelcomeState extends State<Welcome> {
             return _smallBuildLayout();
           }
           else{
-            return Text("Large");
+            return const Text("Large");
           }
         },
         ),
@@ -61,28 +62,28 @@ class _WelcomeState extends State<Welcome> {
       width: width.w,
       child: Column(
         children: [
-          SizedBox(height: 70,),
+          const SizedBox(height: 70,),
           Image.asset(
               height: 300,
               width: 300,
               "assets/well_know.png"),
-          SizedBox(height: 20,),
-          Text("Get Start",style: GoogleFonts.outfit(textStyle: TextStyle(fontSize: 23,fontWeight: FontWeight.w600,color: Colors.black)),),
-          SizedBox(height: 20,),
+          const SizedBox(height: 20,),
+          Text("Get Start",style: GoogleFonts.outfit(textStyle: const TextStyle(fontSize: 23,fontWeight: FontWeight.w600,color: Colors.black)),),
+          const SizedBox(height: 20,),
           Mytext(text: "Begin your journey to a better lifestyle  Fooffit", color: Colors.green.shade900),
-          SizedBox(height: 30,),
+          const SizedBox(height: 30,),
           GestureDetector(
             onTap: (){
-              Get.off(Login());
+              Get.off(const Login());
             },
             child: Container(
               height: height/18,
               width: width/1.2,
               decoration: BoxDecoration(
-                  color: Color(0xffFF035e32),
+                  color: const Color(0xffff035e32),
                   borderRadius: BorderRadius.circular(2)
               ),
-              child: Center(child: Mytext(text: "Start Now", color: Colors.white)),
+              child: const Center(child: Mytext(text: "Start Now", color: Colors.white)),
             ),
           )
         ],

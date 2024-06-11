@@ -100,7 +100,7 @@ class _ItemsState extends State<Items> {
             if (width <= 450) {
               return _smallBuildLayout();
             } else {
-              return Text("Large");
+              return const Text("Large");
             }
           },
         ),
@@ -117,12 +117,12 @@ class _ItemsState extends State<Items> {
           onTap: () {
             Get.back();
           },
-          child: Icon(
+          child: const Icon(
             Icons.arrow_back,
             color: Colors.black,
           ),
         ),
-        title: Headingtext(
+        title: const Headingtext(
           text: "Items",
           color: Colors.black,
           weight: FontWeight.w500,
@@ -140,7 +140,7 @@ class _ItemsState extends State<Items> {
                 });
               },
               decoration: InputDecoration(
-                prefixIcon: Icon(
+                prefixIcon: const Icon(
                   Icons.search,
                   color: Colors.black,
                 ),
@@ -158,7 +158,7 @@ class _ItemsState extends State<Items> {
               ),
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Expanded(
             child: _buildItemList(),
           ),
@@ -171,9 +171,9 @@ class _ItemsState extends State<Items> {
     List<Item> filteredItems = _filterItems(_searchTerm);
 
     if (_items.isEmpty) {
-      return Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator());
     } else if (filteredItems.isEmpty) {
-      return Center(child: Text('No items found'));
+      return const Center(child: Text('No items found'));
     } else {
       return ListView.builder(
         itemCount: filteredItems.length,
@@ -191,16 +191,16 @@ class _ItemsState extends State<Items> {
                       borderRadius: BorderRadius.circular(15)),
                   child: Column(
                     children: [
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Mytext(
                           text: item.itemName.toString(),
-                          color: Color(0xffFF035e32)),
-                      Divider(
+                          color: const Color(0xffff035e32)),
+                      const Divider(
                         height: 1,
                         thickness: 1,
                         color: Colors.black,
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Row(
                         children: [
                           Container(
@@ -221,7 +221,7 @@ class _ItemsState extends State<Items> {
                           ),
                           Column(
                             children: [
-                              SizedBox(height: 10),
+                              const SizedBox(height: 10),
                               Text(
                                 item.itemGroup.toString(),
                                 style: GoogleFonts.poppins(
@@ -230,13 +230,13 @@ class _ItemsState extends State<Items> {
                                         fontWeight: FontWeight.w500,
                                         color: Colors.lightBlue.shade400)),
                               ),
-                              SizedBox(height: 15),
+                              const SizedBox(height: 15),
                               Row(
                                 children: [
                                   Padding(
                                     padding: EdgeInsets.only(
                                         right: ScreenUtil().setWidth(10.0)),
-                                    child: Mytext(
+                                    child: const Mytext(
                                         text: "Part No : ",
                                         color: Colors.black),
                                   ),
@@ -246,7 +246,7 @@ class _ItemsState extends State<Items> {
                                     child: Text(
                                       item.part_no.toString(),
                                       style: GoogleFonts.poppins(
-                                          textStyle: TextStyle(
+                                          textStyle: const TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.w500,
                                               color: Colors.lightGreen)),
@@ -254,16 +254,16 @@ class _ItemsState extends State<Items> {
                                   )
                                 ],
                               ),
-                              SizedBox(height: 10),
+                              const SizedBox(height: 10),
                               Row(
                                 children: [
-                                  Mytext(
+                                  const Mytext(
                                       text: "  HSC/SAC : ",
                                       color: Colors.black),
                                   Text(
                                     item.gst_hsn_code.toString(),
                                     style: GoogleFonts.poppins(
-                                        textStyle: TextStyle(
+                                        textStyle: const TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w500,
                                             color: Colors.lightGreen)),
@@ -284,7 +284,7 @@ class _ItemsState extends State<Items> {
                       onTap: () {
                         _shareContent();
                       },
-                      child: Center(
+                      child: const Center(
                           child: Icon(
                             Icons.share,
                             color: Colors.black,

@@ -17,9 +17,9 @@ class _navigatState extends State<navigat> {
   int currentindex = 0;
 
   final pages = [
-    Dashboard(),
-    Message(),
-    Message(),
+    const Dashboard(),
+    const Message(),
+    const Message(),
 
   ];
   void krish(index){
@@ -33,7 +33,7 @@ class _navigatState extends State<navigat> {
       body: pages[currentindex],
       bottomNavigationBar: Container(
         height: 60,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           border: Border(
             top: BorderSide(
               color: Colors.blue,
@@ -50,7 +50,7 @@ class _navigatState extends State<navigat> {
                   setState(() {
                     currentindex = 0;
                   });
-                }, icon: Icon(Icons.home,color: Colors.black,)),
+                }, icon: const Icon(Icons.home,color: Colors.black,)),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 50.0),
@@ -58,7 +58,7 @@ class _navigatState extends State<navigat> {
                   setState(() {
                     currentindex = 1;
                   });
-                }, icon: Icon(Icons.message,color: Colors.black,)),
+                }, icon: const Icon(Icons.message,color: Colors.black,)),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 50.0),
@@ -66,7 +66,7 @@ class _navigatState extends State<navigat> {
                   setState(() {
                     currentindex = 2;
                   });
-                }, icon: Icon(Icons.settings,color: Colors.black,)),
+                }, icon: const Icon(Icons.settings,color: Colors.black,)),
               ),
             ],
           ),
@@ -75,10 +75,10 @@ class _navigatState extends State<navigat> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0xffFF035e32),
+        backgroundColor: const Color(0xffff035e32),
         onPressed: () {
-          Get.to(Items());
-        },child: Icon(Icons.search,color: Colors.white,),
+          Get.to(const Items());
+        },child: const Icon(Icons.search,color: Colors.white,),
       ),
     );
   }

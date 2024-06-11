@@ -82,7 +82,7 @@ class _ItemlistState extends State<Itemlist> {
             if (width <= 450) {
               return _smallBuildLayout();
             } else {
-              return Text("Large");
+              return const Text("Large");
             }
           },
         ),
@@ -117,8 +117,8 @@ class _ItemlistState extends State<Itemlist> {
           onTap: () {
             Get.back();
           },
-          child: Icon(Icons.arrow_back, color: Colors.black)),
-      title: Headingtext(
+          child: const Icon(Icons.arrow_back, color: Colors.black)),
+      title: const Headingtext(
           text: "  Item List", color: Colors.black, weight: FontWeight.w400),
       centerTitle: true,
     );
@@ -127,13 +127,13 @@ class _ItemlistState extends State<Itemlist> {
   Widget _buildBody(){
     return  Column(
       children: [
-        SizedBox(height: 40),
+        const SizedBox(height: 40),
         Padding(
-          padding: EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
+              SizedBox(
                 height: height / 18.h,
                 width: width / 1.5.w,
                 child: TextFormField(
@@ -141,11 +141,11 @@ class _ItemlistState extends State<Itemlist> {
                   decoration: InputDecoration(
                       hintText: "Search",
                       hintStyle: GoogleFonts.poppins(
-                          textStyle: TextStyle(
+                          textStyle: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
                               color: Colors.grey)),
-                      suffixIcon: Icon(
+                      suffixIcon: const Icon(
                         Icons.search,
                         color: Colors.grey,
                       ),
@@ -162,12 +162,12 @@ class _ItemlistState extends State<Itemlist> {
                         snackPosition: SnackPosition.BOTTOM
                     );
 
-                    Get.off(Newinvoice());
+                    Get.off(const Newinvoice());
                   },
                   child: Buttons(
                       heigh: height / 20,
                       width: width / 4.5,
-                      color: Color(0xffFF035e32),
+                      color: const Color(0xffff035e32),
                       text: "Finish",
                       radius: BorderRadius.circular(12)))
             ],
@@ -175,7 +175,7 @@ class _ItemlistState extends State<Itemlist> {
         ),
         Expanded(
           child: filteredItems.isNotEmpty
-              ? Container(
+              ? SizedBox(
                   height: height / 1.1.h,
                   width: width / 1.w,
                   child: ListView.builder(
@@ -195,18 +195,18 @@ class _ItemlistState extends State<Itemlist> {
                           )),
                       child: Column(
                         children: [
-                          SizedBox(height: 7),
+                          const SizedBox(height: 7),
                           Mytext(
                               text: itemliss.itemName.toString(),
                               color: Colors.green),
-                          Divider(
+                          const Divider(
                             height: 1,
                             thickness: 0.1,
                             color: Colors.black,
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           Padding(
-                            padding: EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8.0),
                             child: Row(
                               children: [
                                 Transform.rotate(
@@ -240,7 +240,7 @@ class _ItemlistState extends State<Itemlist> {
                                         MainAxisAlignment
                                             .spaceBetween,
                                         children: [
-                                          Subhead(
+                                          const Subhead(
                                             text: "Part-No : ",
                                             colo: Colors.black,
                                             weight: FontWeight.w500,
@@ -258,14 +258,14 @@ class _ItemlistState extends State<Itemlist> {
                                         ],
                                       ),
                                     ),
-                                    SizedBox(height: 10),
+                                    const SizedBox(height: 10),
                                     Padding(
                                       padding: EdgeInsets.only(
                                           left: ScreenUtil()
                                               .setWidth(30.0)),
                                       child: Row(
                                         children: [
-                                          Mytext(
+                                          const Mytext(
                                               text: "HSN/SAC :",
                                               color: Colors.black),
                                           Padding(
@@ -281,14 +281,14 @@ class _ItemlistState extends State<Itemlist> {
                                         ],
                                       ),
                                     ),
-                                    SizedBox(height: 10),
+                                    const SizedBox(height: 10),
                                     Padding(
                                       padding: EdgeInsets.only(
                                           left: ScreenUtil()
                                               .setWidth(30.0)),
                                       child: Row(
                                         children: [
-                                          Mytext(
+                                          const Mytext(
                                               text: "UOM :",
                                               color: Colors.black),
                                           Padding(
@@ -302,8 +302,8 @@ class _ItemlistState extends State<Itemlist> {
                                         ],
                                       ),
                                     ),
-                                    SizedBox(height: 10),
-                                    Subhead(
+                                    const SizedBox(height: 10),
+                                    const Subhead(
                                         text: "Qty",
                                         colo: Colors.black,
                                         weight: FontWeight.w500),
@@ -336,7 +336,7 @@ class _ItemlistState extends State<Itemlist> {
                                                     padding: EdgeInsets.only(
                                                         bottom: ScreenUtil()
                                                             .setWidth(3.0)),
-                                                    child: Icon(
+                                                    child: const Icon(
                                                       Icons
                                                           .exposure_minus_1,
                                                       color: Colors.white,
@@ -356,7 +356,7 @@ class _ItemlistState extends State<Itemlist> {
                                                   .circular(5)),
                                           child: Column(
                                             children: [
-                                              SizedBox(height: 4),
+                                              const SizedBox(height: 4),
                                               Mytext(
                                                   text:
                                                   "${quantities[index]}",
@@ -388,7 +388,7 @@ class _ItemlistState extends State<Itemlist> {
                                                     padding: EdgeInsets.only(
                                                         bottom: ScreenUtil()
                                                             .setWidth(3.0)),
-                                                    child: Icon(
+                                                    child: const Icon(
                                                       Icons.add,
                                                       color: Colors.white,
                                                       size: 20,
@@ -409,7 +409,7 @@ class _ItemlistState extends State<Itemlist> {
                     ),
                   );
                 }),
-          ): Center(child: CircularProgressIndicator()),
+          ): const Center(child: CircularProgressIndicator()),
         ),
 
       ],

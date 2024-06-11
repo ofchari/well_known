@@ -1,8 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:well_known/Utils/purchase_utils.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/io_client.dart';
+import 'package:well_known/Screens/purchase_invoice.dart';
 import 'package:well_known/Utils/refreshdata.dart';
+import 'package:well_known/Widgets/buttons.dart';
 import 'package:well_known/Widgets/heading_text.dart';
 import 'package:well_known/Widgets/subhead.dart';
 import 'package:well_known/Widgets/text.dart';
@@ -19,11 +24,31 @@ class Purchaseinward extends StatefulWidget {
 class _PurchaseinwardState extends State<Purchaseinward> {
   late double height;
   late double width;
+  var suppli = '';
 
   @override
   void initState() {
     fetching();
     super.initState();
+  }
+
+  Future<List<PurchaseInvoice>> fetching() async {
+    HttpClient client = HttpClient();
+    client.badCertificateCallback =
+    ((X509Certificate cert, String host, int port) => true);
+    IOClient ioClient = IOClient(client);
+    final response = await http.get(
+        Uri.parse(
+            'https://erp.wellknownssyndicate.com/api/resource/Purchase Invoice?fields=["name","supplier","supplier_gstin","posting_date","tax_id","company"]&limit_page_length=50000'),
+        headers: {
+          "Authorization": "token c5a479b60dd48ad:d8413be73e709b6"
+        });
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body)['data'];
+      return data.map((e) => PurchaseInvoice.fromJson(e)).toList();
+    } else {
+       throw Exception("Failed to fetch data");
+    }
   }
 
   @override
@@ -47,7 +72,7 @@ class _PurchaseinwardState extends State<Purchaseinward> {
             if (width <= 450) {
               return _smallBuildLayout();
             } else {
-              return Text("Large");
+              return const Text("Large");
             }
           },
         ),
@@ -78,17 +103,17 @@ class _PurchaseinwardState extends State<Purchaseinward> {
   // App Bar //
   Widget _buildAppBar() {
     return AppBar(
-      // toolbarHeight: 100,
+      backgroundColor: Colors.white,
       leading: GestureDetector(
         onTap: () {
           Get.back();
         },
-        child: Icon(
+        child: const Icon(
           Icons.arrow_back,
           color: Colors.black,
         ),
       ),
-      title: Headingtext(
+      title: const Headingtext(
         text: "Purchase Inward",
         color: Colors.black,
         weight: FontWeight.w500,
@@ -101,11 +126,12 @@ class _PurchaseinwardState extends State<Purchaseinward> {
   Widget _buildBody() {
     return SizedBox(
       width: width.w,
-      child: FutureBuilder<List<PurchaseInvoice>>(
+      child:
+      FutureBuilder<List<PurchaseInvoice>>(
         future: fetching(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Text("${snapshot.error}");
           } else {
@@ -117,11 +143,11 @@ class _PurchaseinwardState extends State<Purchaseinward> {
                 return Padding(
                   padding: EdgeInsets.all(8.0.w),
                   child: Container(
-                    height: height / 4.5.h,
+                    height: height / 3.1.h,
                     width: width / 1.1.w,
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: Colors.green,
+                        color: Colors.blue,
                         width: 1.5.w,
                       ),
                       borderRadius: BorderRadius.circular(15),
@@ -134,18 +160,18 @@ class _PurchaseinwardState extends State<Purchaseinward> {
                           children: [
                             Subhead(
                               text: purchase.supplier.toString(),
-                              colo: Colors.lightBlue.shade400,
+                              colo: Colors.blue,
                               weight: FontWeight.w500,
                             ),
                           ],
                         ),
-                        SizedBox(height: 10.h),
+                        SizedBox(height: 15.h),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Subhead(
+                            const Subhead(
                               text: "Company",
-                              colo: Colors.green,
+                              colo: Colors.black,
                               weight: FontWeight.w500,
                             ),
                             Mytext(
@@ -154,13 +180,13 @@ class _PurchaseinwardState extends State<Purchaseinward> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 10.h),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        SizedBox(height: 15.h),
+                        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
                           children: [
-                            Subhead(
+                            const Subhead(
                               text: "Supplier Gst",
-                              colo: Colors.green,
+                              colo: Colors.black,
                               weight: FontWeight.w500,
                             ),
                             Mytext(
@@ -169,13 +195,12 @@ class _PurchaseinwardState extends State<Purchaseinward> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 10.h),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        SizedBox(height: 15.h),
+                        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Subhead(
+                            const Subhead(
                               text: "Posting date",
-                              colo: Colors.green,
+                              colo: Colors.black,
                               weight: FontWeight.w500,
                             ),
                             Mytext(
@@ -184,13 +209,13 @@ class _PurchaseinwardState extends State<Purchaseinward> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 10.h),
+                        SizedBox(height: 15.h),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Subhead(
+                            const Subhead(
                               text: "Tax Id",
-                              colo: Colors.green,
+                              colo: Colors.black,
                               weight: FontWeight.w500,
                             ),
                             Mytext(
@@ -198,6 +223,24 @@ class _PurchaseinwardState extends State<Purchaseinward> {
                               color: Colors.black,
                             ),
                           ],
+                        ),
+                        SizedBox(height: 20.h),
+                        GestureDetector(
+                          onTap: () {
+                            print(purchase.name.toString());
+                            print(purchase.supplier.toString());
+                            print(purchase.supplierGstin.toString());
+                            print(purchase);
+
+                            Get.to(PurchaseInvoicess(purchaseInvoice: purchase, ));
+                          },
+                          child: Buttons(
+                            heigh: height / 22.h,
+                            width: width / 1.4.w,
+                            color: Colors.blue,
+                            text: "View",
+                            radius: BorderRadius.circular(10),
+                          ),
                         ),
                       ],
                     ),
