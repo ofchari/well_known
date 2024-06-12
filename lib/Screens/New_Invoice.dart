@@ -18,6 +18,7 @@ class Newinvoice extends StatefulWidget {
 class _NewinvoiceState extends State<Newinvoice> {
   late double height;
   late double width;
+  List<int> items = [1]; // Example items list
 
   @override
   Widget build(BuildContext context) {
@@ -26,21 +27,22 @@ class _NewinvoiceState extends State<Newinvoice> {
     width = size.width;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-        height = constraints.maxHeight;
-        width = constraints.maxWidth;
-        ScreenUtil.init(context,designSize: Size(width, height),minTextAdapt: true);
-        if(width<=450){
-          return _smallBuildLayout();
-        }
-        else{
-          return const Text("Large");
-        }
-      },
+      body: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          height = constraints.maxHeight;
+          width = constraints.maxWidth;
+          ScreenUtil.init(context, designSize: Size(width, height), minTextAdapt: true);
+          if (width <= 450) {
+            return _smallBuildLayout();
+          } else {
+            return const Text("Large");
+          }
+        },
       ),
     );
   }
-  Widget _smallBuildLayout(){
+
+  Widget _smallBuildLayout() {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SizedBox(
@@ -50,7 +52,8 @@ class _NewinvoiceState extends State<Newinvoice> {
           child: Column(
             children: [
               const SizedBox(height: 50,),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   const Mytext(text: "Items", color: Colors.grey),
                   const Column(
@@ -60,575 +63,184 @@ class _NewinvoiceState extends State<Newinvoice> {
                     ],
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 22.0,left: 8.0),
+                    padding: const EdgeInsets.only(top: 22.0, left: 8.0),
                     child: GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         Get.to(const Itemlist());
                       },
                       child: Container(
-                        height: height/26.h,
-                        width: width/8.w,
+                        height: height / 26.h,
+                        width: width / 8.w,
                         decoration: BoxDecoration(
-                          color:  const Color(0xffff035e32),
+                          color: const Color(0xffff035e32),
                           borderRadius: BorderRadius.circular(2),
                         ),
-                        child:  const Center(child: Icon(Icons.add,color: Colors.white,size: 24,)),
+                        child: const Center(child: Icon(Icons.add, color: Colors.white, size: 24,)),
                       ),
                     ),
                   )
                 ],
               ),
               const SizedBox(height: 50,),
-              Container(
-                height: height/5.h,
-                width: width/1.1.w,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  border: Border.all(
-                    color: Colors.green,
-                    width: 1.5
-                  )
-                ),
-                child:  Column(
-                  children: [
-                    const SizedBox(height: 10,),
-                    const Subhead(text: "Item 1", colo: Colors.black, weight: FontWeight.w500),
-                    const Divider(
-                      height: 1,
-                      thickness: 1,
-                      color: Colors.black,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Container(
-                            height: height/9.h,
-                            width: width/4.w,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                image: const DecorationImage(
-                                    image: NetworkImage("https://img.freepik.com/premium-photo/close-up-sewing-machine-with-hands-working_41969-2495.jpg"),fit: BoxFit.cover
-                                )
-                            ),
-                          ),
-                          // Padding(
-                          //   padding: const EdgeInsets.only(left: 8.0),
-                          //   child: SizedBox(
-                          //     height: 113,
-                          //     child: VerticalDivider(
-                          //       width: 2,
-                          //       thickness: 2,
-                          //       color: Colors.green,
-                          //     ),
-                          //   ),
-                          // ),
-
-                          const Padding(
-                            padding: EdgeInsets.only(left: 30.0),
-                            child: Column(
-                              children: [
-                                SizedBox(height: 10,),
-                                Mytext(text: "Code : 100", color: Colors.black),
-                                SizedBox(height: 10,),
-                                Mytext(text: "Item Group", color: Colors.black),
-                                SizedBox(height: 10,),
-                                Mytext(text: "UOM - PCS", color: Colors.black),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              const SizedBox(height: 1.5,),
-              Container(
-                height: height/10.27.h,
-                width: width/1.42.w,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                    bottomRight: Radius.circular(10),
-                    bottomLeft: Radius.circular(10),
-                  ),
-                  border: Border.all(
-                    color: Colors.green,
-                    width: 1.2
-                  )
-                ),
-                child: Column(
-                  children: [
-                    // SizedBox(height: ,),
-                    Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Column(
-                          children: [
-                            const SizedBox(height: 10,),
-                            const Mytext(text: "Quantity", color: Colors.black),
-                            SizedBox(
-                              // height: ,
-                              width: width/10.w,
-                              // color: Colors.yellow,
-                              child: TextFormField(
-                                keyboardType: TextInputType.number,
-                                decoration: const InputDecoration(
-                                  contentPadding: EdgeInsets.symmetric(vertical: 0.0),
-                                  hintText: "0",
-                                  border: InputBorder.none
-                                ),
-                              ),
-                            )
-
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            const SizedBox(height: 10,),
-                            const Mytext(text: "Rate", color: Colors.black),
-                            SizedBox(
-                              width: width/10.w,
-                              child: TextFormField(
-                                keyboardType: TextInputType.number,
-                                decoration: const InputDecoration(
-                                    hintText: "0.0",
-                                    border: InputBorder.none
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                        const Column(
-                          children: [
-                            Mytext(text: "Total", color: Colors.grey),
-                            Mytext(text: "0.0", color: Colors.grey),
-                          ],
-                        ),
-                        const Column(
-                          children: [
-                            Mytext(text: "UOM", color: Colors.grey),
-                            Mytext(text: "SET", color: Colors.grey),
-                          ],
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20,),
-              Container(
-                height: height/5.h,
-                width: width/1.1.w,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(
-                        color: Colors.green,
-                        width: 1.5
-                    )
-                ),
-                child:  Column(
-                  children: [
-                    const SizedBox(height: 10,),
-                    const Subhead(text: "Item 2", colo: Colors.black, weight: FontWeight.w500),
-                    const Divider(
-                      height: 1,
-                      thickness: 1,
-                      color: Colors.black,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Container(
-                            height: height/9.h,
-                            width: width/4.w,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                image: const DecorationImage(
-                                    image: NetworkImage("https://www.shutterstock.com/shutterstock/videos/991390/thumb/1.jpg?ip=x480"),fit: BoxFit.cover
-                                )
-                            ),
-                          ),
-                          // Padding(
-                          //   padding: const EdgeInsets.only(left: 8.0),
-                          //   child: SizedBox(
-                          //     height: 113,
-                          //     child: VerticalDivider(
-                          //       width: 2,
-                          //       thickness: 2,
-                          //       color: Colors.green,
-                          //     ),
-                          //   ),
-                          // ),
-                          const Padding(
-                            padding: EdgeInsets.only(left: 30.0),
-                            child: Column(
-                              children: [
-                                SizedBox(height: 10,),
-                                Mytext(text: "Code : 2000", color: Colors.black),
-                                SizedBox(height: 10,),
-                                Mytext(text: "Item Group", color: Colors.black),
-                                SizedBox(height: 10,),
-                                Mytext(text: "UOM - PCS", color: Colors.black),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 1.5,),
-              Container(
-                height: height/10.27.h,
-                width: width/1.42.w,
-                decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                      bottomRight: Radius.circular(10),
-                      bottomLeft: Radius.circular(10),
-                    ),
-                    border: Border.all(
-                        color: Colors.green,
-                        width: 1.2
-                    )
-                ),
-                child: Column(
-                  children: [
-                    // SizedBox(height: ,),
-                    Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Column(
-                          children: [
-                            const SizedBox(height: 10,),
-                            const Mytext(text: "Quantity", color: Colors.black),
-                            SizedBox(
-                              // height: ,
-                              width: width/10.w,
-                              // color: Colors.yellow,
-                              child: TextFormField(
-                                keyboardType: TextInputType.number,
-                                decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.symmetric(vertical: 0.0),
-                                    hintText: "0",
-                                    border: InputBorder.none
-                                ),
-                              ),
-                            )
-
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            const SizedBox(height: 10,),
-                            const Mytext(text: "Rate", color: Colors.black),
-                            SizedBox(
-                              width: width/10.w,
-                              child: TextFormField(
-                                keyboardType: TextInputType.number,
-                                decoration: const InputDecoration(
-                                    hintText: "0.0",
-                                    border: InputBorder.none
-                                ),
-                              ),
-                            )
-
-                          ],
-                        ),
-                        const Column(
-                          children: [
-                            Mytext(text: "Total", color: Colors.grey),
-                            Mytext(text: "0.0", color: Colors.grey),
-                          ],
-                        ),
-                        const Column(
-                          children: [
-                            Mytext(text: "UOM", color: Colors.grey),
-                            Mytext(text: "SET", color: Colors.grey),
-                          ],
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-          
-              const SizedBox(height: 20,),
-              Container(
-                height: height/5.h,
-                width: width/1.1.w,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(
-                        color: Colors.green,
-                        width: 1.5
-                    )
-                ),
-                child:  Column(
-                  children: [
-                    const SizedBox(height: 10,),
-                    const Subhead(text: "Item 3", colo: Colors.black, weight: FontWeight.w500),
-                    const Divider(
-                      height: 1,
-                      thickness: 1,
-                      color: Colors.black,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Container(
-                            height: height/9.h,
-                            width: width/4.w,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                image: const DecorationImage(
-                                    image: NetworkImage("https://p0.pxfuel.com/preview/30/696/865/sewing-machine-fabric-cloth.jpg"),fit: BoxFit.cover
-                                )
-                            ),
-                          ),
-                          // Padding(
-                          //   padding: const EdgeInsets.only(left: 8.0),
-                          //   child: SizedBox(
-                          //     height: 113,
-                          //     child: VerticalDivider(
-                          //       width: 2,
-                          //       thickness: 2,
-                          //       color: Colors.green,
-                          //     ),
-                          //   ),
-                          // ),
-                          const Padding(
-                            padding: EdgeInsets.only(left: 30.0),
-                            child: Column(
-                              children: [
-                                SizedBox(height: 10,),
-                                Mytext(text: "Code : 1000", color: Colors.black),
-                                SizedBox(height: 10,),
-                                Mytext(text: "Item Group", color: Colors.black),
-                                SizedBox(height: 10,),
-                                Mytext(text: "UOM - PCS", color: Colors.black),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              const SizedBox(height: 1.5,),
-              Container(
-                height: height/10.27.h,
-                width: width/1.42.w,
-                decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                      bottomRight: Radius.circular(10),
-                      bottomLeft: Radius.circular(10),
-                    ),
-                    border: Border.all(
-                        color: Colors.green,
-                        width: 1.2
-                    )
-                ),
-                child: Column(
-                  children: [
-                    // SizedBox(height: ,),
-                    Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Column(
-                          children: [
-                            const SizedBox(height: 10,),
-                            const Mytext(text: "Quantity", color: Colors.black),
-                            SizedBox(
-                              // height: ,
-                              width: width/10.w,
-                              // color: Colors.yellow,
-                              child: TextFormField(
-                                keyboardType: TextInputType.number,
-                                decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.symmetric(vertical: 0.0),
-                                    hintText: "0",
-                                    border: InputBorder.none
-                                ),
-                              ),
-                            )
-
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            const SizedBox(height: 10,),
-                            const Mytext(text: "Rate", color: Colors.black),
-                            SizedBox(
-                              width: width/10.w,
-                              child: TextFormField(
-                                keyboardType: TextInputType.number,
-                                decoration: const InputDecoration(
-                                    hintText: "0.0",
-                                    border: InputBorder.none
-                                ),
-                              ),
-                            )
-
-                          ],
-                        ),
-                        const Column(
-                          children: [
-                            Mytext(text: "Total", color: Colors.grey),
-                            Mytext(text: "0.0", color: Colors.grey),
-                          ],
-                        ),
-                        const Column(
-                          children: [
-                            Mytext(text: "UOM", color: Colors.grey),
-                            Mytext(text: "SET", color: Colors.grey),
-                          ],
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-          
-              const SizedBox(height: 20,),
-              Container(
-                height: height/5.h,
-                width: width/1.1.w,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(
-                        color: Colors.green,
-                        width: 1.5
-                    )
-                ),
-                child:  Column(
-                  children: [
-                    const SizedBox(height: 10,),
-                    const Subhead(text: "Item 4", colo: Colors.black, weight: FontWeight.w500),
-                    const Divider(
-                      height: 1,
-                      thickness: 1,
-                      color: Colors.black,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Container(
-                            height: height/9.h,
-                            width: width/4.w,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                image: const DecorationImage(
-                                    image: NetworkImage("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9_J7qTBKFZH4KDtGjQBgyeMrvoXFfC3Cm-tdzNtODdz1cDOj21c1VSjGfMwoxylee06c&usqp=CAU"),fit: BoxFit.cover
-                                )
-                            ),
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.only(left: 30.0),
-                            child: Column(
-                              children: [
-                                SizedBox(height: 10,),
-                                Mytext(text: "Code : 1000", color: Colors.black),
-                                SizedBox(height: 10,),
-                                Mytext(text: "Item Group", color: Colors.black),
-                                SizedBox(height: 10,),
-                                Mytext(text: "UOM - PCS", color: Colors.black),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              const SizedBox(height: 1.6,),
-              Container(
-                height: height/10.27.h,
-                width: width/1.42.w,
-                decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                      bottomRight: Radius.circular(10),
-                      bottomLeft: Radius.circular(10),
-                    ),
-                    border: Border.all(
-                        color: Colors.green,
-                        width: 1.2
-                    )
-                ),
-                child: Column(
-                  children: [
-                    // SizedBox(height: ,),
-                    Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Column(
-                          children: [
-                            const SizedBox(height: 10,),
-                            const Mytext(text: "Quantity", color: Colors.black),
-                            SizedBox(
-                              // height: ,
-                              width: width/10.w,
-                              // color: Colors.yellow,
-                              child: TextFormField(
-                                keyboardType: TextInputType.number,
-                                decoration: const InputDecoration(
-                                    contentPadding: EdgeInsets.symmetric(vertical: 0.0),
-                                    hintText: "0",
-                                    border: InputBorder.none
-                                ),
-                              ),
-                            )
-
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            const SizedBox(height: 10,),
-                            const Mytext(text: "Rate", color: Colors.black),
-                            SizedBox(
-                              width: width/10.w,
-                              child: TextFormField(
-                                keyboardType: TextInputType.number,
-                                decoration: const InputDecoration(
-                                    hintText: "0.0",
-                                    border: InputBorder.none
-                                ),
-                              ),
-                            )
-
-                          ],
-                        ),
-                        const Column(
-                          children: [
-                            Mytext(text: "Total", color: Colors.grey),
-                            Mytext(text: "0.0", color: Colors.grey),
-                          ],
-                        ),
-                        const Column(
-                          children: [
-                            Mytext(text: "UOM", color: Colors.grey),
-                            Mytext(text: "SET", color: Colors.grey),
-                          ],
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
+              // ...items.map((e) => _buildItem(e)).toList(),
+              ...items.map((e) => _buildItem(e)).toList(),
               const SizedBox(height: 20,),
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   Get.off(const Dashboard());
                 },
-                  child: Buttons(heigh: height/18.h, width: width/1.5.w, color: const Color(0xffff035e32), text: "Submit", radius: BorderRadius.circular(8))),
+                child: Buttons(heigh: height / 18.h, width: width / 1.5.w, color: const Color(0xffff035e32), text: "Submit", radius: BorderRadius.circular(8)),
+              ),
               const SizedBox(height: 50,),
             ],
           ),
         ),
       ),
+    );
+  }
 
+  Widget _buildItem(int item) {
+    return Column(
+      children: [
+        Dismissible(
+          key: ValueKey(item),
+          direction: DismissDirection.endToStart,
+          onDismissed: (direction) {
+            setState(() {
+              items.remove(item);
+            });
+          },
+          background: Container(
+            color: Colors.red,
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: const Icon(Icons.delete, color: Colors.white),
+          ),
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 1.5),
+            height: height / 5.h,
+            width: width / 1.1.w,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(
+                color: Colors.green,
+                width: 1.5,
+              ),
+            ),
+            child: Column(
+              children: [
+                const SizedBox(height: 10,),
+                Subhead(text: "Item $item", colo: Colors.black, weight: FontWeight.w500),
+                const Divider(
+                  height: 1,
+                  thickness: 1,
+                  color: Colors.black,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Container(
+                        height: height / 9.h,
+                        width: width / 4.w,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          image: DecorationImage(
+                            image: NetworkImage("https://img.freepik.com/premium-photo/close-up-sewing-machine-with-hands-working_41969-2495.jpg"),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 30.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 10,),
+                            Mytext(text: "Code : 1000", color: Colors.black),
+                            SizedBox(height: 10,),
+                            Mytext(text: "Item Group", color: Colors.black),
+                            SizedBox(height: 10,),
+                            Mytext(text: "UOM - PCS", color: Colors.black),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Container(
+          height: height / 10.27.h,
+          width: width / 1.42.w,
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.only(
+              bottomRight: Radius.circular(10),
+              bottomLeft: Radius.circular(10),
+            ),
+            border: Border.all(
+              color: Colors.green,
+              width: 1.2,
+            ),
+          ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: [
+                      const SizedBox(height: 10,),
+                      const Mytext(text: "Quantity", color: Colors.black),
+                      SizedBox(
+                        width: width / 10.w,
+                        child: TextFormField(
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(vertical: 0.0),
+                            hintText: "0",
+                            border: InputBorder.none,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      const SizedBox(height: 10,),
+                      const Mytext(text: "Rate", color: Colors.black),
+                      SizedBox(
+                        width: width / 10.w,
+                        child: TextFormField(
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: "0.0",
+                            border: InputBorder.none,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Column(
+                    children: [
+                      Mytext(text: "Total", color: Colors.grey),
+                      Mytext(text: "0.0", color: Colors.grey),
+                    ],
+                  ),
+                  const Column(
+                    children: [
+                      Mytext(text: "UOM", color: Colors.grey),
+                      Mytext(text: "SET", color: Colors.grey),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

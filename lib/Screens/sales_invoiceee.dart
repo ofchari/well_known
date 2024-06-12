@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/io_client.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:well_known/Services/sales_api.dart';
 import 'package:well_known/Utils/refreshdata.dart';
 import 'package:well_known/Widgets/heading_text.dart';
@@ -163,12 +164,17 @@ class _View_InvoiceState extends State<View_Invoice> with SingleTickerProviderSt
                               alignment: Alignment.topRight,
                               child: Padding(
                                 padding:  EdgeInsets.all(8.0.w),
-                                child: Buttons(
-                                  heigh: height / 18.h,
-                                  width: width / 4.5.w,
-                                  color: Colors.blue,
-                                  text: "Action",
-                                  radius: BorderRadius.circular(26),
+                                child: GestureDetector(
+                                  onTap: (){
+                                    alert(BuildContext, context);
+                                  },
+                                  child: Buttons(
+                                    heigh: height / 18.h,
+                                    width: width / 4.5.w,
+                                    color: Colors.blue,
+                                    text: "Action",
+                                    radius: BorderRadius.circular(26),
+                                  ),
                                 ),
                               )),
                           const SizedBox(height: 5),
@@ -1036,31 +1042,6 @@ class _View_InvoiceState extends State<View_Invoice> with SingleTickerProviderSt
                                                   ),
                                                 ),
                                                 SizedBox(height: 15.h,),
-                                                // Row(
-                                                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                //   children: [
-                                                //     Text(
-                                                //       'RATE ${ts_tax_breakup_table['ts_gst_rate']}',
-                                                //       style: GoogleFonts.poppins(
-                                                //         textStyle: TextStyle(
-                                                //           fontSize: 15,
-                                                //           fontWeight: FontWeight.w500,
-                                                //           color: Colors.black,
-                                                //         ),
-                                                //       ),
-                                                //     ),
-                                                //     Text(
-                                                //       'TAXABLE: ${ts_tax_breakup_table['ts_taxable_values']}',
-                                                //       style: GoogleFonts.poppins(
-                                                //         textStyle: TextStyle(
-                                                //           fontSize: 14,
-                                                //           fontWeight: FontWeight.w500,
-                                                //           color: Colors.grey,
-                                                //         ),
-                                                //       ),
-                                                //     ),
-                                                //   ],
-                                                // ),
 
                                                 IntrinsicHeight(
                                                   child: Row(
@@ -1479,4 +1460,34 @@ class _View_InvoiceState extends State<View_Invoice> with SingleTickerProviderSt
 
           }
   }
+     // Alert Popup message //
+void alert (BuildContext,context){
+  Alert(
+      context: context,
+      type: AlertType.warning,
+      title: "Alert Message",style: AlertStyle(titleStyle: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w500,color: Colors.green)),descStyle: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.blue))),
+      desc: "Are you sure want to Submit ",
+      buttons: [
+        DialogButton(
+            color: Colors.grey.shade200,
+            child: const Mytext(text: "Yes", color: Colors.blue),
+            onPressed: (){
+              Navigator.pop(context);
+            }
+        ),
+        DialogButton(
+            color: Colors.grey.shade200,
+            child: GestureDetector(
+                onTap: (){
+                  Get.back();
+                },
+                child: const Mytext(text: "No", color: Colors.red)),
+            onPressed: (){
+              Navigator.pop(context);
+            }
+        )
+      ]
+
+  ).show();
+}
 

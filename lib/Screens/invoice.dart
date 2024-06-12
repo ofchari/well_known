@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/io_client.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:well_known/Utils/refreshdata.dart';
 import 'package:well_known/Widgets/buttons.dart';
 import 'package:well_known/Widgets/subhead.dart';
@@ -87,6 +88,7 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
       if (await canLaunch(url)) {
         await launch(url);
       } else {
+        print("doesn't print ");
         throw Exception('Could not launch $url');
       }
     } else {
@@ -158,15 +160,21 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
           text: "Invoice", color: Colors.black, weight: FontWeight.w400),
       centerTitle: true,
       actions: [
-        const Icon(
-          Icons.home,
-          color: Colors.black,
+        Padding(
+          padding:  EdgeInsets.all(8.0.w),
+          child: const Icon(
+            Icons.home,
+            color: Colors.black,
+          ),
         ),
         GestureDetector(
           onTap: (){invoice_print();},
-          child: const Icon(
-            Icons.print,
-            color: Colors.black,
+          child:  Padding(
+            padding:  EdgeInsets.all(8.0.w),
+            child: const Icon(
+              Icons.print,
+              color: Colors.black,
+            ),
           ),
         ),
         Padding(
@@ -211,12 +219,17 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                               alignment: Alignment.topRight,
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Buttons(
-                                  heigh: height / 18.h,
-                                  width: width / 4.5.w,
-                                  color: Colors.blue,
-                                  text: "Action",
-                                  radius: BorderRadius.circular(26),
+                                child: GestureDetector(
+                                  onTap: (){
+                                    alert(BuildContext, context);
+                                  },
+                                  child: Buttons(
+                                    heigh: height / 18.h,
+                                    width: width / 4.5.w,
+                                    color: Colors.blue,
+                                    text: "Action",
+                                    radius: BorderRadius.circular(26),
+                                  ),
                                 ),
                               )),
                           const SizedBox(height: 5),
@@ -1569,7 +1582,6 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                                                 ),
                                                 Expanded(
                                                   child: Container(
-
                                                     child: Column(
                                                       crossAxisAlignment: CrossAxisAlignment.center,
                                                       children: [
@@ -1689,6 +1701,36 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
     );
   }
 
+}
+
+void alert (BuildContext,context){
+  Alert(
+      context: context,
+    type: AlertType.warning,
+    title: "Alert Message",style: AlertStyle(titleStyle: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w500,color: Colors.green)),descStyle: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w500,color: Colors.blue))),
+    desc: "Are you sure want to Submit",
+    buttons: [
+      DialogButton(
+        color: Colors.grey.shade200,
+          child: const Mytext(text: "Yes", color: Colors.blue),
+          onPressed: (){
+            Navigator.pop(context);
+          }
+      ),
+      DialogButton(
+        color: Colors.grey.shade200,
+          child: GestureDetector(
+            onTap: (){
+              Get.back();
+            },
+              child: const Mytext(text: "No", color: Colors.red)),
+          onPressed: (){
+            Navigator.pop(context);
+          }
+      )
+    ]
+
+  ).show();
 }
 
 

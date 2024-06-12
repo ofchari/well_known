@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/io_client.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:well_known/Utils/refreshdata.dart';
 import 'package:well_known/Widgets/heading_text.dart';
 import 'package:well_known/Widgets/subhead.dart';
@@ -168,13 +169,18 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
                             Align(
                                 alignment: Alignment.topRight,
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Buttons(
-                                    heigh: height / 18.h,
-                                    width: width / 4.5.w,
-                                    color: Colors.blue,
-                                    text: "Action",
-                                    radius: BorderRadius.circular(26),
+                                  padding:  EdgeInsets.all(8.0.w),
+                                  child: GestureDetector(
+                                    onTap: (){
+                                      alert(BuildContext, context);
+                                    },
+                                    child: Buttons(
+                                      heigh: height / 18.h,
+                                      width: width / 4.5.w,
+                                      color: Colors.blue,
+                                      text: "Action",
+                                      radius: BorderRadius.circular(26),
+                                    ),
                                   ),
                                 )),
                             const SizedBox(height: 5),
@@ -1154,4 +1160,34 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
           }),
     );
   }
+}
+   // Alert Popup logic //
+void alert (BuildContext,context){
+  Alert(
+      context: context,
+      type: AlertType.warning,
+      title: "Alert Message",style: AlertStyle(titleStyle: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w500,color: Colors.green)),descStyle: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.blue))),
+      desc: "Are you sure want to Submit",
+      buttons: [
+        DialogButton(
+            color: Colors.grey.shade200,
+            child: const Mytext(text: "Yes", color: Colors.blue),
+            onPressed: (){
+              Navigator.pop(context);
+            }
+        ),
+        DialogButton(
+            color: Colors.grey.shade200,
+            child: GestureDetector(
+                onTap: (){
+                  Get.back();
+                },
+                child: const Mytext(text: "No", color: Colors.red)),
+            onPressed: (){
+              Navigator.pop(context);
+            }
+        )
+      ]
+
+  ).show();
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:well_known/Screens/welcome.dart';
+import 'package:well_known/Screens/New_Invoice.dart';
+import 'package:well_known/Screens/item_list.dart';
+import 'package:well_known/Screens/new_proforma_voice.dart';
+import 'package:well_known/Screens/proforma_invoice.dart';
 
 
 void main() {
@@ -22,7 +25,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
         // home: Welcome()
-        home: const Welcome()
+        home:  Newinvoice()
     );
   }
 }

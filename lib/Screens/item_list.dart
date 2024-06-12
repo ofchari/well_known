@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -29,6 +28,7 @@ class _ItemlistState extends State<Itemlist> {
   List<Item> filteredItems = [];
   List<int> quantities = [];
   TextEditingController searchController = TextEditingController();
+  List<Map<String, dynamic>> selectedItems = [];
 
   @override
   void initState() {
@@ -57,6 +57,15 @@ class _ItemlistState extends State<Itemlist> {
 
   String _preprocessString(String input) {
     return input.replaceAll(RegExp(r'[\s,%."]'), '').toLowerCase();
+  }
+
+  void _addSelectedItem(Item item, int quantity) {
+    setState(() {
+      selectedItems.add({
+        'item': item,
+        'quantity': quantity,
+      });
+    });
   }
 
   @override
@@ -97,7 +106,7 @@ class _ItemlistState extends State<Itemlist> {
           top: 20.h,
           left: 0,
           right: 0,
-            child: _buildAppBar(),
+          child: _buildAppBar(),
         ),
         Positioned(
           top: 100.h,
@@ -105,27 +114,33 @@ class _ItemlistState extends State<Itemlist> {
           right: 0,
           bottom: 0,
           child: _buildBody(),
-        )
+        ),
       ],
     );
   }
-       // App Bar //
-  Widget _buildAppBar(){
+
+  // App Bar //
+  Widget _buildAppBar() {
     return AppBar(
       backgroundColor: Colors.white,
       leading: GestureDetector(
-          onTap: () {
-            Get.back();
-          },
-          child: const Icon(Icons.arrow_back, color: Colors.black)),
+        onTap: () {
+          Get.back();
+        },
+        child: const Icon(Icons.arrow_back, color: Colors.black),
+      ),
       title: const Headingtext(
-          text: "  Item List", color: Colors.black, weight: FontWeight.w400),
+        text: "  Item List",
+        color: Colors.black,
+        weight: FontWeight.w400,
+      ),
       centerTitle: true,
     );
   }
-          // Body //
-  Widget _buildBody(){
-    return  Column(
+
+  // Body //
+  Widget _buildBody() {
+    return Column(
       children: [
         const SizedBox(height: 40),
         Padding(
@@ -139,284 +154,280 @@ class _ItemlistState extends State<Itemlist> {
                 child: TextFormField(
                   controller: searchController,
                   decoration: InputDecoration(
-                      hintText: "Search",
-                      hintStyle: GoogleFonts.poppins(
-                          textStyle: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.grey)),
-                      suffixIcon: const Icon(
-                        Icons.search,
+                    hintText: "Search",
+                    hintStyle: GoogleFonts.poppins(
+                      textStyle: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
                         color: Colors.grey,
                       ),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15))),
+                    ),
+                    suffixIcon: const Icon(
+                      Icons.search,
+                      color: Colors.grey,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
                 ),
               ),
               GestureDetector(
-                  onTap: () {
-                    Get.snackbar(
-                        "Added Successfully",
-                        "Thank you",
-                        colorText: Colors.white,
-                        snackPosition: SnackPosition.BOTTOM
-                    );
+                onTap: () {
+                  Get.snackbar(
+                    "Added Successfully",
+                    "Thank you",
+                    colorText: Colors.white,
+                    snackPosition: SnackPosition.BOTTOM,
+                  );
 
-                    Get.off(const Newinvoice());
-                  },
-                  child: Buttons(
-                      heigh: height / 20,
-                      width: width / 4.5,
-                      color: const Color(0xffff035e32),
-                      text: "Finish",
-                      radius: BorderRadius.circular(12)))
+                  Get.to(() => Newinvoice());
+                },
+                child: Buttons(
+                  heigh: height / 20,
+                  width: width / 4.5,
+                  color: const Color(0xffff035e32),
+                  text: "Finish",
+                  radius: BorderRadius.circular(12),
+                ),
+              ),
             ],
           ),
         ),
         Expanded(
           child: filteredItems.isNotEmpty
               ? SizedBox(
-                  height: height / 1.1.h,
-                  width: width / 1.w,
-                  child: ListView.builder(
-                      itemCount: filteredItems.length,
-                itemBuilder: (context, index) {
-                  Item itemliss = filteredItems[index];
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      height: height / 3.6.h,
-                      width: width / 1.98.w,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
-                            color: Colors.green,
-                            width: 2,
-                          )),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 7),
-                          Mytext(
-                              text: itemliss.itemName.toString(),
-                              color: Colors.green),
-                          const Divider(
-                            height: 1,
-                            thickness: 0.1,
-                            color: Colors.black,
-                          ),
-                          const SizedBox(height: 20),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Transform.rotate(
-                                  angle: 0 * pi / 180,
-                                  child:
-                                  Container(
-                                    height: height / 7.h,
-                                    width: width / 3.4.w,
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius.circular(15),
-          
-                                        image: DecorationImage(
-                                          image: NetworkImage(
-                                            'https://erp.wellknownssyndicate.com${itemliss.image?.toString() ?? "/files/bimage.png"}',
-                                            headers: {"Authorization": "token c5a479b60dd48ad:d8413be73e709b6"},
-                                          ),
-                                          fit: BoxFit.cover,
-                                        )
+            height: height / 1.1.h,
+            width: width / 1.w,
+            child: ListView.builder(
+              itemCount: filteredItems.length,
+              itemBuilder: (context, index) {
+                Item itemliss = filteredItems[index];
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    height: height / 3.3.h,
+                    width: width / 1.98.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      border: Border.all(
+                        color: Colors.blue,
+                        width: 2,
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 7),
+                        Mytext(
+                          text: itemliss.itemName.toString(),
+                          color: Colors.blue,
+                        ),
+                        const Divider(
+                          height: 1,
+                          thickness: 0.1,
+                          color: Colors.black,
+                        ),
+                        const SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Transform.rotate(
+                                angle: 0 * pi / 180,
+                                child: Container(
+                                  height: height / 7.h,
+                                  width: width / 3.4.w,
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                    BorderRadius.circular(15),
+                                    image: DecorationImage(
+                                      image: NetworkImage(
+                                        'https://erp.wellknownssyndicate.com${itemliss.image?.toString() ?? "/files/bimage.png"}',
+                                        headers: {
+                                          "Authorization":
+                                          "token c5a479b60dd48ad:d8413be73e709b6"
+                                        },
+                                      ),
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                 ),
-                                Column(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          left: ScreenUtil()
-                                              .setWidth(30.0)),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment
-                                            .spaceBetween,
-                                        children: [
-                                          const Subhead(
-                                            text: "Part-No : ",
-                                            colo: Colors.black,
-                                            weight: FontWeight.w500,
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                                left: ScreenUtil()
-                                                    .setWidth(8.0)),
-                                            child: Mytext(
-                                              text: itemliss.part_no
-                                                  .toString(),
-                                              color: Colors.blue,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                              ),
+                              Column(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      left:
+                                      ScreenUtil().setWidth(30.0),
                                     ),
-                                    const SizedBox(height: 10),
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          left: ScreenUtil()
-                                              .setWidth(30.0)),
-                                      child: Row(
-                                        children: [
-                                          const Mytext(
-                                              text: "HSN/SAC :",
-                                              color: Colors.black),
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                                left: ScreenUtil()
-                                                    .setWidth(8.0)),
-                                            child: Mytext(
-                                                text: itemliss
-                                                    .gst_hsn_code
-                                                    .toString(),
-                                                color: Colors.blue),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          left: ScreenUtil()
-                                              .setWidth(30.0)),
-                                      child: Row(
-                                        children: [
-                                          const Mytext(
-                                              text: "UOM :",
-                                              color: Colors.black),
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                                left: ScreenUtil().setWidth(8.0)),
-                                            child: Mytext(
-                                                text: itemliss.stock_uom
-                                                    .toString(),
-                                                color: Colors.blue),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    const Subhead(
-                                        text: "Qty",
-                                        colo: Colors.black,
-                                        weight: FontWeight.w500),
-                                    Row(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment
+                                          .spaceBetween,
                                       children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              if (quantities[index] >
-                                                  0) {
-                                                quantities[index]--;
-                                              }
-                                            });
-                                          },
-                                          child: Padding(
-                                            padding: EdgeInsets.only(
-                                                right: ScreenUtil()
-                                                    .setWidth(8.0)),
-                                            child: Container(
-                                              height: height / 26.h,
-                                              width: width / 8.w,
-                                              decoration: BoxDecoration(
-                                                color: Colors.blue,
-                                                borderRadius:
-                                                BorderRadius
-                                                    .circular(5),
-                                              ),
-                                              child: Center(
-                                                  child: Padding(
-                                                    padding: EdgeInsets.only(
-                                                        bottom: ScreenUtil()
-                                                            .setWidth(3.0)),
-                                                    child: const Icon(
-                                                      Icons
-                                                          .exposure_minus_1,
-                                                      color: Colors.white,
-                                                      size: 20,
-                                                    ),
-                                                  )),
-                                            ),
-                                          ),
+                                        const Subhead(
+                                          text: "Part-No : ",
+                                          colo: Colors.black,
+                                          weight: FontWeight.w500,
                                         ),
-                                        Container(
-                                          height: height / 26.h,
-                                          width: width / 7.w,
-                                          decoration: BoxDecoration(
-                                              color: Colors.grey.shade100,
-                                              borderRadius:
-                                              BorderRadius
-                                                  .circular(5)),
-                                          child: Column(
-                                            children: [
-                                              const SizedBox(height: 4),
-                                              Mytext(
-                                                  text:
-                                                  "${quantities[index]}",
-                                                  color: Colors.black),
-                                            ],
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                            left: ScreenUtil()
+                                                .setWidth(8.0),
                                           ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              quantities[index]++;
-                                            });
-                                          },
-                                          child: Padding(
-                                            padding: EdgeInsets.only(
-                                                left: ScreenUtil()
-                                                    .setWidth(8.0)),
-                                            child: Container(
-                                              height: height / 26.h,
-                                              width: width / 8.w,
-                                              decoration: BoxDecoration(
-                                                color: Colors.blue,
-                                                borderRadius:
-                                                BorderRadius
-                                                    .circular(5),
-                                              ),
-                                              child: Center(
-                                                  child: Padding(
-                                                    padding: EdgeInsets.only(
-                                                        bottom: ScreenUtil()
-                                                            .setWidth(3.0)),
-                                                    child: const Icon(
-                                                      Icons.add,
-                                                      color: Colors.white,
-                                                      size: 20,
-                                                    ),
-                                                  )),
-                                            ),
+                                          child: Mytext(
+                                            text: itemliss.part_no
+                                                .toString(),
+                                            color: Colors.blue,
                                           ),
                                         ),
                                       ],
                                     ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      left:
+                                      ScreenUtil().setWidth(30.0),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        const Mytext(
+                                          text: "HSN/SAC :",
+                                          color: Colors.black,
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                            left: ScreenUtil()
+                                                .setWidth(8.0),
+                                          ),
+                                          child: Mytext(
+                                            text: itemliss
+                                                .gst_hsn_code
+                                                .toString(),
+                                            color: Colors.blue,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      left:
+                                      ScreenUtil().setWidth(30.0),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        const Mytext(
+                                          text: "UOM :",
+                                          color: Colors.black,
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                            left: ScreenUtil()
+                                                .setWidth(8.0),
+                                          ),
+                                          child: Mytext(
+                                            text: itemliss.stock_uom
+                                                .toString(),
+                                            color: Colors.blue,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 15.0, right: 15.0),
+                          child: Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Row(
+                                  children: [
+                                    const Mytext(
+                                      text: "MRP :",
+                                      color: Colors.black,
+                                    ),
+                                    Mytext(
+                                      text: itemliss.brand.toString(),
+                                      color: Colors.blue,
+                                    ),
                                   ],
                                 ),
-                              ],
-                            ),
+                              ),
+                              Container(
+                                height: height / 20.h,
+                                width: width / 4.w,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Colors.blue, width: 1),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: TextFormField(
+                                  decoration: InputDecoration(
+                                    hintText: "QTY",
+                                    hintStyle: GoogleFonts.poppins(
+                                      textStyle: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                    border: InputBorder.none,
+                                    contentPadding:
+                                    const EdgeInsets.only(
+                                        left: 10, right: 10),
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                  onChanged: (value) {
+                                    quantities[index] = int.tryParse(value) ?? 0;
+                                  },
+                                ),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  _addSelectedItem(itemliss, quantities[index]);
+                                  Get.snackbar(
+                                    "Item Added",
+                                    "${itemliss.itemName} added successfully!",
+                                    snackPosition: SnackPosition.BOTTOM,
+                                    backgroundColor: Colors.blue,
+                                    colorText: Colors.white,
+                                  );
+                                },
+                                child: Text('Add'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xffff035e32),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  );
-                }),
-          ): const Center(child: CircularProgressIndicator()),
+                  ),
+                );
+              },
+            ),
+          )
+              : Center(
+            child: CircularProgressIndicator(),
+          ),
         ),
-
       ],
     );
   }
 }
-
-
-
-
