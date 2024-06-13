@@ -92,18 +92,18 @@ class _NewproformaVoiceState extends State<NewproformaVoice> {
     if (response.statusCode == 200) {
       Navigator.of(context).pop();
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => Newinvoice()),
+        MaterialPageRoute(builder: (context) => const Newinvoice()),
       );
     }
     else if (response.statusCode == 417) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('Error'),
-          content: Text('Request to fill all the field'),
+          title: const Text('Error'),
+          content: const Text('Request to fill all the field'),
           actions: [
             ElevatedButton(
-              child: Text('OK'),
+              child: const Text('OK'),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ],
@@ -114,13 +114,13 @@ class _NewproformaVoiceState extends State<NewproformaVoice> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('Message'),
+          title: const Text('Message'),
           content: SingleChildScrollView(
             child: Text(responcemsg),
           ),
           actions: [
             ElevatedButton(
-              child: Text('OK'),
+              child: const Text('OK'),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ],
@@ -132,11 +132,11 @@ class _NewproformaVoiceState extends State<NewproformaVoice> {
         context: context,
         builder: (context) => SingleChildScrollView(
           child: AlertDialog(
-            title: Text('Error'),
+            title: const Text('Error'),
             content: Text('Request failed with status: ${response.statusCode} ${response.body}'),
             actions: [
               ElevatedButton(
-                child: Text('OK'),
+                child: const Text('OK'),
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ],
