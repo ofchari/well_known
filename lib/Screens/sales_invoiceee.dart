@@ -5,7 +5,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/io_client.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:well_known/Services/sales_api.dart';
 import 'package:well_known/Utils/refreshdata.dart';
 import 'package:well_known/Widgets/heading_text.dart';
@@ -54,6 +56,36 @@ class _View_InvoiceState extends State<View_Invoice> with SingleTickerProviderSt
     } else {
       // error status code (404,500) //
       throw Exception("Failed to load data: ${response.statusCode}");
+    }
+  }
+  // Print Logic and Functionaity //
+  Future<void> salesInvoicePrint() async {
+    HttpClient client = HttpClient();
+    client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+    IOClient ioClient = IOClient(client);
+
+    final response = await ioClient.get(
+      Uri.parse(
+          'https://erp.wellknownssyndicate.com/api/method/frappe.utils.print_format.download_pdf?doctype=Sales%20OInvoice&name=C1-2425-01020&format=PIC%20PDF&no_letterhead=0&letterhead=WKS%20Letter%20Head%201&settings=%7B%7D&_lang=en-US'),
+      headers: {
+        "Authorization": "token c5a479b60dd48ad:d8413be73e709b6"
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final directory = await getApplicationDocumentsDirectory();
+      final file = File('${directory.path}/sales_invoice.pdf');
+      await file.writeAsBytes(response.bodyBytes);
+
+      final url = file.path;
+      if (await canLaunch(url)) {
+        await launch(url);
+      } else {
+        print("doesn't print ");
+        throw Exception('Could not launch $url');
+      }
+    } else {
+      throw Exception("Failed to load data : ${response.statusCode}");
     }
   }
 
@@ -120,12 +152,23 @@ class _View_InvoiceState extends State<View_Invoice> with SingleTickerProviderSt
           text: "Sales Invoice", color: Colors.black, weight: FontWeight.w400),
       centerTitle: true,
       actions: [
-        const Icon(
-          Icons.home,
-          color: Colors.black,
+        Padding(
+          padding:  EdgeInsets.all(4.0.w),
+          child:  const Icon(
+            Icons.home,
+            color: Colors.black,
+          ),
         ),
         Padding(
-          padding: EdgeInsets.all(8.0.w),
+          padding:  EdgeInsets.all(4.0.w),
+          child: GestureDetector(
+            onTap: (){
+              salesInvoicePrint();
+            },
+              child: const Icon(Icons.print,color: Colors.black,)),
+        ),
+        Padding(
+          padding: EdgeInsets.all(4.0.w),
           child: const Icon(
             Icons.more_vert,
             color: Colors.black,
@@ -218,7 +261,7 @@ class _View_InvoiceState extends State<View_Invoice> with SingleTickerProviderSt
                                           color: Colors.black),
                                       const SizedBox(height: 4),
                                       Mytext(
-                                          text: sales.posting_date.toString(),
+                                          text: "${(((sales.posting_date.toString()).split('-')).toList())[2]}-${(((sales.posting_date.toString()).split('-')).toList())[1]}-${(((sales.posting_date.toString()).split('-')).toList())[0]}",
                                           color: Colors.black),
                                     ],
                                   ),
@@ -235,7 +278,7 @@ class _View_InvoiceState extends State<View_Invoice> with SingleTickerProviderSt
                                           color: Colors.black),
                                       const SizedBox(height: 4),
                                       Mytext(
-                                          text: sales.due_date.toString(),
+                                          text: "${(((sales.due_date.toString()).split('-')).toList())[2]}-${(((sales.due_date.toString()).split('-')).toList())[1]}-${(((sales.due_date.toString()).split('-')).toList())[0]}",
                                           color: Colors.black),
                                     ],
                                   ),
@@ -410,7 +453,8 @@ class _View_InvoiceState extends State<View_Invoice> with SingleTickerProviderSt
                           const SizedBox(height: 40,),
                           SizedBox(
                               height: MediaQuery.of(context).size.height * 0.8, // Adjust the height as needed
-                              child: TabBarView(
+                              child:
+                              TabBarView(
                                   controller: _tabController,
                                   children: [SingleChildScrollView(
                                     child: Column(

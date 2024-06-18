@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:http/http.dart'as http;
+import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -24,13 +25,15 @@ class SalesInvoice extends StatefulWidget {
 class _SalesInvoiceState extends State<SalesInvoice> {
   late double height;
   late double width;
+  String _searchTerm = '';
+  List<Sales> _salesList = [];
+  List<Sales> _filteredSalesList = [];
 
   @override
   void initState() {
     fetch();
     super.initState();
   }
-  var sales_persons = '';
 
   // Api's Response //
   Future<List<Sales>> fetch() async {
@@ -39,17 +42,34 @@ class _SalesInvoiceState extends State<SalesInvoice> {
     ((X509Certificate cert, String host, int port) => true);
     IOClient ioClient = IOClient(client);
     final response = await http.get(
-        Uri.parse('https://erp.wellknownssyndicate.com/api/resource/Sales Invoice?fields=["name","sales_person","billing_person","attended_by","attended_person","company","branch","customer","attended_person","customer_address","posting_date","due_date"]'),
+        Uri.parse(
+            'https://erp.wellknownssyndicate.com/api/resource/Sales Invoice?fields=["name","sales_person","billing_person","attended_by","attended_person","company","branch","customer","attended_person","customer_address","posting_date","due_date","base_total"]&limit_page_length=50000'),
         headers: {"Authorization": "token c5a479b60dd48ad:d8413be73e709b6"});
     if (response.statusCode == 200) {
       // Handle the responses //
       print(response.body);
       List<dynamic> data = jsonDecode(response.body)['data'];
-      return data.map((e) => Sales.fromJson(e)).toList();
+      _salesList = data.map((e) => Sales.fromJson(e)).toList();
+      _filteredSalesList = _salesList;
+      setState(() {}); // Trigger rebuild to show data
+      return _salesList;
     } else {
       // error status code (404,500) //
       throw Exception("Failed to load data : ${response.statusCode}");
     }
+  }
+
+  void _filterSales() {
+    setState(() {
+      if (_searchTerm.isEmpty) {
+        _filteredSalesList = _salesList;
+      } else {
+        _filteredSalesList = _salesList
+            .where((sales) =>
+            sales.name!.toLowerCase().contains(_searchTerm.toLowerCase()))
+            .toList();
+      }
+    });
   }
 
   @override
@@ -65,7 +85,8 @@ class _SalesInvoiceState extends State<SalesInvoice> {
           builder: (BuildContext context, BoxConstraints constraints) {
             height = constraints.maxHeight;
             width = constraints.maxWidth;
-            ScreenUtil.init(context, designSize: Size(width, height), minTextAdapt: true);
+            ScreenUtil.init(context,
+                designSize: Size(width, height), minTextAdapt: true);
             if (width <= 450) {
               return _smallBuildLayout();
               // Mobile Screen Sizes //
@@ -123,23 +144,51 @@ class _SalesInvoiceState extends State<SalesInvoice> {
   Widget _buildBody() {
     return SizedBox(
       width: width.w,
-      child: FutureBuilder<List<Sales>>(
-        future: fetch(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
-            return ListView.builder(
+      child: Column(
+        children: [
+          SizedBox(
+            height: 10.h,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: TextFormField(
+              onChanged: (value) {
+                setState(() {
+                  _searchTerm = value;
+                  _filterSales();
+                });
+              },
+              decoration: InputDecoration(
+                prefixIcon: const Icon(
+                  Icons.search,
+                  color: Colors.black,
+                ),
+                hintText: "Search SalesInvoice",
+                hintStyle: GoogleFonts.dmSans(
+                  textStyle: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.green,
+                  ),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+            ),
+          ),
+          _salesList.isEmpty
+              ? const Center(child: CircularProgressIndicator())
+              : Expanded(
+            child: ListView.builder(
               scrollDirection: Axis.vertical,
-              itemCount: snapshot.data!.length,
+              itemCount: _filteredSalesList.length,
               itemBuilder: (context, index) {
-                Sales sales = snapshot.data![index];
+                Sales sales = _filteredSalesList[index];
                 return Padding(
                   padding: EdgeInsets.all(8.0.w),
                   child: Container(
-                    height: height / 2.8.h,
+                    height: height / 2.45.h,
                     width: width / 1.1.w,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
@@ -151,96 +200,108 @@ class _SalesInvoiceState extends State<SalesInvoice> {
                     child: Column(
                       children: [
                         SizedBox(height: 10.h),
+                        Subhead(
+                          text: sales.name.toString(),
+                          colo: Colors.blue.shade900,
+                          weight: FontWeight.w500,
+                        ),
+                        SizedBox(height: 30.h),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceEvenly,
                           children: [
-                            // Subhead(text: "Sales Person", colo: Colors.green, weight: FontWeight.w500),
-                            Subhead(
-                              text: sales.name.toString(),
-                              colo: Colors.blue.shade900,
-                              weight: FontWeight.w500,
+                            const Subhead(
+                                text: "Customer :",
+                                colo: Colors.black,
+                                weight: FontWeight.w500),
+                            FittedBox(
+                              fit: BoxFit.fitWidth,
+                              child: Mytext(
+                                  text: sales.customer.toString(),
+                                  color: Colors.black),
+                            ),
+                          ],
+                        ),
+                        const Divider(
+                          thickness: 0.5,
+                          color: Colors.grey,
+                        ),
+                        Row(
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const Mytext(
+                                    text: " DATE :",
+                                    color: Colors.black),
+                                Mytext(
+                                    text:
+                                    "${(((sales.posting_date.toString()).split('-')).toList())[2]}-${(((sales.posting_date.toString()).split('-')).toList())[1]}-${(((sales.posting_date.toString()).split('-')).toList())[0]}",
+                                    color: Colors.black),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10.h,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(8.0.w),
+                              child: Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  const Mytext(
+                                      text: "Due Date :",
+                                      color: Colors.black),
+                                  Mytext(
+                                      text:
+                                      "${(((sales.due_date.toString()).split('-')).toList())[2]}-${(((sales.due_date.toString()).split('-')).toList())[1]}-${(((sales.due_date.toString()).split('-')).toList())[0]}",
+                                      color: Colors.black),
+                                ],
+                              ),
                             ),
                           ],
                         ),
                         SizedBox(height: 10.h),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            const Subhead(
-                                text: "Billing Person",
-                                colo: Colors.blue,
-                                weight: FontWeight.w500),
-                            Mytext(
-                                text: sales.billing_person.toString(),
-                                color: Colors.black),
-                          ],
+                        const Divider(
+                          thickness: 0.5,
+                          color: Colors.grey,
                         ),
                         SizedBox(height: 10.h),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceEvenly,
                           children: [
                             const Subhead(
-                                text: "Attended by",
-                                colo: Colors.blue,
+                                text: "Billing Value",
+                                colo: Colors.black,
                                 weight: FontWeight.w500),
                             Mytext(
-                                text: sales.attended_by.toString(),
+                                text: sales.base_total.toString(),
                                 color: Colors.black),
                           ],
                         ),
+                        const Divider(
+                          thickness: 0.5,
+                          color: Colors.grey,
+                        ),
                         SizedBox(height: 10.h),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceEvenly,
                           children: [
                             const Subhead(
                                 text: "Attended person",
-                                colo: Colors.blue,
+                                colo: Colors.black,
                                 weight: FontWeight.w500),
-                            Mytext(
-                                text: sales.attended_person.toString(),
-                                color: Colors.black),
+                            FittedBox(
+                              child: Mytext(
+                                  text: sales.attended_person.toString(),
+                                  color: Colors.black),
+                            ),
                           ],
                         ),
-                        SizedBox(height: 10.h),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            const Subhead(
-                                text: "Company",
-                                colo: Colors.blue,
-                                weight: FontWeight.w500),
-                            Mytext(
-                                text: sales.company.toString(),
-                                color: Colors.black),
-                          ],
-                        ),
-                        SizedBox(height: 10.h),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            const Subhead(
-                                text: "Branch",
-                                colo: Colors.blue,
-                                weight: FontWeight.w500),
-                            Mytext(
-                                text: sales.branch.toString(),
-                                color: Colors.black),
-                          ],
-                        ),
-                        SizedBox(height: 10.h),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            const Subhead(
-                                text: "Customer",
-                                colo: Colors.blue,
-                                weight: FontWeight.w500),
-                            Mytext(
-                                text: sales.customer.toString(),
-                                color: Colors.black),
-                          ],
-                        ),
-                        SizedBox(height: 10.h),
+                        SizedBox(height: 17.h),
                         GestureDetector(
                           onTap: () {
                             Get.to(View_Invoice(name: sales.name));
@@ -258,9 +319,9 @@ class _SalesInvoiceState extends State<SalesInvoice> {
                   ),
                 );
               },
-            );
-          }
-        },
+            ),
+          ),
+        ],
       ),
     );
   }

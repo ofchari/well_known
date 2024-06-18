@@ -302,12 +302,12 @@ class _ItemlistState extends State<Itemlist> {
               ),
               GestureDetector(
                 onTap: () {
-                  Get.snackbar(
-                    "Added Successfully",
-                    "Thank you",
-                    colorText: Colors.white,
-                    snackPosition: SnackPosition.BOTTOM,
-                  );
+                  // Get.snackbar(
+                  //   "Added Successfully",
+                  //   "Thank you",
+                  //   colorText: Colors.white,
+                  //   snackPosition: SnackPosition.BOTTOM,
+                  // );
 
                   Get.to(() => const Newinvoice());
                 },

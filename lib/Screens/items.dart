@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/io_client.dart';
 import 'package:share/share.dart';
+// import 'package:share/share.dart';
 import 'package:well_known/Services/sample.dart';
 import 'package:well_known/Utils/refreshdata.dart';
 import 'package:well_known/Widgets/heading_text.dart';
@@ -14,10 +15,18 @@ import 'package:well_known/Widgets/text.dart';
 import 'package:well_known/models/item_products.dart';
 import 'package:http/http.dart' as http;
 import 'package:well_known/utils/items_util.dart';
-
 import '../Services/items_api.dart';
 import '../Utils/items_util.dart';
 import '../Utils/sample_util.dart';
+import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' as Dioo;
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'dart:io';
+
+
+
 
 class Items extends StatefulWidget {
   const Items({super.key});
@@ -48,7 +57,7 @@ class _ItemsState extends State<Items> {
 
     final response = await ioClient.get(
       Uri.parse(
-          'https://erp.wellknownssyndicate.com/api/resource/Item?fields=["name","item_name","item_group","part_no","brand","stock_uom","gst_hsn_code","image"]'),
+          'https://erp.wellknownssyndicate.com/api/resource/Item?fields=["name","item_name","item_group","part_no","brand","stock_uom","gst_hsn_code","image"]&limit_page_length=50000'),
       headers: {"Authorization": "token c5a479b60dd48ad:d8413be73e709b6"},
     );
 
@@ -167,7 +176,8 @@ class _ItemsState extends State<Items> {
     );
   }
 
-  Widget _buildItemList() {
+  String name ='';
+      Widget _buildItemList() {
     List<Item> filteredItems = _filterItems(_searchTerm);
 
     if (_items.isEmpty) {
@@ -179,6 +189,7 @@ class _ItemsState extends State<Items> {
         itemCount: filteredItems.length,
         itemBuilder: (context, index) {
           Item item = filteredItems[index];
+           name = item.itemName.toString();
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: Stack(
@@ -282,7 +293,14 @@ class _ItemsState extends State<Items> {
                     right: 20,
                     child: GestureDetector(
                       onTap: () {
-                        _shareContent();
+                        // _shareContent();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>  PDFDownloader(name:item.name.toString()),
+                          ),
+                        );
+                        sharePDF();
                       },
                       child: const Center(
                           child: Icon(
@@ -299,12 +317,167 @@ class _ItemsState extends State<Items> {
     }
   }
 
-  void _shareContent() {
-    final RenderBox? box =
-    scaffoldKey.currentContext?.findRenderObject() as RenderBox?;
-    Share.share(
-      'Click and share where you want to !',
-      sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+  String url =
+      'https://erp.wellknownssyndicate.com/api/method/frappe.utils.print_format.download_pdf';
+  String doctype = 'Item';
+
+  String format = 'Item Template';
+  String authToken = 'c5a479b60dd48ad:d8413be73e709b6';
+  String localPath = '';
+  bool isLoading = true;
+  Future<void> downloadPDF() async {
+    try {
+      Dio dio = Dio();
+      dio.options.headers['Authorization'] = 'token $authToken';
+
+      var dir = await getApplicationDocumentsDirectory();
+      String filePath = '${dir.path}/$name.pdf';
+
+      // Construct the URL with query parameters
+      String fullUrl = '$url?doctype=$doctype&name=$name&format=$format';
+
+      Dioo.Response response = await dio.get(
+        fullUrl,
+        options: Options(responseType: ResponseType.bytes),
+      );
+
+      if (response.statusCode == 200) {
+        File file = File(filePath);
+        var raf = file.openSync(mode: FileMode.write);
+        raf.writeFromSync(response.data);
+        await raf.close();
+
+        setState(() {
+          localPath = filePath;
+          isLoading = false;
+        });
+      } else {
+        print(
+            'Failed to download PDF: ${response.statusCode} ${response.statusMessage}');
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Error downloading PDF: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  void sharePDF() {
+    Share.shareFiles([localPath], text: 'Here is the PDF file: $name.pdf');
+  }
+
+  // void _shareContent() {
+  //   final RenderBox? box =
+  //   scaffoldKey.currentContext?.findRenderObject() as RenderBox?;
+  //   Share.share(
+  //     'Click and share where you want to !',
+  //     sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+  //   );
+  // }
+}
+
+
+
+class PDFDownloader extends StatefulWidget {
+  const PDFDownloader({super.key, required this.name});
+  final String name;
+  @override
+  _PDFDownloaderState createState() => _PDFDownloaderState();
+}
+
+class _PDFDownloaderState extends State<PDFDownloader> {
+
+  String url =
+      'https://erp.wellknownssyndicate.com/api/method/frappe.utils.print_format.download_pdf';
+  String doctype = 'Item';
+  // String name = 'STICKER ROLL-MEDIUM';
+  late String name;
+  String format = 'Item Template';
+  String authToken = 'c5a479b60dd48ad:d8413be73e709b6';
+  String localPath = '';
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    name = widget.name;
+    downloadPDF();
+  }
+
+  Future<void> downloadPDF() async {
+    try {
+      Dio dio = Dio();
+      dio.options.headers['Authorization'] = 'token $authToken';
+
+      var dir = await getApplicationDocumentsDirectory();
+      String filePath = '${dir.path}/$name.pdf';
+
+      // Construct the URL with query parameters
+      String fullUrl = '$url?doctype=$doctype&name=$name&format=$format';
+
+      Dioo.Response response = await dio.get(
+        fullUrl,
+        options: Options(responseType: ResponseType.bytes),
+      );
+
+      if (response.statusCode == 200) {
+        File file = File(filePath);
+        var raf = file.openSync(mode: FileMode.write);
+        raf.writeFromSync(response.data);
+        await raf.close();
+
+        setState(() {
+          localPath = filePath;
+          isLoading = false;
+        });
+      } else {
+        print(
+            'Failed to download PDF: ${response.statusCode} ${response.statusMessage}');
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Error downloading PDF: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  void sharePDF() {
+    Share.shareFiles([localPath], text: 'Here is the PDF file: $name.pdf');
+    }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('PDF Downloader'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.share),
+            onPressed: sharePDF,
+          ),
+        ],
+      ),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : localPath != null
+          ? Column(
+        children: [
+          Expanded(child: PDFView(filePath: localPath)),
+          ElevatedButton(
+            onPressed: sharePDF,
+            child: const Text('Share PDF'),
+          ),
+        ],
+      )
+          : const Center(child: Text('Error loading PDF')),
     );
   }
 }

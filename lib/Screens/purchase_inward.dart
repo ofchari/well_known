@@ -140,91 +140,134 @@ class _PurchaseinwardState extends State<Purchaseinward> {
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
                 PurchaseInvoice purchase = snapshot.data![index];
-                return Padding(
-                  padding: EdgeInsets.all(8.0.w),
-                  child: Container(
-                    height: height / 3.1.h,
+                return
+                  Container(
+                    height: height / 2.5.h,
                     width: width / 1.1.w,
                     decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
                       border: Border.all(
                         color: Colors.blue,
-                        width: 1.5.w,
+                        width: 2,
                       ),
-                      borderRadius: BorderRadius.circular(15),
                     ),
                     child: Column(
                       children: [
                         SizedBox(height: 10.h),
+                        Subhead(
+                          text: purchase.supplier.toString(),
+                          colo: Colors.blue.shade900,
+                          weight: FontWeight.w500,
+                        ),
+                        SizedBox(height: 30.h),
+                        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            const Subhead(
+                                text: "Company :",
+                                colo: Colors.black,
+                                weight: FontWeight.w500),
+                            FittedBox(
+                              child: Mytext(
+                                  text: purchase.company.toString(),
+                                  color: Colors.black),
+                            ),
+                          ],
+                        ),
+                        const Divider(
+                          thickness: 0.5,
+                          color: Colors.grey,
+                        ),
                         Row(
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const Mytext(
+                                    text: " DATE :",
+                                    color: Colors.black),
+                                Mytext(
+                                    text: purchase.postingDate
+                                        .toString(),
+                                    color: Colors.black),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10.h,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(8.0.w),
+                              child: const Row(mainAxisAlignment: MainAxisAlignment
+                                  .spaceEvenly,
+                                children: [
+                                  Mytext(
+                                      text: "Due Date :",
+                                      color: Colors.black),
+                                  Mytext(
+                                      text: "purchase.due_date.toString()",
+                                      color: Colors.black),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10.h),
+                        const Divider(
+                          thickness: 0.5,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(height: 10.h),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            const Subhead(
+                                text: "Supplier GST",
+                                colo: Colors.black,
+                                weight: FontWeight.w500),
+                            Mytext(
+                                text: purchase.supplierGstin.toString(),
+                                color: Colors.black),
+                          ],
+                        ),
+                        const Divider(
+                          thickness: 0.5,
+                          color: Colors.grey,
+                        ),
+
+                        SizedBox(height: 10.h),
+                        const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Subhead(
-                              text: purchase.supplier.toString(),
-                              colo: Colors.blue,
-                              weight: FontWeight.w500,
+                                text: "Billing Amount",
+                                colo: Colors.black,
+                                weight: FontWeight.w500),
+                            FittedBox(
+                              child: Mytext(
+                                  text: "purchase.attended_person.toString()",
+                                  color: Colors.black),
                             ),
                           ],
                         ),
-                        SizedBox(height: 15.h),
+                        const Divider(
+                          thickness: 0.5,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(height: 10.h,),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             const Subhead(
-                              text: "Company",
-                              colo: Colors.black,
-                              weight: FontWeight.w500,
-                            ),
+                                text: "Status",
+                                colo: Colors.black,
+                                weight: FontWeight.w500),
                             Mytext(
-                              text: purchase.company.toString(),
-                              color: Colors.black,
-                            ),
+                                text: purchase.status.toString(),
+                                color: Colors.black),
                           ],
                         ),
-                        SizedBox(height: 15.h),
-                        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
-                          children: [
-                            const Subhead(
-                              text: "Supplier Gst",
-                              colo: Colors.black,
-                              weight: FontWeight.w500,
-                            ),
-                            Mytext(
-                              text: purchase.supplierGstin.toString(),
-                              color: Colors.black,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 15.h),
-                        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            const Subhead(
-                              text: "Posting date",
-                              colo: Colors.black,
-                              weight: FontWeight.w500,
-                            ),
-                            Mytext(
-                              text: purchase.postingDate.toString(),
-                              color: Colors.black,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 15.h),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            const Subhead(
-                              text: "Tax Id",
-                              colo: Colors.black,
-                              weight: FontWeight.w500,
-                            ),
-                            Mytext(
-                              text: purchase.taxId.toString(),
-                              color: Colors.black,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20.h),
+                        SizedBox(height: 10.h),
                         GestureDetector(
                           onTap: () {
                             print(purchase.name.toString());
@@ -232,7 +275,8 @@ class _PurchaseinwardState extends State<Purchaseinward> {
                             print(purchase.supplierGstin.toString());
                             print(purchase);
 
-                            Get.to(PurchaseInvoicess(purchaseInvoice: purchase, ));
+                            Get.to(
+                                PurchaseInvoicess(purchaseInvoice: purchase,));
                           },
                           child: Buttons(
                             heigh: height / 22.h,
@@ -242,15 +286,16 @@ class _PurchaseinwardState extends State<Purchaseinward> {
                             radius: BorderRadius.circular(10),
                           ),
                         ),
+
                       ],
                     ),
-                  ),
-                );
-              },
-            );
+                  );
+              }
+              );
           }
         },
-      ),
+
+    ),
     );
   }
 }

@@ -152,7 +152,8 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
               return Text("${snapshot.error}");
             } else {
               PurchaseInvoice invoices = snapshot.data!;
-              return Container(
+              return
+                Container(
                 padding: EdgeInsets.all(8.0.w),
                 child: Column(
                     children: [
@@ -542,8 +543,8 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
                                                                   ),
                                                                 ),
                                                               ),
-                                                              Text(
-                                                                '${item['qty']}',
+                                                          Text(
+                                                                    '${item['qty']}',
                                                                 style: GoogleFonts
                                                                     .poppins(
                                                                   textStyle:

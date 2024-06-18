@@ -4,6 +4,7 @@ class SalesOrder {
   final String? company;
   final String? status;
   final String? gstcategory;
+  final String? base_total;
   final String? owner;
   final String? customer;
   final String? customerName;
@@ -29,6 +30,7 @@ class SalesOrder {
     required this.company,
     required this.status,
     required this.gstcategory,
+    required this.base_total,
     required this.owner,
     required this.customer,
     required this.customerName,
@@ -56,6 +58,7 @@ class SalesOrder {
       billingPerson: json['billing_person']as String?,
       status: json['status']as String?,
       gstcategory: json['gst_category']as String?,
+      base_total: json['base_total'].toString(),
       owner: json['owner']as String?,
       company: json['company']as String?,
       customer: json['customer']as String?,

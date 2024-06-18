@@ -5,6 +5,7 @@ class Sales{
   final String? billing_address_gstin;
   final String? attended_by;
   final String? attended_person;
+  final String? base_total;
   final String? company;
   final String? branch;
   final String? customer;
@@ -27,6 +28,7 @@ class Sales{
     this.billing_address_gstin,
     this.attended_by,
     this.attended_person,
+    this.base_total,
     this.company,
     this.branch,
     this.customer,
@@ -50,6 +52,7 @@ class Sales{
       billing_address_gstin: json['billing_address_gstin'] as String?,
       attended_by: json['attended_by'] as String?,
       attended_person: json['attended_person'] as String?,
+      base_total: json['base_total'].toString(),
       company: json['company'] as String?,
       branch: json['branch'] as String?,
       customer: json['customer'] as String?,

@@ -129,9 +129,9 @@ class _NewinvoiceState extends State<Newinvoice> {
                   const Mytext(text: "Items", color: Colors.grey),
                   Column(
                     children: [
-                      Mytext(text: "Net Total", color: Colors.black),
+                      const Mytext(text: "Net Total", color: Colors.black),
                       Mytext(
-                          text: "${netTotalController.text}",
+                          text: netTotalController.text,
                           color: Colors.black),
                     ],
                   ),
@@ -162,7 +162,7 @@ class _NewinvoiceState extends State<Newinvoice> {
               const SizedBox(
                 height: 50,
               ),
-              Container(
+              SizedBox(
                 height: height / 1.5.h,
                 child: ListView.builder(
                   itemCount: itemsss.length,
@@ -247,7 +247,7 @@ class _NewinvoiceState extends State<Newinvoice> {
                                           ),
                                           Padding(
                                             padding:
-                                                EdgeInsets.only(left: 30.0),
+                                                const EdgeInsets.only(left: 30.0),
                                             child: Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
@@ -269,7 +269,7 @@ class _NewinvoiceState extends State<Newinvoice> {
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.start,
                                                   children: [
-                                                    FittedBox(
+                                                    const FittedBox(
                                                       child: Mytext(
                                                         text: "Group:",
                                                         color: Colors.black,
@@ -314,100 +314,146 @@ class _NewinvoiceState extends State<Newinvoice> {
                                   ),
                                 ),
                                 child: Column(
-    children: [
-    Expanded(
-    child: Padding(
-    padding: EdgeInsets.only(left: ScreenUtil().setWidth(50.0)),
-    child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    children: [
-      Column(crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 5,),
-          const Mytext(text: "Quantity", color: Colors.grey),
-          SizedBox(
-            width: width / 10.w,
-            child: TextFormField(
-              controller: quantityController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.symmetric(vertical: 0.0),
-                hintText: "0",
-                border: InputBorder.none,
+                                  children: [
+                                    Expanded(
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                            left: ScreenUtil().setWidth(50.0)),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                const SizedBox(
+                                                  height: 5,
+                                                ),
+                                                const Mytext(
+                                                    text: "Quantity",
+                                                    color: Colors.grey),
+                                                SizedBox(
+                                                  width: width / 10.w,
+                                                  child: TextFormField(
+                                                    controller:
+                                                        quantityController,
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      contentPadding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 0.0),
+                                                      hintText: "0",
+                                                      border: InputBorder.none,
+                                                    ),
+                                                    onChanged: (value) {
+                                                      calculateNetTotal();
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                const SizedBox(
+                                                  height: 5,
+                                                ),
+                                                const Mytext(
+                                                    text: "Rate",
+                                                    color: Colors.grey),
+                                                SizedBox(
+                                                  width: width / 10.w,
+                                                  child: TextFormField(
+                                                    controller: rateController,
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      contentPadding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 0.0),
+                                                      hintText: "0",
+                                                      border: InputBorder.none,
+                                                    ),
+                                                    onChanged: (value) {
+                                                      calculateNetTotal();
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                const SizedBox(
+                                                  height: 5,
+                                                ),
+                                                const Mytext(
+                                                    text: "Total",
+                                                    color: Colors.grey),
+                                                SizedBox(
+                                                  width: width / 4.w,
+                                                  child: TextFormField(
+                                                    controller: totalController,
+                                                    readOnly: true,
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      contentPadding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 0.0),
+                                                      hintText: "0",
+                                                      hintStyle: TextStyle(
+                                                          color: Colors.black),
+                                                      border: InputBorder.none,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        )
+                      ],
+                    );
+                  },
+                ),
               ),
-              onChanged: (value) {
-                calculateNetTotal();
-              },
-            ),
-          ),
-        ],
-      ),
-      Column(crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 5,),
-          const Mytext(text: "Rate", color: Colors.grey),
-          SizedBox(
-            width: width / 10.w,
-            child: TextFormField(
-              controller: rateController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.symmetric(vertical: 0.0),
-                hintText: "0",
-                border: InputBorder.none,
+              const SizedBox(
+                height: 20,
               ),
-              onChanged: (value) {
-                calculateNetTotal();
-              },
-            ),
-          ),
-        ],
-      ),
-      Column(crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 5,),
-          const Mytext(text: "Total", color: Colors.grey),
-          SizedBox(
-            width: width / 4.w,
-            child: TextFormField(
-              controller: totalController,
-              readOnly: true,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.symmetric(vertical: 0.0),
-                hintText: "0",
-                hintStyle: TextStyle(color: Colors.black),
-                border: InputBorder.none,
+              GestureDetector(
+                onTap: () {
+                  Get.off(const Dashboard());
+                },
+                child: Buttons(
+                    heigh: height / 18.h,
+                    width: width / 1.5.w,
+                    color: const Color(0xffff035e32),
+                    text: "Submit",
+                    radius: BorderRadius.circular(8)),
               ),
-            ),
+              const SizedBox(
+                height: 50,
+              ),
+            ],
           ),
-        ],
-      ),
-    ],
-    ),
-    ),
-    ),
-    ],
-    ),
-    ),
-    ],
-    ),
-    ),
-      SizedBox(height: 10,)
-    ],
-    );
-    },
-    ),
-    ),
-      const SizedBox(height: 20,),
-      GestureDetector(
-        onTap: () {
-          Get.off(const Dashboard());
-        },
-        child: Buttons(heigh: height / 18.h, width: width / 1.5.w, color: const Color(0xffff035e32), text: "Submit", radius: BorderRadius.circular(8)),
-      ),
-      const SizedBox(height: 50,),
-    ],
-    ),
         ),
         ),
     );

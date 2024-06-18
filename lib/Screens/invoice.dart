@@ -157,7 +157,7 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
             color: Colors.black,
           )),
       title: const Headingtext(
-          text: "Invoice", color: Colors.black, weight: FontWeight.w400),
+          text: "Proforma Invoice ", color: Colors.black, weight: FontWeight.w400),
       centerTitle: true,
       actions: [
         Padding(
@@ -273,8 +273,7 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                                           color: Colors.black),
                                       const SizedBox(height: 4),
                                       Mytext(
-                                          text: invoices.transactiondate
-                                              .toString(),
+                                          text: "${(((invoices.transactiondate.toString()).split('-')).toList())[2]}-${(((invoices.transactiondate.toString()).split('-')).toList())[1]}-${(((invoices.transactiondate.toString()).split('-')).toList())[0]}",
                                           color: Colors.black),
                                     ],
                                   ),
@@ -291,8 +290,7 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
                                           color: Colors.black),
                                       const SizedBox(height: 4),
                                       Mytext(
-                                          text: invoices.deliveryDate
-                                              .toString(),
+                                          text: "${(((invoices.deliveryDate.toString()).split('-')).toList())[2]}-${(((invoices.deliveryDate.toString()).split('-')).toList())[1]}-${(((invoices.deliveryDate.toString()).split('-')).toList())[0]}",
                                           color: Colors.black),
                                     ],
                                   ),
