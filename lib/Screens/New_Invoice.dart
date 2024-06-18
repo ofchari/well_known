@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:well_known/Screens/bottom_navigation.dart';
 import 'package:well_known/Screens/dashboard.dart';
 import 'package:well_known/Screens/item_list.dart';
 import 'package:well_known/Widgets/subhead.dart';
 import 'package:well_known/Widgets/text.dart';
 import 'package:well_known/utils/refreshdata.dart';
 import '../Widgets/buttons.dart';
+import 'items.dart';
 
 class Newinvoice extends StatefulWidget {
   const Newinvoice({super.key});
@@ -71,6 +75,27 @@ class _NewinvoiceState extends State<Newinvoice> {
     });
   }
 
+          //  Show Dialog for NewInvoice  //
+  Future<void> dialogues(BuildContext context){
+    return showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return SizedBox(
+            width: 420,
+            child: AlertDialog(
+              content: SizedBox(
+                height: height.h,
+                width: width.w,
+                  child: const Itemlist()),
+              insetPadding: EdgeInsets.zero,
+              contentPadding: EdgeInsets.zero,
+
+            ),
+          );
+        }
+    );
+  }
+
   @override
   void dispose() {
     for (var controller in quantityControllers) {
@@ -112,7 +137,6 @@ class _NewinvoiceState extends State<Newinvoice> {
 
   Widget _smallBuildLayout() {
     return Scaffold(
-        resizeToAvoidBottomInset: true,
         body: SizedBox(
         height: double.infinity,
         width: double.infinity,
@@ -139,7 +163,8 @@ class _NewinvoiceState extends State<Newinvoice> {
                     padding: const EdgeInsets.only(top: 22.0, left: 8.0),
                     child: GestureDetector(
                       onTap: () {
-                        Get.to(const Itemlist());
+                       Get.to(const Itemlist());
+                        // dialogues(context);
                       },
                       child: Container(
                         height: height / 26.h,
@@ -440,7 +465,7 @@ class _NewinvoiceState extends State<Newinvoice> {
               ),
               GestureDetector(
                 onTap: () {
-                  Get.off(const Dashboard());
+                  Get.off(const navigat());
                 },
                 child: Buttons(
                     heigh: height / 18.h,
@@ -459,4 +484,8 @@ class _NewinvoiceState extends State<Newinvoice> {
     );
   }
 }
+
+
+
+
 
