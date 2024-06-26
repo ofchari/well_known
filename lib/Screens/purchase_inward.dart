@@ -126,8 +126,7 @@ class _PurchaseinwardState extends State<Purchaseinward> {
   Widget _buildBody() {
     return SizedBox(
       width: width.w,
-      child:
-      FutureBuilder<List<PurchaseInvoice>>(
+      child: FutureBuilder<List<PurchaseInvoice>>(
         future: fetching(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -242,7 +241,8 @@ class _PurchaseinwardState extends State<Purchaseinward> {
                             Subhead(
                                 text: "Billing Amount",
                                 colo: Colors.black,
-                                weight: FontWeight.w500),
+                                weight: FontWeight.w500
+                            ),
                             FittedBox(
                               child: Mytext(
                                   text: "purchase.attended_person.toString()",
@@ -294,7 +294,6 @@ class _PurchaseinwardState extends State<Purchaseinward> {
               );
           }
         },
-
     ),
     );
   }

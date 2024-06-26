@@ -59,6 +59,7 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,8 +108,6 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
       ],
     );
   }
-
-
 
   Widget _buildAppBar() {
     return AppBar(

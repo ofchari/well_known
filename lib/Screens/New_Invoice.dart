@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:well_known/Screens/bottom_navigation.dart';
 import 'package:well_known/Screens/dashboard.dart';
 import 'package:well_known/Screens/item_list.dart';
+import 'package:well_known/Screens/new_proforma_voice.dart';
 import 'package:well_known/Widgets/subhead.dart';
 import 'package:well_known/Widgets/text.dart';
 import 'package:well_known/utils/refreshdata.dart';
@@ -14,6 +16,7 @@ import 'items.dart';
 
 class Newinvoice extends StatefulWidget {
   const Newinvoice({super.key});
+
 
   @override
   State<Newinvoice> createState() => _NewinvoiceState();
@@ -35,6 +38,7 @@ class _NewinvoiceState extends State<Newinvoice> {
     super.initState();
     _getItems();
   }
+
 
   void calculateNetTotal() {
     double netTotal = 0.0;
@@ -75,26 +79,29 @@ class _NewinvoiceState extends State<Newinvoice> {
     });
   }
 
-          //  Show Dialog for NewInvoice  //
-  Future<void> dialogues(BuildContext context){
-    return showDialog(
+  // Show Dialogue //
+  Future<void> dialogues(BuildContext context) async{
+    return await  showDialog(
+        barrierDismissible: true,
         context: context,
         builder: (BuildContext context){
-          return SizedBox(
-            width: 420,
-            child: AlertDialog(
-              content: SizedBox(
-                height: height.h,
-                width: width.w,
-                  child: const Itemlist()),
-              insetPadding: EdgeInsets.zero,
-              contentPadding: EdgeInsets.zero,
-
+          return  SingleChildScrollView(
+            child: SizedBox(
+              width: 420,
+              child: AlertDialog(
+                  content: SizedBox(
+                      height: height.h,
+                      width: width.w,
+                      child: const Itemlist()),
+                  insetPadding: EdgeInsets.zero,
+                  contentPadding: EdgeInsets.zero
+              ),
             ),
           );
         }
     );
   }
+
 
   @override
   void dispose() {
@@ -144,16 +151,14 @@ class _NewinvoiceState extends State<Newinvoice> {
         physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
             children: [
-              const SizedBox(
-                height: 50,
-              ),
+              SizedBox(height: 60.h,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  const Mytext(text: "Items", color: Colors.grey),
+                  const Mytext(text: "Items", color: Colors.grey,),
                   Column(
                     children: [
-                      const Mytext(text: "Net Total", color: Colors.black),
+                      const Mytext(text: "Net Total", color: Colors.black,),
                       Mytext(
                           text: netTotalController.text,
                           color: Colors.black),
@@ -163,8 +168,8 @@ class _NewinvoiceState extends State<Newinvoice> {
                     padding: const EdgeInsets.only(top: 22.0, left: 8.0),
                     child: GestureDetector(
                       onTap: () {
-                       Get.to(const Itemlist());
-                        // dialogues(context);
+                       // Get.to(const Itemlist());
+                        dialogues(context);
                       },
                       child: Container(
                         height: height / 26.h,
@@ -184,11 +189,11 @@ class _NewinvoiceState extends State<Newinvoice> {
                   )
                 ],
               ),
-              const SizedBox(
-                height: 50,
+               SizedBox(
+                height: 30.h,
               ),
               SizedBox(
-                height: height / 1.5.h,
+                height: height / 1.55.h,
                 child: ListView.builder(
                   itemCount: itemsss.length,
                   itemBuilder: (BuildContext context, int index) {
@@ -228,8 +233,8 @@ class _NewinvoiceState extends State<Newinvoice> {
                             children: [
                               Container(
                                 margin: const EdgeInsets.only(bottom: 1.5),
-                                height: height / 5.h,
-                                width: width / 1.1.w,
+                                height: height / 5,
+                                width: width / 1.1,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(15),
                                   border: Border.all(
@@ -239,30 +244,30 @@ class _NewinvoiceState extends State<Newinvoice> {
                                 ),
                                 child: Column(
                                   children: [
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
+                                    const SizedBox(height: 10),
                                     FittedBox(
-                                        child: Center(
-                                            child: Subhead(
-                                                text: "${item['itemName']}",
-                                                colo: Colors.black,
-                                                weight: FontWeight.w500))),
+                                      child: Center(
+                                        child: Subhead(
+                                          text: "${item['itemName']}",
+                                          colo: Colors.blue,
+                                          weight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
                                     const Divider(
                                       height: 1,
                                       thickness: 1,
                                       color: Colors.black,
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.all(8.0.w),
+                                      padding: const EdgeInsets.all(8.0),
                                       child: Row(
                                         children: [
                                           Container(
-                                            height: height / 9.h,
-                                            width: width / 4.w,
+                                            height: height / 9,
+                                            width: width / 4,
                                             decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
+                                              borderRadius: BorderRadius.circular(15),
                                               image: const DecorationImage(
                                                 image: NetworkImage(
                                                     "https://img.freepik.com/premium-photo/close-up-sewing-machine-with-hands-working_41969-2495.jpg"),
@@ -271,25 +276,19 @@ class _NewinvoiceState extends State<Newinvoice> {
                                             ),
                                           ),
                                           Padding(
-                                            padding:
-                                                const EdgeInsets.only(left: 30.0),
+                                            padding: const EdgeInsets.only(
+                                                left: 30.0),
                                             child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                SizedBox(
-                                                  height: 10.h,
-                                                ),
+                                                const SizedBox(height: 10),
                                                 FittedBox(
                                                   child: Mytext(
-                                                    text:
-                                                        "Code: ${item['itemCode'].split(' ')[0]}",
+                                                    text: "Code: ${item['itemCode'].split(' ')[0]}",
                                                     color: Colors.black,
                                                   ),
                                                 ),
-                                                SizedBox(
-                                                  height: 10.h,
-                                                ),
+                                                const SizedBox(height: 10),
                                                 Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.start,
@@ -302,20 +301,18 @@ class _NewinvoiceState extends State<Newinvoice> {
                                                     ),
                                                     FittedBox(
                                                       child: Mytext(
-                                                        text:
-                                                            " ${item['itemGroup'].split(' ').sublist(0, 1).join(' ')}",
+                                                        text: " ${item['itemGroup'].split(' ').sublist(0, 1).join(' ')}",
                                                         color: Colors.black,
                                                       ),
                                                     ),
                                                   ],
                                                 ),
-                                                SizedBox(
-                                                  height: 10.h,
-                                                ),
+                                                const SizedBox(height: 10),
                                                 Mytext(
-                                                    text:
-                                                        "UOM: ${item['stock_uom']}",
-                                                    color: Colors.black),
+                                                  text:
+                                                      "UOM: ${item['stock_uom']}",
+                                                  color: Colors.black,
+                                                ),
                                               ],
                                             ),
                                           ),
@@ -326,7 +323,7 @@ class _NewinvoiceState extends State<Newinvoice> {
                                 ),
                               ),
                               Container(
-                                height: height / 11.0.h,
+                                height: height / 11.h,
                                 width: width / 1.22.w,
                                 decoration: BoxDecoration(
                                   borderRadius: const BorderRadius.only(
@@ -352,14 +349,13 @@ class _NewinvoiceState extends State<Newinvoice> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                const SizedBox(
-                                                  height: 5,
-                                                ),
+                                                const SizedBox(height: 5),
                                                 const Mytext(
-                                                    text: "Quantity",
-                                                    color: Colors.grey),
+                                                  text: "Quantity",
+                                                  color: Colors.grey,
+                                                ),
                                                 SizedBox(
-                                                  width: width / 10.w,
+                                                  width: width / 10,
                                                   child: TextFormField(
                                                     controller:
                                                         quantityController,
@@ -384,14 +380,13 @@ class _NewinvoiceState extends State<Newinvoice> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                const SizedBox(
-                                                  height: 5,
-                                                ),
+                                                const SizedBox(height: 5),
                                                 const Mytext(
-                                                    text: "Rate",
-                                                    color: Colors.grey),
+                                                  text: "Rate",
+                                                  color: Colors.grey,
+                                                ),
                                                 SizedBox(
-                                                  width: width / 10.w,
+                                                  width: width / 10,
                                                   child: TextFormField(
                                                     controller: rateController,
                                                     keyboardType:
@@ -415,14 +410,13 @@ class _NewinvoiceState extends State<Newinvoice> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                const SizedBox(
-                                                  height: 5,
-                                                ),
+                                                const SizedBox(height: 5),
                                                 const Mytext(
-                                                    text: "Total",
-                                                    color: Colors.grey),
+                                                  text: "Total",
+                                                  color: Colors.grey,
+                                                ),
                                                 SizedBox(
-                                                  width: width / 4.w,
+                                                  width: width / 4,
                                                   child: TextFormField(
                                                     controller: totalController,
                                                     readOnly: true,
@@ -452,20 +446,18 @@ class _NewinvoiceState extends State<Newinvoice> {
                             ],
                           ),
                         ),
-                        const SizedBox(
-                          height: 10,
-                        )
+                        SizedBox(height: 10.h,)
                       ],
                     );
                   },
                 ),
               ),
-              const SizedBox(
-                height: 20,
+               SizedBox(
+                height: 20.h,
               ),
               GestureDetector(
                 onTap: () {
-                  Get.off(const navigat());
+                 _alertsNewInvoice(context);
                 },
                 child: Buttons(
                     heigh: height / 18.h,
@@ -474,8 +466,8 @@ class _NewinvoiceState extends State<Newinvoice> {
                     text: "Submit",
                     radius: BorderRadius.circular(8)),
               ),
-              const SizedBox(
-                height: 50,
+               SizedBox(
+                height: 50.h,
               ),
             ],
           ),
@@ -483,6 +475,37 @@ class _NewinvoiceState extends State<Newinvoice> {
         ),
     );
   }
+}
+void _alertsNewInvoice(BuildContext context){
+  Alert(
+      context: context,
+    type: AlertType.info,
+    desc: "Are you sure want to Submit",style: AlertStyle(descStyle: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w500,color: Colors.blue))),
+    buttons: [
+      DialogButton(
+        color: Colors.green,
+          child: GestureDetector(
+            onTap: (){
+              Get.off(const Dashboard());
+            },
+              child: const Mytext(text: "Yes", color: Colors.white)),
+          onPressed: (){
+            Navigator.pop(context);
+          }
+      ),
+      DialogButton(
+        color: Colors.red.shade600,
+          child: GestureDetector(
+            onTap: (){
+              Get.back();
+            },
+              child: const Mytext(text: "No", color: Colors.white)),
+          onPressed: (){
+            Navigator.pop(context);
+          }
+      ),
+    ]
+  ).show();
 }
 
 

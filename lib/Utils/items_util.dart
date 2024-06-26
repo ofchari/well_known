@@ -3,8 +3,7 @@ import 'dart:io';
 import '../Services/items_api.dart';
 import 'package:http/io_client.dart';
 
-
-                             // Items_api //
+                          // Items_api //
 Future<List<Item>> fetchItems() async {
   HttpClient client = HttpClient();
   client.badCertificateCallback =
@@ -24,5 +23,6 @@ Future<List<Item>> fetchItems() async {
   }
 }
 //
+
 
 

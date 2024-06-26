@@ -132,9 +132,6 @@ class _DashboardState extends State<Dashboard> {
     }
     }
 
-
-
-
   // late List<ChartData> _chartData;
   //
   // @override
@@ -258,8 +255,7 @@ class _DashboardState extends State<Dashboard> {
     ]
     );
   }
-
-       // App Bar //
+                          // App Bar //
   Widget _buildAppBar(){
     return  AppBar(
       title: const Headingtext(
@@ -271,7 +267,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-          // Body //
+                             // Body //
   Widget _buildBody(){
     return SizedBox(
       width: width.w,
@@ -384,7 +380,7 @@ class _DashboardState extends State<Dashboard> {
                     child: Column(
                       children: [
                         SizedBox(height: 30.h,),
-                        const Mytext(text: "Purchase Inward", color: Colors.black),
+                        const Mytext(text: "Purchase Order", color: Colors.black),
                         SizedBox(height: 10.h,),
                         const Icon(Icons.safety_check,color: Colors.black,)
                       ],

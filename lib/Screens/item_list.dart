@@ -126,7 +126,6 @@ class DatabaseHelper {
 }
 
 
-
 class Itemlist extends StatefulWidget {
   const Itemlist({super.key});
 
@@ -198,7 +197,6 @@ class _ItemlistState extends State<Itemlist> {
 
   }
 
-
   @override
   void dispose() {
     searchController.dispose();
@@ -250,7 +248,7 @@ class _ItemlistState extends State<Itemlist> {
     );
   }
 
-  // App Bar //
+                                 // App Bar //
   Widget _buildAppBar() {
     return AppBar(
       backgroundColor: Colors.white,
@@ -269,8 +267,7 @@ class _ItemlistState extends State<Itemlist> {
     );
   }
 
-                                  // Body //
-
+                                   // Body //
   Widget _buildBody() {
     return Column(
       children: [
@@ -306,7 +303,7 @@ class _ItemlistState extends State<Itemlist> {
               ),
               GestureDetector(
                 onTap: () {
-                  Get.to(() => const Newinvoice());
+                  Get.back();
                 },
                 child: Buttons(
                   heigh: height / 20,
@@ -331,7 +328,7 @@ class _ItemlistState extends State<Itemlist> {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-                    height: height / 3.2.h,
+                    height: height / 2.9.h,
                     width: width / 1.98.w,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
@@ -467,7 +464,7 @@ class _ItemlistState extends State<Itemlist> {
                             ],
                           ),
                         ),
-                        const SizedBox(height: 10),
+                         SizedBox(height: 20.h),
                         Padding(
                           padding: const EdgeInsets.only(
                               left: 15.0, right: 15.0),
@@ -554,10 +551,9 @@ class _ItemlistState extends State<Itemlist> {
             child: CircularProgressIndicator(),
           ),
         ),
+        SizedBox(height: 30.h,),
       ],
     );
   }
 }
-
-
 

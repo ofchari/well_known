@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -7,7 +6,6 @@ import 'package:well_known/Screens/dashboard.dart';
 import 'package:well_known/Screens/login.dart';
 import 'package:well_known/Widgets/heading_text.dart';
 import 'package:well_known/Widgets/text.dart';
-
 import '../Utils/refreshdata.dart';
 
 class Welcome extends StatefulWidget {
@@ -20,8 +18,8 @@ class Welcome extends StatefulWidget {
 class _WelcomeState extends State<Welcome> {
   late double height;
   late double width;
-
   @override
+
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     height = size.height;
