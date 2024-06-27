@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'Screens/home.dart';
 import 'Screens/welcome.dart';
 
 
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
         // home: const Purchaseorder()
-        home:  const Welcome()
+        home:  Welcome()
     );
   }
 }
