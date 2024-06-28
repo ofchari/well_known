@@ -1,12 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:well_known/Utils/refreshdata.dart';
@@ -14,6 +17,7 @@ import 'package:well_known/Widgets/buttons.dart';
 import 'package:well_known/Widgets/heading_text.dart';
 import 'package:well_known/Widgets/subhead.dart';
 import 'package:well_known/Widgets/text.dart';
+import 'package:path/path.dart' as path;
 
 // Json Api For PurchaseOrder //
 class PurchaseInvoice {
@@ -118,7 +122,7 @@ class purchaseOrder extends State<Purchaseorder> {
     }
   }
 
-  // Color change based upon the Word //
+                 // Color change based upon the Word //
   Color _getBackgroundColor(String taxId) {
     switch (taxId) {
       case 'Initiated':
@@ -289,8 +293,7 @@ class purchaseOrder extends State<Purchaseorder> {
                                 ),
                                 SizedBox(height: 30.h),
                                 Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceEvenly,
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
                                     const Subhead(
@@ -438,6 +441,7 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
   late double height;
   late double width;
   late TabController _tabController;
+  File?  _image;
 
   Color _getBackgroundColor(String taxId) {
     switch (taxId) {
@@ -515,6 +519,47 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
       throw Exception("Failed to load data : ${response.statusCode}");
     }
   }
+      // Access the Camera Logic //
+
+  Future<void> _pickImage() async {
+    final status = await Permission.storage.request();
+    if (status.isGranted) {
+      try {
+        final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
+        if (pickedFile != null) {
+          setState(() {
+            _image = File(pickedFile.path);
+          });
+          await _saveImageToGallery(File(pickedFile.path));
+        }
+      } catch (e) {
+        print("Error picking image: $e");
+      }
+    } else {
+      print("Storage permission not granted");
+    }
+  }
+
+  Future<void> _saveImageToGallery(File image) async {
+    try {
+      final directory = await getExternalStorageDirectory();
+      final String newPath = path.join(directory!.parent.path, 'Pictures');
+      final Directory newDir = Directory(newPath);
+      if (!await newDir.exists()) {
+        await newDir.create(recursive: true);
+      }
+      final String fileName = '${DateTime.now().millisecondsSinceEpoch}.png';
+      final File newImage = await image.copy('${newDir.path}/$fileName');
+
+      // Notify the media scanner about the new file
+      const MethodChannel('com.example.app/gallery_scanner')
+          .invokeMethod('scanMediaFile', {'path': newImage.path});
+
+      print('Image saved to ${newDir.path}/$fileName');
+    } catch (e) {
+      print("Error saving image to gallery: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -587,11 +632,17 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
       centerTitle: true,
       actions: [
          Padding(
-           padding:  EdgeInsets.all(4.0.w),
-           child: const Icon(
-            Icons.home,
-            color: Colors.black,
-                   ),
+           padding:  EdgeInsets.all(6.0.w),
+           child:  GestureDetector(
+             onTap: (){
+               _pickImage();
+               _image == null ? const Text('No image selected.') : Image.file(_image!);
+             },
+             child: const Icon(
+              Icons.camera_alt_outlined,
+              color: Colors.black,
+                     ),
+           ),
          ),
         Padding(
           padding:  EdgeInsets.all(4.0.w),
@@ -666,8 +717,9 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
         ]
 
     ).show();
-
   }
+
+                     //  Body  //
 
   Widget _buildBody() {
     return SingleChildScrollView(
@@ -709,7 +761,6 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
                                 ),
                                 Align(
                                     alignment: Alignment.topRight,
-
                                     child: Padding(
                                       padding:  EdgeInsets.all(8.0.w),
                                       child: GestureDetector(
@@ -855,7 +906,6 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
                                 child: Mytext(
                                     text: invoices.supplier.toString(),
                                     color: Colors.black)),
-
                           ],
                         ),
                       ),
@@ -1580,32 +1630,29 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
                                                     width: 5,
                                                   ),
                                                   Expanded(
-                                                    child: Container(
-
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                        children: [
-                                                          Text(
-                                                            'DUE-DATE :',
-                                                            style: GoogleFonts.poppins(
-                                                              textStyle: const TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight: FontWeight.bold,
-                                                              ),
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        Text(
+                                                          'DUE-DATE :',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.bold,
                                                             ),
                                                           ),
-                                                          Text(
-                                                            "${(((paymentSchedule['due_date'].split('-')).toList())[2])}-${(((invoices.postingDate.toString()).split('-')).toList())[1]}-${(((invoices.postingDate.toString()).split('-')).toList())[0]}",
-                                                            // '${paymentSchedule['due_date']}',
-                                                            style: GoogleFonts.poppins(
-                                                              textStyle: const TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight: FontWeight.w500,
-                                                              ),
+                                                        ),
+                                                        Text(
+                                                          "${(((paymentSchedule['due_date'].split('-')).toList())[2])}-${(((invoices.postingDate.toString()).split('-')).toList())[1]}-${(((invoices.postingDate.toString()).split('-')).toList())[0]}",
+                                                          // '${paymentSchedule['due_date']}',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.w500,
                                                             ),
                                                           ),
-                                                        ],
-                                                      ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
 
@@ -1619,61 +1666,56 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
                                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                 children: [
                                                   Expanded(
-                                                    child: Container(
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                        children: [
-                                                          Text(
-                                                            'INVOICE-PORTION :',
-                                                            style: GoogleFonts.poppins(
-                                                              textStyle: const TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight: FontWeight.bold,
-                                                              ),
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        Text(
+                                                          'INVOICE-PORTION :',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.bold,
                                                             ),
                                                           ),
-                                                          Text(
-                                                            '${paymentSchedule['invoice_portion']}',
-                                                            style: GoogleFonts.poppins(
-                                                              textStyle: const TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight: FontWeight.w500,
-                                                              ),
+                                                        ),
+                                                        Text(
+                                                          '${paymentSchedule['invoice_portion']}',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.w500,
                                                             ),
                                                           ),
-                                                        ],
-                                                      ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
                                                   const VerticalDivider(
                                                     width: 5,
                                                   ),
                                                   Expanded(
-                                                    child: Container(
-
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                        children: [
-                                                          Text(
-                                                            'PAYMENT_AMOUNT:',
-                                                            style: GoogleFonts.poppins(
-                                                              textStyle: const TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight: FontWeight.bold,
-                                                              ),
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        Text(
+                                                          'PAYMENT_AMOUNT:',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.bold,
                                                             ),
                                                           ),
-                                                          Text(
-                                                            '${paymentSchedule['payment_amount']}',
-                                                            style: GoogleFonts.poppins(
-                                                              textStyle: const TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight: FontWeight.w500,
-                                                              ),
+                                                        ),
+                                                        Text(
+                                                          '${paymentSchedule['payment_amount']}',
+                                                          style: GoogleFonts.poppins(
+                                                            textStyle: const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.w500,
                                                             ),
                                                           ),
-                                                        ],
-                                                      ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
 
@@ -1766,7 +1808,7 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
   }
 
 
-// Alert Popup logic //
+                                 // Alert Popup logic //
   void showAlerts (BuildContext,context){
     Alert(
         context: context,

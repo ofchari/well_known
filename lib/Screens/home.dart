@@ -37,7 +37,7 @@ class _HomeState extends State<Home> {
           // Mobile Screen Devices //
         }
         else{
-          return Text("It's adapts only for Mobile Screen Devices");
+          return const Text("It's adapts only for Mobile Screen Devices");
         }
       },
       ),
@@ -74,7 +74,7 @@ class _HomeState extends State<Home> {
                 PageViewModel(
                   title: "Hello",
                   body: "This is the first page",
-                  image: Icon(Icons.access_alarm),
+                  image: const Icon(Icons.access_alarm),
                   decoration: const PageDecoration(
                     pageColor: Colors.green,
                   ),
@@ -107,13 +107,13 @@ class _HomeState extends State<Home> {
                     width: width/3.w,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15.r),
-                      image: DecorationImage(
+                      image: const DecorationImage(
                         image: NetworkImage("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjbOlY9VSsWNUyjswk-hpJYX52pV1bC5I-rQ&s"),fit: BoxFit.cover
                       )
                     ),
 
                   ),
-                  decoration:  PageDecoration(
+                  decoration:  const PageDecoration(
                     pageColor: Colors.orange,
                   ),
                 ),
