@@ -6,16 +6,22 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter/services.dart';
 
-
-class ImageCaptureScreen extends StatefulWidget {
-  const ImageCaptureScreen({super.key});
+class Camera extends StatefulWidget {
+  const Camera({super.key});
 
   @override
-  _ImageCaptureScreenState createState() => _ImageCaptureScreenState();
+  _CameraState createState() => _CameraState();
 }
 
-class _ImageCaptureScreenState extends State<ImageCaptureScreen> {
+class _CameraState extends State<Camera> {
   File? _image;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _showDialog(context);
+  }
 
   Future<void> _pickImage() async {
     final status = await Permission.storage.request();
@@ -27,6 +33,7 @@ class _ImageCaptureScreenState extends State<ImageCaptureScreen> {
             _image = File(pickedFile.path);
           });
           await _saveImageToGallery(File(pickedFile.path));
+          _showDialog(context);
         }
       } catch (e) {
         print("Error picking image: $e");
@@ -55,6 +62,27 @@ class _ImageCaptureScreenState extends State<ImageCaptureScreen> {
     } catch (e) {
       print("Error saving image to gallery: $e");
     }
+  }
+
+  Future<void> _showDialog(BuildContext context) async{
+    return await  showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return AlertDialog(
+            title: const Text("Hello"),
+            content: const Text("              Image Saved Successfully"),
+            actions: [
+             TextButton(onPressed: (){
+               Navigator.pop(context);
+             }, child: const Text("Yes")
+             ),
+              TextButton(onPressed: (){
+                Navigator.pop(context);
+              }, child: const Text("No"))
+            ],
+          );
+        }
+    );
   }
 
   @override

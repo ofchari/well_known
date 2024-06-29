@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:introduction_screen/introduction_screen.dart';
+import 'package:reveal_on_scroll/reveal_on_scroll.dart';
 
-import 'message.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -16,7 +14,7 @@ class _HomeState extends State<Home> {
 
   late double height;
   late double width;
-  final _introKey = GlobalKey<IntroductionScreenState>();
+  final ScrollController _controller = ScrollController();
 
 
   @override
@@ -27,7 +25,7 @@ class _HomeState extends State<Home> {
     width = size.width;
 
         // Initialize the Screen Util //
-    ScreenUtil.init(context,designSize: Size(width, height),minTextAdapt: true);
+    ScreenUtil.init(context,designSize:  Size(width, height),minTextAdapt: true);
     return Scaffold(
       body: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
         height = constraints.maxHeight;
@@ -61,86 +59,45 @@ class _HomeState extends State<Home> {
   Widget _buildBody(){
     return SizedBox(
       width: width.w,
-      child: Column(
-        children: [
-          Container(
-            constraints: BoxConstraints(
-              minHeight: height, // Ensure minimum height constraint
-              maxHeight: height, // Ensure maximum height constraint
-            ),
-            child: IntroductionScreen(
-              key: _introKey,
-              pages: [
-                PageViewModel(
-                  title: "Hello",
-                  body: "This is the first page",
-                  image: const Icon(Icons.access_alarm),
-                  decoration: const PageDecoration(
-                    pageColor: Colors.green,
-                  ),
-                ),
-                PageViewModel(
-                  title: "Hii",
-                  body: "This is the second page",
-                  image: Container(
-                    height: 100,
-                    width: 120,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      image: const DecorationImage(
-                        image: NetworkImage(
-                          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjbOlY9VSsWNUyjswk-hpJYX52pV1bC5I-rQ&s",
-                        ),
-                        fit: BoxFit.cover,
-                      ),
+      child: SingleChildScrollView(
+        controller: _controller,
+        child: Column(
+          children: [
+            ScrollToReveal.withAnimation(
+                animationType: AnimationType.fadeInDown,
+                startOnScroll: true,
+                label: "Hello",
+                scrollController: _controller,
+              reflectPosition: 100,
+                child: Column(
+                  children: [
+                    Container(
+                      height: height/10.h,
+                      width: width/1.8.w,
+                      color: Colors.blue,
                     ),
-                  ),
-                  decoration: const PageDecoration(
-                    pageColor: Colors.blue,
-                  ),
-                ),
-                PageViewModel(
-                  title: "Hello",
-                  body: "This is the third page",
-                  image: Container(
-                    height: height/7.h,
-                    width: width/3.w,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15.r),
-                      image: const DecorationImage(
-                        image: NetworkImage("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjbOlY9VSsWNUyjswk-hpJYX52pV1bC5I-rQ&s"),fit: BoxFit.cover
-                      )
+                    Container(
+                      height: height/10.h,
+                      width: width/1.8.w,
+                      color: Colors.blue,
                     ),
+                    Container(
+                      height: height/10.h,
+                      width: width/1.8.w,
+                      color: Colors.green,
+                    ),
+                    Container(
+                      height: height/10.h,
+                      width: width/1.8.w,
+                      color: Colors.grey,
+                    ),
+                  ],
+                ),
 
-                  ),
-                  decoration:  const PageDecoration(
-                    pageColor: Colors.orange,
-                  ),
-                ),
-              ],
-              onDone: () {
-                Get.off(const Message());
-              },
-              onSkip: () {
-                Get.off(const Message());
-              },
-              showSkipButton: false,
-              skip: const Icon(Icons.skip_next),
-              next: const Icon(Icons.navigate_next),
-              done: const Text("Done Successfully"),
-              back: const Text("Back"),
-              globalBackgroundColor: Colors.white,
-              showBackButton: true,
-              dotsDecorator: const DotsDecorator(
-                size: Size.square(10.0),
-                activeSize: Size(22.0, 10.0),
-                activeShape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                ),
-              ),
-            ),
-          ),
-        ],
+            )
+
+          ],
+        ),
       ),
 
       );

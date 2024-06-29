@@ -213,7 +213,7 @@ class purchaseOrder extends State<Purchaseorder> {
     );
   }
 
-  // Body //
+                          // Body //
   Widget _buildBody() {
     return SizedBox(
       width: width.w,
@@ -519,7 +519,7 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
       throw Exception("Failed to load data : ${response.statusCode}");
     }
   }
-      // Access the Camera Logic //
+               // Access the Camera Logic //
 
   Future<void> _pickImage() async {
     final status = await Permission.storage.request();
@@ -531,6 +531,7 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
             _image = File(pickedFile.path);
           });
           await _saveImageToGallery(File(pickedFile.path));
+          _showDialog(context);
         }
       } catch (e) {
         print("Error picking image: $e");
@@ -560,6 +561,82 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
       print("Error saving image to gallery: $e");
     }
   }
+                      // Show Dialog for Camera ok //
+  Future<void> _showDialog(BuildContext context) async{
+    return await  showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return AlertDialog(
+            title: const Text("Hi"),
+            content: const Text("              Image Saved Successfully"),
+            actions: [
+              TextButton(onPressed: (){
+                Navigator.pop(context);
+              }, child: const Text("Yes")
+              ),
+              TextButton(onPressed: (){
+                Navigator.pop(context);
+              }, child: const Text("No"))
+            ],
+          );
+        }
+    );
+  }
+                    // void for Action Button //
+
+  void actionAlerts (dynamic BuildContext,context){
+    Alert(
+        context: context,
+        // type: AlertType.warning,
+        // title: "Alert Message",style: AlertStyle(titleStyle: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w500,color: Colors.green)),descStyle: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.blue))),
+        // desc: "Are you sure want to Submit",
+        type: AlertType.info,
+        title: "Action",style: AlertStyle(titleStyle: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w500,color: Colors.green)),descStyle: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.blue))),
+        desc: "Select the Actions",
+        buttons: [
+          DialogButton(
+            color: Colors.grey.shade200,
+            onPressed: () {
+              // Navigator.pop(context); // Close the dialog on button press
+            },
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  if (actionData == 'Initiated') {
+                    actionTake = "Approved";
+                  } else {
+                    actionTake = "Authorized";
+                  }
+                });
+                showAlerts(BuildContext, context);
+
+              },
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                child: Mytext(
+                  // Assuming MyText is a custom widget for displaying text
+                  text: (actionData == 'Initiated') ? "Approved" : "Authorized",
+                  color: Colors.blue,
+                ),
+              ),
+            ),
+          ),
+
+          DialogButton(
+              color: Colors.grey.shade200,
+              child: GestureDetector(
+                  onTap: (){
+                    Get.back();
+                  },
+                  child: const Mytext(text: "Rejected", color: Colors.red)),
+              onPressed: (){
+                // Navigator.pop(context);
+              }
+          )
+        ]
+
+    ).show();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -586,6 +663,7 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
 
   String actionData = '';
   String actionTake = '';
+
 
 
   Widget _smallBuildLayout() {
@@ -615,7 +693,7 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
     );
   }
 
-
+                           //App Bar //
   Widget _buildAppBar() {
     return AppBar(
       backgroundColor: Colors.white,
@@ -632,7 +710,7 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
       centerTitle: true,
       actions: [
          Padding(
-           padding:  EdgeInsets.all(6.0.w),
+           padding:  EdgeInsets.all(8.0.w),
            child:  GestureDetector(
              onTap: (){
                _pickImage();
@@ -663,63 +741,7 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
     );
   }
 
-
-  // void for Action Button //
-  void actionalerts (BuildContext,context){
-    Alert(
-        context: context,
-        // type: AlertType.warning,
-        // title: "Alert Message",style: AlertStyle(titleStyle: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w500,color: Colors.green)),descStyle: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.blue))),
-        // desc: "Are you sure want to Submit",
-        type: AlertType.info,
-        title: "Action",style: AlertStyle(titleStyle: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w500,color: Colors.green)),descStyle: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 14.sp,fontWeight: FontWeight.w500,color: Colors.blue))),
-        desc: "Select the Actions",
-        buttons: [
-    DialogButton(
-    color: Colors.grey.shade200,
-      onPressed: () {
-        // Navigator.pop(context); // Close the dialog on button press
-      },
-      child: GestureDetector(
-        onTap: () {
-          setState(() {
-            if (actionData == 'Initiated') {
-              actionTake = "Approved";
-            } else {
-              actionTake = "Authorized";
-            }
-          });
-          showAlerts(BuildContext, context);
-
-        },
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          child: Mytext(
-            // Assuming MyText is a custom widget for displaying text
-            text: (actionData == 'Initiated') ? "Approved" : "Authorized",
-            color: Colors.blue,
-          ),
-        ),
-      ),
-    ),
-
-    DialogButton(
-              color: Colors.grey.shade200,
-              child: GestureDetector(
-                  onTap: (){
-                    Get.back();
-                  },
-                  child: const Mytext(text: "Rejected", color: Colors.red)),
-              onPressed: (){
-                // Navigator.pop(context);
-              }
-          )
-        ]
-
-    ).show();
-  }
-
-                     //  Body  //
+                           //  Body  //
 
   Widget _buildBody() {
     return SingleChildScrollView(
@@ -766,7 +788,7 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
                                       child: GestureDetector(
                                         onTap: (){
                                           setState(() {
-                                            actionalerts(BuildContext, context);
+                                            actionAlerts(BuildContext, context);
                                           });
 
                                           // alert(BuildContext, context);
@@ -1015,7 +1037,6 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
                                 ),
                               ],
                             ),
-
                           ],
                         ),
                       ),
@@ -1660,7 +1681,6 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
                                               ),
                                             ),
                                             SizedBox(height: 15.h,),
-
                                             IntrinsicHeight(
                                               child: Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
