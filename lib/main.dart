@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'Screens/welcome.dart';
+import 'package:well_known/Screens/welcome.dart';
+
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();

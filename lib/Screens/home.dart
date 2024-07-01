@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:reveal_on_scroll/reveal_on_scroll.dart';
+
 
 
 class Home extends StatefulWidget {
@@ -61,40 +61,40 @@ class _HomeState extends State<Home> {
       width: width.w,
       child: SingleChildScrollView(
         controller: _controller,
-        child: Column(
+        child: const Column(
           children: [
-            ScrollToReveal.withAnimation(
-                animationType: AnimationType.fadeInDown,
-                startOnScroll: true,
-                label: "Hello",
-                scrollController: _controller,
-              reflectPosition: 100,
-                child: Column(
-                  children: [
-                    Container(
-                      height: height/10.h,
-                      width: width/1.8.w,
-                      color: Colors.blue,
-                    ),
-                    Container(
-                      height: height/10.h,
-                      width: width/1.8.w,
-                      color: Colors.blue,
-                    ),
-                    Container(
-                      height: height/10.h,
-                      width: width/1.8.w,
-                      color: Colors.green,
-                    ),
-                    Container(
-                      height: height/10.h,
-                      width: width/1.8.w,
-                      color: Colors.grey,
-                    ),
-                  ],
-                ),
-
-            )
+            // ScrollToReveal.withAnimation(
+            //     animationType: AnimationType.fadeInDown,
+            //     startOnScroll: true,
+            //     label: "Hello",
+            //     scrollController: _controller,
+            //   reflectPosition: 100,
+            //     child: Column(
+            //       children: [
+            //         Container(
+            //           height: height/10.h,
+            //           width: width/1.8.w,
+            //           color: Colors.blue,
+            //         ),
+            //         Container(
+            //           height: height/10.h,
+            //           width: width/1.8.w,
+            //           color: Colors.blue,
+            //         ),
+            //         Container(
+            //           height: height/10.h,
+            //           width: width/1.8.w,
+            //           color: Colors.green,
+            //         ),
+            //         Container(
+            //           height: height/10.h,
+            //           width: width/1.8.w,
+            //           color: Colors.grey,
+            //         ),
+            //       ],
+            //     ),
+            //
+            // )
 
           ],
         ),

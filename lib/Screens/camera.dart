@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -18,7 +19,6 @@ class _CameraState extends State<Camera> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _showDialog(context);
   }
@@ -27,7 +27,8 @@ class _CameraState extends State<Camera> {
     final status = await Permission.storage.request();
     if (status.isGranted) {
       try {
-        final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
+        final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.camera);
         if (pickedFile != null) {
           setState(() {
             _image = File(pickedFile.path);
@@ -46,13 +47,16 @@ class _CameraState extends State<Camera> {
   Future<void> _saveImageToGallery(File image) async {
     try {
       final directory = await getExternalStorageDirectory();
-      final String newPath = path.join(directory!.parent.path, 'Pictures');
+      final String newPath =
+      path.join(directory!.parent.path, 'Pictures');
       final Directory newDir = Directory(newPath);
       if (!await newDir.exists()) {
         await newDir.create(recursive: true);
       }
-      final String fileName = '${DateTime.now().millisecondsSinceEpoch}.png';
-      final File newImage = await image.copy('${newDir.path}/$fileName');
+      final String fileName =
+          '${DateTime.now().millisecondsSinceEpoch}.png';
+      final File newImage =
+      await image.copy('${newDir.path}/$fileName');
 
       // Notify the media scanner about the new file
       const MethodChannel('com.example.app/gallery_scanner')
@@ -64,24 +68,31 @@ class _CameraState extends State<Camera> {
     }
   }
 
-  Future<void> _showDialog(BuildContext context) async{
-    return await  showDialog(
-        context: context,
-        builder: (BuildContext context){
-          return AlertDialog(
-            title: const Text("Hello"),
-            content: const Text("              Image Saved Successfully"),
-            actions: [
-             TextButton(onPressed: (){
-               Navigator.pop(context);
-             }, child: const Text("Yes")
-             ),
-              TextButton(onPressed: (){
-                Navigator.pop(context);
-              }, child: const Text("No"))
+  Future<void> _showDialog(BuildContext context) async {
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Hello"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              _image == null
+                  ? const Text('No image selected.') : Image.file(_image!),
+              const SizedBox(height: 16),
+              const Text("Image Saved Successfully")
             ],
-          );
-        }
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Get.back();
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      },
     );
   }
 

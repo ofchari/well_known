@@ -1,18 +1,23 @@
 import 'dart:convert';
+import 'dart:core';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/io_client.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:well_known/Utils/refreshdata.dart';
 import 'package:well_known/Widgets/heading_text.dart';
 import 'package:well_known/Widgets/subhead.dart';
 import 'package:well_known/Widgets/text.dart';
-
-import '../Services/purchase_api.dart';
-import '../Widgets/buttons.dart';
+import '../../Services/purchase_api.dart';
+import '../../Widgets/buttons.dart';
+import 'package:path/path.dart'as path;
 
 class PurchaseInvoicess extends StatefulWidget {
   final PurchaseInvoice purchaseInvoice;
@@ -26,6 +31,8 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
   late double height;
   late double width;
   late TabController _tabController;
+  File ?  _image;
+  late final String  _matching;
 
   @override
   void initState() {
@@ -53,12 +60,91 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body)['data'];
       print(data);
-      return  PurchaseInvoice.fromJson(data);
+      return PurchaseInvoice.fromJson(data);
     } else {
       throw Exception("Failed to fetch data");
     }
   }
 
+// Camera Functionality to capture the image //
+
+  Future<void> _pickImage() async {
+    final status = await Permission.storage.request();
+    if (status.isGranted) {
+      try {
+        final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.camera);
+        if (pickedFile != null) {
+          setState(() {
+            _image = File(pickedFile.path);
+          });
+          await _saveImageToGallery(File(pickedFile.path));
+          if (widget.purchaseInvoice.name != null) {
+            _showDialog(context, widget.purchaseInvoice.name!);
+          } else {
+            print("Purchase invoice name is null");
+          }
+        }
+      } catch (e) {
+        print("Error picking image: $e");
+      }
+    } else {
+      print("Storage permission not granted");
+    }
+  }
+
+  Future<void> _saveImageToGallery(File image) async {
+    try {
+      final directory = await getExternalStorageDirectory();
+      final String newPath = path.join(directory!.parent.path, 'Pictures');
+      final Directory newDir = Directory(newPath);
+      if (!await newDir.exists()) {
+        await newDir.create(recursive: true);
+      }
+      final String fileName =
+          '${DateTime.now().millisecondsSinceEpoch}.png';
+      final File newImage = await image.copy('${newDir.path}/$fileName');
+
+      // Notify the media scanner about the new file
+      const MethodChannel('com.example.app/gallery_scanner')
+          .invokeMethod('scanMediaFile', {'path': newImage.path});
+
+      print('Image saved to ${newDir.path}/$fileName');
+    } catch (e) {
+      print("Error saving image to gallery: $e");
+    }
+  }
+
+  Future<void> _showDialog(BuildContext context, String name) async {
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title:  Center(child: Text("Purchase Inward",style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 17.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              _image == null
+                  ? const Text('No image selected.')
+                  : Image.file(_image!),
+              const SizedBox(height: 16),
+              const Text("Image Saved Successfully for invoice:"),
+              SizedBox(height: 10.h,),
+              Center(child: Text(name,style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w500,color: Colors.blue)),))
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Get.back();
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,13 +207,30 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
             color: Colors.black,
           )),
       title: const Headingtext(
-          text: "Purchase Invoice", color: Colors.black, weight: FontWeight.w400),
+          text: "Purchase Inward", color: Colors.black, weight: FontWeight.w400),
       centerTitle: true,
       actions: [
-        const Icon(
-          Icons.home,
-          color: Colors.black,
+         Padding(
+           padding:  EdgeInsets.all(8.0.w),
+           child: const Icon(
+            Icons.home,
+
+                   ),
+         ),
+        GestureDetector(
+          onTap: (){
+            _pickImage();
+            _image == null ? const Text('No image selected.') : Image.file(_image!);
+          },
+          child: Padding(
+            padding:  EdgeInsets.all(8.0.w),
+            child: const Icon(
+              Icons.camera_alt_outlined,
+
+            ),
+          ),
         ),
+
         Padding(
           padding: EdgeInsets.all(8.0.w),
           child: const Icon(
@@ -1072,7 +1175,6 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
                                               ),
                                             ),
                                             SizedBox(height: 15.h,),
-
                                             IntrinsicHeight(
                                               child: Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

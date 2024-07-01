@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -8,11 +7,12 @@ import 'package:http/io_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:well_known/Screens/proforma_invoice.dart';
-import 'package:well_known/Screens/items.dart';
+import 'package:well_known/Screens/purchase_inward.dart';
 import 'package:well_known/Screens/purchase_order.dart';
 import 'package:well_known/Screens/sales.dart';
 import 'package:well_known/Widgets/heading_text.dart';
 import 'package:well_known/Widgets/text.dart';
+import 'items.dart';
 
 
 
@@ -409,6 +409,28 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ),
               ],
+            ),
+            SizedBox(height: 15.h,),
+            GestureDetector(
+              onTap: (){
+                Get.to(const Purchaseinward());
+              },
+              child: Container(
+                height: height/6.4.h,
+                width: width/2.5.w,
+                decoration: BoxDecoration(
+                    color: Colors.deepPurple.shade100,
+                    borderRadius: BorderRadius.circular(15)
+                ),
+                child: Column(
+                  children: [
+                    SizedBox(height: 30.h,),
+                    const Mytext(text: "Purchase Inward", color: Colors.black),
+                    SizedBox(height: 10.h,),
+                    const Icon(Icons.insert_chart_outlined,color: Colors.black,)
+                  ],
+                ),
+              ),
             ),
             SizedBox(height: 30.h,),
           ],
