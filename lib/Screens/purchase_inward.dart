@@ -122,7 +122,7 @@ class _PurchaseinwardState extends State<Purchaseinward> {
     );
   }
 
-                                        // Body //
+                                     // Body //
   Widget _buildBody() {
     return SizedBox(
       width: width.w,

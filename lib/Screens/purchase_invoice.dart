@@ -2,14 +2,12 @@ import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/io_client.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:well_known/Utils/refreshdata.dart';
 import 'package:well_known/Widgets/heading_text.dart';
@@ -17,6 +15,7 @@ import 'package:well_known/Widgets/subhead.dart';
 import 'package:well_known/Widgets/text.dart';
 import '../../Services/purchase_api.dart';
 import '../../Widgets/buttons.dart';
+import 'package:http/http.dart'as http;
 import 'package:path/path.dart'as path;
 
 class PurchaseInvoicess extends StatefulWidget {
@@ -33,6 +32,9 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
   late TabController _tabController;
   File ?  _image;
   late final String  _matching;
+  late String camimagePath;
+  late String camimagename;
+  late File camimagefile;
 
   @override
   void initState() {
@@ -68,83 +70,163 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
 
 // Camera Functionality to capture the image //
 
-  Future<void> _pickImage() async {
-    final status = await Permission.storage.request();
-    if (status.isGranted) {
-      try {
-        final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.camera);
-        if (pickedFile != null) {
-          setState(() {
-            _image = File(pickedFile.path);
-          });
-          await _saveImageToGallery(File(pickedFile.path));
-          if (widget.purchaseInvoice.name != null) {
-            _showDialog(context, widget.purchaseInvoice.name!);
-          } else {
-            print("Purchase invoice name is null");
-          }
-        }
-      } catch (e) {
-        print("Error picking image: $e");
-      }
-    } else {
-      print("Storage permission not granted");
-    }
-  }
+  Future<Map<String, dynamic>?> uploadImageToFileManager(
+      File imageFile,
+      String fileName,
+      ) async {
+    const apiUrl = 'https://wellknownssyndicate.regenterp.com/api/method/upload_file';
 
-  Future<void> _saveImageToGallery(File image) async {
     try {
-      final directory = await getExternalStorageDirectory();
-      final String newPath = path.join(directory!.parent.path, 'Pictures');
-      final Directory newDir = Directory(newPath);
-      if (!await newDir.exists()) {
-        await newDir.create(recursive: true);
+      const credentials = 'c5a479b60dd48ad:d8413be73e709b6'; // Well_known
+      final headers = {
+        'Authorization': 'Basic ${base64Encode(utf8.encode(credentials))}',
+      };
+
+      final ioClient = IOClient(HttpClient()
+        ..badCertificateCallback =
+        ((X509Certificate cert, String host, int port) => true));
+
+      final request = http.MultipartRequest('POST', Uri.parse(apiUrl));
+      request.headers.addAll(headers);
+
+      final imageStream = http.ByteStream(imageFile.openRead());
+      final imageLength = await imageFile.length();
+
+      request.files.add(http.MultipartFile(
+        'file',
+        imageStream,
+        imageLength,
+        filename: '$fileName.png',
+      ));
+
+      final now = DateTime.now(); // Get current date and time
+      final messageData = {
+        "message": {
+          "name": fileName, // Use the desired file name here
+          "owner": "Administrator",
+          "creation": now.toIso8601String(),
+          "modified": now.toIso8601String(),
+          "idx": 0,
+          "file_name": '$fileName.png',
+          "file_size": imageLength,
+          "file_url": "/files/$fileName.png", // Use the correct file URL path
+          "doctype": "File"
+        }
+      };
+
+      request.fields['data'] = json.encode(messageData);
+
+      final response = await ioClient.send(request);
+
+      if (response.statusCode == 200) {
+        final responseBody = json.decode(await response.stream.bytesToString());
+        return responseBody;
+      } else {
+        print(response.statusCode);
+        print(await response.stream.bytesToString());
+        return null;
       }
-      final String fileName =
-          '${DateTime.now().millisecondsSinceEpoch}.png';
-      final File newImage = await image.copy('${newDir.path}/$fileName');
-
-      // Notify the media scanner about the new file
-      const MethodChannel('com.example.app/gallery_scanner')
-          .invokeMethod('scanMediaFile', {'path': newImage.path});
-
-      print('Image saved to ${newDir.path}/$fileName');
-    } catch (e) {
-      print("Error saving image to gallery: $e");
+    } catch (error) {
+      print('Image Upload Error: $error');
+      return null;
     }
   }
 
-  Future<void> _showDialog(BuildContext context, String name) async {
-    return await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title:  Center(child: Text("Purchase Inward",style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 17.sp,fontWeight: FontWeight.w500,color: Colors.black)),)),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              _image == null
-                  ? const Text('No image selected.')
-                  : Image.file(_image!),
-              const SizedBox(height: 16),
-              const Text("Image Saved Successfully for invoice:"),
-              SizedBox(height: 10.h,),
-              Center(child: Text(name,style: GoogleFonts.poppins(textStyle: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w500,color: Colors.blue)),))
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Get.back();
-              },
-              child: const Text("OK"),
+  Future<void> captureImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+        camimagePath = pickedFile.path;
+        camimagefile = File(camimagePath);
+        camimagename = path.basenameWithoutExtension(camimagePath);
+      });
+      final now = DateTime.now();
+      final formattedDate = DateFormat('dd-MM-yyyy').format(now); // Format the date
+      final formattedTime = DateFormat('HH:mm:ss').format(now); // Format the time
+      final purchaseInvoiceName = widget.purchaseInvoice.name; // Get the purchase invoice name
+
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Center(
+              child: Text(
+                "Purchase Inward",
+                style: GoogleFonts.outfit(
+                  textStyle: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
             ),
-          ],
-        );
-      },
-    );
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.file(File(pickedFile.path)), // Display the captured image
+                const SizedBox(height: 20),
+                Center(
+                  child: Column(
+                    children: [
+                      Text(
+                        "Name: $purchaseInvoiceName",
+                        style: GoogleFonts.poppins(
+                          textStyle: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.blue,
+                          ),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 10.h,),
+                      Text(
+                        " Date: $formattedDate",
+                        style: GoogleFonts.poppins(
+                          textStyle: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.blue,
+                          ),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 10.h,),
+                      Text(
+                        "Time: $formattedTime",
+                        style: GoogleFonts.poppins(
+                          textStyle: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.blue,
+                          ),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                child: const Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+      uploadImageToFileManager(camimagefile, camimagename);
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -218,8 +300,8 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
                    ),
          ),
         GestureDetector(
-          onTap: (){
-            _pickImage();
+          onTap: () async{
+            await captureImage();
             _image == null ? const Text('No image selected.') : Image.file(_image!);
           },
           child: Padding(
@@ -646,7 +728,7 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
                                                                 ),
                                                               ),
                                                           Text(
-                                                                    '${item['qty']}',
+                                                            '${item['qty']}',
                                                                 style: GoogleFonts
                                                                     .poppins(
                                                                   textStyle:
