@@ -9,6 +9,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
+  animate_do:
+    dependency: transitive
+    description:
+      name: animate_do
+      sha256: "7a3162729f0ea042f9dd84da217c5bde5472ad9cef644079929d4304a5dc4ca0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.3.4"
   async:
     dependency: transitive
     description:
@@ -334,6 +342,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.9.1"
+  flutter_staggered_animations:
+    dependency: "direct main"
+    description:
+      name: flutter_staggered_animations
+      sha256: "81d3c816c9bb0dca9e8a5d5454610e21ffb068aedb2bde49d2f8d04f75538351"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -720,6 +736,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
+  reveal_on_scroll:
+    dependency: "direct main"
+    description:
+      name: reveal_on_scroll
+      sha256: "0e166b6f7e1777b5ae617ba25621576c6ea3cca36e1b72d83fbd577c4a34d6b0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   rflutter_alert:
     dependency: "direct main"
     description:

@@ -18,6 +18,7 @@ import '../../Widgets/buttons.dart';
 import 'package:http/http.dart'as http;
 import 'package:path/path.dart'as path;
 
+
 class PurchaseInvoicess extends StatefulWidget {
   final PurchaseInvoice purchaseInvoice;
   const PurchaseInvoicess({super.key, required this.purchaseInvoice});
@@ -68,13 +69,49 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
     }
   }
 
-// Camera Functionality to capture the image //
+                     // Camera Functionality to capture the image //
 
   Future<Map<String, dynamic>?> uploadImageToFileManager(
-      File imageFile,
-      String fileName,
+  File imageFile,
+  String fileName,
       ) async {
-    const apiUrl = 'https://wellknownssyndicate.regenterp.com/api/method/upload_file';
+    const apiUrl = 'https://erp.wellknownssyndicate.com/api/method/upload_file';
+    // final apiUrlput = 'https://erp.wellknownssyndicate.com/api/resource/Purchase Invoice/${widget.purchaseInvoice.name}';
+print(apiUrl);
+print(widget.purchaseInvoice.name);
+print(widget.purchaseInvoice.name);
+print(widget.purchaseInvoice.name);
+    final apiUrlput = Uri.parse(
+        'https://erp.wellknownssyndicate.com/api/resource/Purchase Invoice/${widget.purchaseInvoice.name}');
+
+    final headers1 = {
+      "Authorization": "token c5a479b60dd48ad:d8413be73e709b6",
+      "Content-Type": "application/json", // Assuming the server expects JSON
+    };
+
+    final body1 = {
+      "attached_image_link_app": "/files/$fileName.png",
+    };
+
+
+    try {
+      final response = await http.put(
+        apiUrlput,
+        headers: headers1,
+        body: jsonEncode(body1), // Convert body to JSON string
+      );
+
+      if (response.statusCode == 200) {
+        print('Success: ${response.body}');
+      } else {
+        print('Failed with status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        throw Exception('Failed to update workflow'); // Throw specific error message
+      }
+    } catch (e) {
+      print('Error: $e');
+      throw Exception('Failed to fetch data'); // Rethrow the error with a generic message
+    }
 
     try {
       const credentials = 'c5a479b60dd48ad:d8413be73e709b6'; // Well_known
@@ -87,6 +124,7 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
         ((X509Certificate cert, String host, int port) => true));
 
       final request = http.MultipartRequest('POST', Uri.parse(apiUrl));
+      // final request1 = http.MultipartRequest('PUT', Uri.parse(apiUrlput));
       request.headers.addAll(headers);
 
       final imageStream = http.ByteStream(imageFile.openRead());
@@ -101,17 +139,30 @@ class _PurchaseInvoicessState extends State<PurchaseInvoicess> with SingleTicker
 
       final now = DateTime.now(); // Get current date and time
       final messageData = {
-        "message": {
-          "name": fileName, // Use the desired file name here
-          "owner": "Administrator",
-          "creation": now.toIso8601String(),
-          "modified": now.toIso8601String(),
-          "idx": 0,
-          "file_name": '$fileName.png',
-          "file_size": imageLength,
-          "file_url": "/files/$fileName.png", // Use the correct file URL path
-          "doctype": "File"
-        }
+      "message": {
+        "name": fileName, // Use the desired file name here
+        "owner": "Administrator",
+        "creation": DateTime.now().toIso8601String(),
+        "modified": DateTime.now().toIso8601String(),
+        "modified_by": "Administrator",
+        "docstatus": 0,
+        "idx": 0,
+        "file_name": '$fileName.png',
+        "is_private": 0,
+        "is_home_folder": 0,
+        "is_attachments_folder": 0,
+        "file_size": imageLength,
+        "file_url": "/files/$fileName.png", // Use the correct file URL path
+        "folder": "Home/Attachments", // Use the desired folder name
+        "is_folder": 0,
+        "attached_to_doctype": "Purchase Invoice",
+        "attached_to_name":widget.purchaseInvoice.name,
+        "content_hash": "", // You may need to calculate the content hash
+        "uploaded_to_dropbox": 0,
+        "uploaded_to_google_drive": 0,
+        "doctype": "File"
+
+      }
       };
 
       request.fields['data'] = json.encode(messageData);

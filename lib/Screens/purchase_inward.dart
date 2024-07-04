@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
 import 'package:well_known/Screens/purchase_invoice.dart';
-import 'package:well_known/Utils/refreshdata.dart';
 import 'package:well_known/Widgets/buttons.dart';
 import 'package:well_known/Widgets/heading_text.dart';
 import 'package:well_known/Widgets/subhead.dart';
@@ -29,6 +28,7 @@ class _PurchaseinwardState extends State<Purchaseinward> {
   @override
   void initState() {
     fetching();
+    _reloadData();
     super.initState();
   }
 
@@ -51,6 +51,11 @@ class _PurchaseinwardState extends State<Purchaseinward> {
     }
   }
 
+      //Refresh Logic //
+  Future<void> _reloadData() async{
+     await Future.delayed(const Duration(seconds: 2));
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -59,7 +64,7 @@ class _PurchaseinwardState extends State<Purchaseinward> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: RefreshIndicator(
-        onRefresh: refreshData,
+        onRefresh: _reloadData,
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
             height = constraints.maxHeight;
@@ -100,7 +105,7 @@ class _PurchaseinwardState extends State<Purchaseinward> {
     );
   }
 
-                                // App Bar //
+                                  // App Bar //
   Widget _buildAppBar() {
     return AppBar(
       backgroundColor: Colors.white,
@@ -122,7 +127,7 @@ class _PurchaseinwardState extends State<Purchaseinward> {
     );
   }
 
-                                     // Body //
+                                    // Body //
   Widget _buildBody() {
     return SizedBox(
       width: width.w,
@@ -197,9 +202,7 @@ class _PurchaseinwardState extends State<Purchaseinward> {
                                   ],
                                 ),
                               ),
-                              SizedBox(
-                                height: 10.h,
-                              ),
+                              SizedBox(height: 10.h,),
 
                             ],
                           ),

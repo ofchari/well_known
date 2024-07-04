@@ -40,6 +40,14 @@ class _View_InvoiceState extends State<View_Invoice> with SingleTickerProviderSt
     _tabController.dispose();
     super.dispose();
   }
+       // Popscope //
+  /*Future<void> _onPop(BuildContext context) async{
+    return await Get.dialog(
+      AlertDialog(
+        title: ,
+      )
+    );
+  }*/
 
   Future<Sales> fetchSalesDetails(String name) async {
     HttpClient client = HttpClient();

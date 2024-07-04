@@ -1,12 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/io_client.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart'; // Add this import for date formatting
 import 'package:path/path.dart' as path;
-import 'package:http/http.dart' as http;
 // Ensure this file correctly defines Mytext widget.
 
 class CamTests extends StatefulWidget {
@@ -27,7 +24,7 @@ class _CamTestsState extends State<CamTests> {
     super.initState();
   }
 
-  Future<Map<String, dynamic>?> uploadImageToFileManager(
+  /*Future<Map<String, dynamic>?> uploadImageToFileManager(
       File imageFile,
       String fileName,
       ) async {
@@ -97,7 +94,7 @@ class _CamTestsState extends State<CamTests> {
       print('Image Upload Error: $error');
       return null;
     }
-  }
+  }*/
 
   Future<void> captureImage() async {
     final picker = ImagePicker();
@@ -137,7 +134,7 @@ class _CamTestsState extends State<CamTests> {
           );
         },
       );
-      uploadImageToFileManager(camimagefile, camimagename);
+      // uploadImageToFileManager(camimagefile, camimagename);
     }
   }
 
