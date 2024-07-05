@@ -1,8 +1,5 @@
 
 
-
-
-
                                 //       Animation Textkit                       //
                                 //       Animation Search  anim_search           //
                                 //       Animation Loader SpinKit                //
