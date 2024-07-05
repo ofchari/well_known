@@ -10,6 +10,7 @@ class Scrolls extends StatefulWidget {
 }
 
 class _ScrollsState extends State<Scrolls> {
+
   final _controller = TextEditingController();
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:well_known/Screens/purchase_inward.dart';
+import 'package:well_known/Screens/sales.dart';
 import 'package:well_known/Screens/welcome.dart';
+import 'package:well_known/Services/sales_api.dart';
+import 'package:well_known/test/animation.dart';
+import 'package:well_known/test/spin.dart';
 
 
 void main() {
@@ -24,7 +29,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
         // home: const Purchaseorder()
-        home:   const Welcome()
+        home:   Welcome()
     );
   }
 }

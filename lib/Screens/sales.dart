@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -7,13 +9,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:http/io_client.dart';
 import 'package:well_known/Screens/sales_invoiceee.dart';
-
 import '../Services/sales_api.dart';
 import '../Utils/refreshdata.dart';
 import '../Widgets/buttons.dart';
 import '../Widgets/heading_text.dart';
 import '../Widgets/subhead.dart';
 import '../Widgets/text.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 class SalesInvoice extends StatefulWidget {
   const SalesInvoice({super.key});
@@ -178,7 +180,14 @@ class _SalesInvoiceState extends State<SalesInvoice> {
             ),
           ),
           _salesList.isEmpty
-              ? const Center(child: CircularProgressIndicator())
+              ? Column(
+                children: [
+                  SizedBox(height: 200,),
+                   Center(child:SpinKitSpinningLines(color: Colors.blue,duration: Duration(seconds: 5),size: 80)),
+                  SizedBox(height: 10.h,),
+                  Center(child: Text("Loading")
+                  )],
+              )
               : Expanded(
             child: ListView.builder(
               scrollDirection: Axis.vertical,
@@ -207,8 +216,7 @@ class _SalesInvoiceState extends State<SalesInvoice> {
                         ),
                         SizedBox(height: 30.h),
                         Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             const Subhead(
                                 text: "Customer :",
@@ -227,8 +235,7 @@ class _SalesInvoiceState extends State<SalesInvoice> {
                           color: Colors.grey,
                         ),
                         Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
                               children: [
@@ -287,13 +294,13 @@ class _SalesInvoiceState extends State<SalesInvoice> {
                         ),
                         SizedBox(height: 10.h),
                         Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             const Subhead(
                                 text: "Attended person",
                                 colo: Colors.black,
-                                weight: FontWeight.w500),
+                                weight: FontWeight.w500
+                            ),
                             FittedBox(
                               child: Mytext(
                                   text: sales.attended_person.toString(),
