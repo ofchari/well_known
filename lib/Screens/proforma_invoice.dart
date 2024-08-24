@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -60,12 +59,13 @@ class _ProformaInvoiceState extends State<ProformaInvoice> {
   }
 
   Widget _smallBuildLayout() {
-    return Stack(children: [
-      Positioned(
-        top: 26.h,
-        left: 0,
-        right: 0,
-        child: _buildAppBar(),
+    return Stack(
+        children: [
+          Positioned(
+          top: 26.h,
+            left: 0,
+            right: 0,
+           child: _buildAppBar(),
       ),
       Positioned(
         top: 100.h,
@@ -98,7 +98,7 @@ class _ProformaInvoiceState extends State<ProformaInvoice> {
     );
   }
 
-  // Body //
+                                        // Body //
   Widget _buildBody() {
     return Stack(
       children: [

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
-
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -63,38 +62,7 @@ class _HomeState extends State<Home> {
         controller: _controller,
         child: const Column(
           children: [
-            // ScrollToReveal.withAnimation(
-            //     animationType: AnimationType.fadeInDown,
-            //     startOnScroll: true,
-            //     label: "Hello",
-            //     scrollController: _controller,
-            //   reflectPosition: 100,
-            //     child: Column(
-            //       children: [
-            //         Container(
-            //           height: height/10.h,
-            //           width: width/1.8.w,
-            //           color: Colors.blue,
-            //         ),
-            //         Container(
-            //           height: height/10.h,
-            //           width: width/1.8.w,
-            //           color: Colors.blue,
-            //         ),
-            //         Container(
-            //           height: height/10.h,
-            //           width: width/1.8.w,
-            //           color: Colors.green,
-            //         ),
-            //         Container(
-            //           height: height/10.h,
-            //           width: width/1.8.w,
-            //           color: Colors.grey,
-            //         ),
-            //       ],
-            //     ),
-            //
-            // )
+
 
           ],
         ),

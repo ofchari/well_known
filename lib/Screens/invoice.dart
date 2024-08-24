@@ -64,8 +64,6 @@ class _InvoiceState extends State<Invoice> with SingleTickerProviderStateMixin {
     }
   }
 
-
-
   Future<void> invoice_print() async {
     HttpClient client = HttpClient();
     client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;

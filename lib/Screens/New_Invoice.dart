@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:path/path.dart' as p;
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:well_known/Screens/bottom_navigation.dart';
@@ -11,27 +12,17 @@ import '../Widgets/buttons.dart';
 import 'item_list.dart';
 import 'items.dart';
 
-class Newinvoice extends StatefulWidget {
-  const Newinvoice({super.key});
+// Create a GetX Controller to manage the state
+class InvoiceController extends GetxController {
+  var itemsss = <Map<String, dynamic>>[].obs;
+  var quantityControllers = <TextEditingController>[].obs;
+  var rateControllers = <TextEditingController>[].obs;
+  var totalControllers = <TextEditingController>[].obs;
+  var netTotalController = TextEditingController().obs;
 
   @override
-  State<Newinvoice> createState() => _NewinvoiceState();
-}
-
-class _NewinvoiceState extends State<Newinvoice> {
-  late double height;
-  late double width;
-  List<int> items = [1]; // Example items list
-
-  List<Map<String, dynamic>> itemsss = [];
-  List<TextEditingController> quantityControllers = [];
-  List<TextEditingController> rateControllers = [];
-  List<TextEditingController> totalControllers = [];
-  TextEditingController netTotalController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
+  void onInit() {
+    super.onInit();
     _getItems();
   }
 
@@ -41,43 +32,47 @@ class _NewinvoiceState extends State<Newinvoice> {
       double total = double.tryParse(totalController.text) ?? 0.0;
       netTotal += total;
     }
-    netTotalController.text = netTotal.toStringAsFixed(2);
+    netTotalController.value.text = netTotal.toStringAsFixed(2);
   }
 
   Future<void> _getItems() async {
     List<Map<String, dynamic>> fetchedItems = await DatabaseHelper().getItemsGroup();
-    setState(() {
-      itemsss = fetchedItems;
+    itemsss.value = fetchedItems;
 
-      if (quantityControllers.isEmpty && rateControllers.isEmpty && totalControllers.isEmpty) {
-        quantityControllers = List.generate(itemsss.length, (index) => TextEditingController());
-        rateControllers = List.generate(itemsss.length, (index) => TextEditingController());
-        totalControllers = List.generate(itemsss.length, (index) => TextEditingController());
+    if (quantityControllers.isEmpty && rateControllers.isEmpty && totalControllers.isEmpty) {
+      quantityControllers.value = List.generate(itemsss.length, (index) => TextEditingController());
+      rateControllers.value = List.generate(itemsss.length, (index) => TextEditingController());
+      totalControllers.value = List.generate(itemsss.length, (index) => TextEditingController());
+    }
+
+    for (int index = 0; index < itemsss.length; index++) {
+      var quantityController = quantityControllers[index];
+      var rateController = rateControllers[index];
+      var totalController = totalControllers[index];
+      var item = itemsss[index];
+
+      if (quantityController.text.isEmpty) {
+        quantityController.text = item['total_quantity'].toStringAsFixed(0);
       }
 
-      for (int index = 0; index < itemsss.length; index++) {
-        var quantityController = quantityControllers[index];
-        var rateController = rateControllers[index];
-        var totalController = totalControllers[index];
-        var item = itemsss[index];
-
-        if (quantityController.text.isEmpty) {
-          quantityController.text = item['total_quantity'].toStringAsFixed(0);
-        }
-
-        void calculateTotal() {
-          double quantity = double.tryParse(quantityController.text) ?? 0.0;
-          double rate = double.tryParse(rateController.text) ?? 0.0;
-          double total = quantity * rate;
-          totalController.text = total.toStringAsFixed(2);
-          calculateNetTotal();
-        }
-
-        quantityController.addListener(calculateTotal);
-        rateController.addListener(calculateTotal);
+      void calculateTotal() {
+        double quantity = double.tryParse(quantityController.text) ?? 0.0;
+        double rate = double.tryParse(rateController.text) ?? 0.0;
+        double total = quantity * rate;
+        totalController.text = total.toStringAsFixed(2);
+        calculateNetTotal();
       }
-    });
+
+      quantityController.addListener(calculateTotal);
+      rateController.addListener(calculateTotal);
+    }
   }
+}
+
+class Newinvoice extends StatelessWidget {
+  Newinvoice({super.key});
+
+  final InvoiceController invoiceController = Get.put(InvoiceController());
 
   Future<void> dialogues(BuildContext context) async {
     return await showDialog(
@@ -89,8 +84,8 @@ class _NewinvoiceState extends State<Newinvoice> {
             width: 420,
             child: AlertDialog(
               content: SizedBox(
-                height: height.h,
-                width: width.w,
+                height: MediaQuery.of(context).size.height.h,
+                width: MediaQuery.of(context).size.width.w,
                 child: const Itemlist(),
               ),
               insetPadding: EdgeInsets.zero,
@@ -103,24 +98,11 @@ class _NewinvoiceState extends State<Newinvoice> {
   }
 
   @override
-  void dispose() {
-    for (var controller in quantityControllers) {
-      controller.dispose();
-    }
-    for (var controller in rateControllers) {
-      controller.dispose();
-    }
-    for (var controller in totalControllers) {
-      controller.dispose();
-    }
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    height = size.height;
-    width = size.width;
+    double height = size.height;
+    double width = size.width;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: RefreshIndicator(
@@ -131,7 +113,7 @@ class _NewinvoiceState extends State<Newinvoice> {
             width = constraints.maxWidth;
             ScreenUtil.init(context, designSize: Size(width, height), minTextAdapt: true);
             if (width <= 450) {
-              return _smallBuildLayout();
+              return _smallBuildLayout(height, width, context);
             } else {
               return const Text("Large");
             }
@@ -141,7 +123,7 @@ class _NewinvoiceState extends State<Newinvoice> {
     );
   }
 
-  Widget _smallBuildLayout() {
+  Widget _smallBuildLayout(double height, double width, BuildContext context) {
     return Scaffold(
       body: SizedBox(
         height: double.infinity,
@@ -158,17 +140,17 @@ class _NewinvoiceState extends State<Newinvoice> {
                   Column(
                     children: [
                       const Mytext(text: "Net Total", color: Colors.black),
-                      Mytext(
-                        text: netTotalController.text,
+                      Obx(() => Mytext(
+                        text: invoiceController.netTotalController.value.text,
                         color: Colors.black,
-                      ),
+                      )),
                     ],
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 22.0, left: 8.0),
                     child: GestureDetector(
                       onTap: () {
-                        dialogues(context);
+                        dialogues(context); // Pass the correct context here
                       },
                       child: Container(
                         height: height / 26.h,
@@ -190,15 +172,16 @@ class _NewinvoiceState extends State<Newinvoice> {
                 ],
               ),
               SizedBox(height: 30.h),
-              SizedBox(
+              Obx(() => SizedBox(
                 height: height / 1.55.h,
                 child: ListView.builder(
-                  itemCount: itemsss.length,
+                  itemCount: invoiceController.itemsss.length,
                   itemBuilder: (BuildContext context, int index) {
-                    var item = itemsss[index];
-                    var quantityController = quantityControllers[index];
-                    var rateController = rateControllers[index];
-                    var totalController = totalControllers[index];
+                    var item = invoiceController.itemsss[index];
+                    var quantityController = invoiceController.quantityControllers[index];
+                    var rateController = invoiceController.rateControllers[index];
+                    var totalController = invoiceController.totalControllers[index];
+
                     return Column(
                       children: [
                         Dismissible(
@@ -207,13 +190,11 @@ class _NewinvoiceState extends State<Newinvoice> {
                           onDismissed: (direction) {
                             String itemName = item['itemName'];
                             DatabaseHelper().deleteItem(itemName).then((_) {
-                              setState(() {
-                                itemsss.removeWhere((element) => element['itemName'] == itemName);
-                                quantityControllers.removeAt(index);
-                                rateControllers.removeAt(index);
-                                totalControllers.removeAt(index);
-                                calculateNetTotal();
-                              });
+                              invoiceController.itemsss.removeAt(index);
+                              invoiceController.quantityControllers.removeAt(index);
+                              invoiceController.rateControllers.removeAt(index);
+                              invoiceController.totalControllers.removeAt(index);
+                              invoiceController.calculateNetTotal();
                             }).catchError((error) {
                               print("Error deleting item: $error");
                             });
@@ -283,28 +264,6 @@ class _NewinvoiceState extends State<Newinvoice> {
                                                   ),
                                                 ),
                                                 const SizedBox(height: 10),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: [
-                                                    const FittedBox(
-                                                      child: Mytext(
-                                                        text: "Group:",
-                                                        color: Colors.black,
-                                                      ),
-                                                    ),
-                                                    FittedBox(
-                                                      child: Mytext(
-                                                        text: " ${item['itemGroup'].split(' ').sublist(0, 1).join(' ')}",
-                                                        color: Colors.black,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                const SizedBox(height: 10),
-                                                Mytext(
-                                                  text: "UOM: ${item['stock_uom']}",
-                                                  color: Colors.black,
-                                                ),
                                               ],
                                             ),
                                           ),
@@ -315,120 +274,103 @@ class _NewinvoiceState extends State<Newinvoice> {
                                 ),
                               ),
                               Container(
-                                height: height / 11.0.h,
-                                width: width / 1.22.w,
+                                height: height/10.h,
+                                width: width/1.3.w,
                                 decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.only(
-                                    bottomRight: Radius.circular(10),
-                                    bottomLeft: Radius.circular(10),
-                                  ),
-                                  border: Border.all(
-                                    color: Colors.blue,
-                                    width: 1.2,
-                                  ),
+                                    border: Border.all(
+                                        color: Colors.blue
+                                    ),
+                                    borderRadius: BorderRadius.circular(15.r)
                                 ),
-                                child: Column(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    Expanded(
-                                      child: Padding(
-                                        padding: EdgeInsets.only(left: ScreenUtil().setWidth(50.0)),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                const SizedBox(height: 5),
-                                                const Mytext(
-                                                  text: "Quantity",
-                                                  color: Colors.grey,
-                                                ),
-                                                SizedBox(
-                                                  width: width / 10,
-                                                  child: TextFormField(
-                                                    controller: quantityController,
-                                                    keyboardType: TextInputType.number,
-                                                    decoration: const InputDecoration(
-                                                      contentPadding: EdgeInsets.symmetric(vertical: 0.0),
-                                                      hintText: "0",
-                                                      border: InputBorder.none,
-                                                    ),
-                                                    onChanged: (value) {
-                                                      calculateNetTotal();
-                                                    },
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                const SizedBox(height: 5),
-                                                const Mytext(
-                                                  text: "Rate",
-                                                  color: Colors.grey,
-                                                ),
-                                                SizedBox(
-                                                  width: width / 10,
-                                                  child: TextFormField(
-                                                    controller: rateController,
-                                                    keyboardType: TextInputType.number,
-                                                    decoration: const InputDecoration(
-                                                      contentPadding: EdgeInsets.symmetric(vertical: 0.0),
-                                                      hintText: "0",
-                                                      border: InputBorder.none,
-                                                    ),
-                                                    onChanged: (value) {
-                                                      calculateNetTotal();
-                                                    },
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                const SizedBox(height: 5),
-                                                const Mytext(
-                                                  text: "Total",
-                                                  color: Colors.grey,
-                                                ),
-                                                SizedBox(
-                                                  width: width / 4,
-                                                  child: TextFormField(
-                                                    controller: totalController,
-                                                    readOnly: true,
-                                                    keyboardType: TextInputType.number,
-                                                    decoration: const InputDecoration(
-                                                      contentPadding: EdgeInsets.symmetric(vertical: 0.0),
-                                                      hintText: "0",
-                                                      hintStyle: TextStyle(color: Colors.black),
-                                                      border: InputBorder.none,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
+                                    Column(
+                                      children: [
+                                        SizedBox(height: 10.h,),
+                                        const FittedBox(
+                                          child: Mytext(
+                                            text: "Qty",
+                                            color: Colors.black,
+                                          ),
                                         ),
-                                      ),
+                                        SizedBox(
+                                          height: height / 30,
+                                          width: width / 7,
+                                          child: TextFormField(
+                                            controller: quantityController,
+                                            textAlign: TextAlign.center,
+                                            keyboardType: TextInputType.number,
+                                            decoration: const InputDecoration(
+                                                border: InputBorder.none
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        SizedBox(height: 10.h,),
+                                        const FittedBox(
+                                          child: Mytext(
+                                            text: "Rate",
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: height / 30,
+                                          width: width / 7,
+                                          child: TextFormField(
+                                            controller: rateController,
+                                            textAlign: TextAlign.center,
+                                            keyboardType: TextInputType.number,
+                                            decoration: const InputDecoration(
+                                                border: InputBorder.none
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        SizedBox(height: 10.h,),
+                                        const FittedBox(
+                                          child: Mytext(
+                                            text: "Total",
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: height / 26,
+                                          width: width / 6.8,
+                                          child: TextFormField(
+                                            controller: totalController,
+                                            textAlign: TextAlign.center,
+                                            keyboardType: TextInputType.number,
+                                            readOnly: true,
+                                            decoration: const InputDecoration(
+                                                border: InputBorder.none
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
                               ),
+                              SizedBox(height: 10.h),
                             ],
                           ),
                         ),
-                        SizedBox(height: 10.h),
                       ],
                     );
                   },
                 ),
-              ),
+              )),
               SizedBox(height: 20.h),
               GestureDetector(
                 onTap: () {
-                  _alertsNewInvoice(context);
+                  _alertsNewInvoice(context); // Pass the correct context here
                 },
                 child: Buttons(
                   heigh: height / 18.h,

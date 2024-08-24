@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
@@ -8,12 +9,16 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:well_known/Screens/New_Invoice.dart';
 import 'package:well_known/Screens/proforma_invoice.dart';
 import 'package:well_known/Widgets/subhead.dart';
 import 'package:well_known/Widgets/text.dart';
+import 'package:well_known/provider/future_handlers/popscope.dart';
+import 'package:well_known/provider/future_handlers/refresh.dart';
 import '../Services/customer_api.dart';
 import '../Utils/customer_utils.dart';
 import '../Utils/refreshdata.dart';
@@ -36,11 +41,15 @@ class _NewproformaVoiceState extends State<NewproformaVoice> {
   // late SingleValueDropDownController _dropDownController;
 
   final salesPersonController = TextEditingController();
-  final customerNameController = TextEditingController();
+  final attendedByController = TextEditingController();
+  final billingController = TextEditingController();
+  final customerController = TextEditingController();
   final customerAddressController = TextEditingController();
   final companyController = TextEditingController();
   final contactNameController = TextEditingController();
   final contactNumberController = TextEditingController();
+  final date = TextEditingController();
+  final naming = TextEditingController();
 
   @override
   void initState() {
@@ -76,31 +85,38 @@ class _NewproformaVoiceState extends State<NewproformaVoice> {
       });
     }
   }
+
+  String get formattedDate {
+    return DateFormat('dd-MM-yy').format(_selectedDate);
+  }
           // Post For New Proforma Invoice //
   Future<void> mobileDocument(BuildContext context) async {
     HttpClient client = HttpClient();
     client.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
     IOClient ioClient = IOClient(client);
-    const credentials = 'd950c312e572164:6325951adb3a2e6';
+    const credentials = 'c5a479b60dd48ad:d8413be73e709b6';
     final headers = {
       'Authorization': 'Basic ${base64Encode(utf8.encode(credentials))}',
       'Content-Type': 'application/json',
     };
 
     final data = {
-      'doctype': 'Wallet Registration Form',
-      // 'full_name': name.text,
-      // 'username': username.text,
-      // 'email':mail.text,
-      // 'mobile_no':phone.text,
-      // 'password':passwor.text,
-      // 'confirm_password':confirm_pass.text
+      'doctype': 'Proforma Invoice',
+      'sales_person' : salesPersonController.text,
+      'transaction_date' : date,
+      'attended_by' : attendedByController.text,
+      'naming_series' : naming.text,
+      'billing_person' : billingController.text,
+      'company': companyController.text,
+      'customer': customerController.text,
+      'customer_address': customerAddressController.text,
+      'contact_name': contactNameController.text,
+      'contact_number': contactNumberController.text
     };
 
     final body = jsonEncode(data);
-
     final response = await ioClient.post(
-      Uri.parse("https://btex.regenterp.com/api/resource/Wallet Registration Form"),
+      Uri.parse("https://erp.wellknownssyndicate.com/api/resource/Sales Order"),
       headers: headers,
       body: body,
     );
@@ -109,7 +125,7 @@ class _NewproformaVoiceState extends State<NewproformaVoice> {
     if (response.statusCode == 200) {
       Navigator.of(context).pop();
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const Newinvoice()),
+        MaterialPageRoute(builder: (context) =>  Newinvoice()),
       );
     }
     else if (response.statusCode == 417) {
@@ -160,6 +176,10 @@ class _NewproformaVoiceState extends State<NewproformaVoice> {
       );
       print(response.body);
       print(response.toString());
+      print(companyController);
+      print(companyController);
+      print(companyController);
+      print(companyController);
     }
   }
    // Late Initialize the size //
@@ -171,21 +191,26 @@ class _NewproformaVoiceState extends State<NewproformaVoice> {
     var size = MediaQuery.of(context).size;
     height = size.height;
     width = size.width;
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: RefreshIndicator(
-        onRefresh: refreshData,
-        child: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            height = constraints.maxHeight;
-            width = constraints.maxWidth;
-            ScreenUtil.init(context, designSize: Size(width, height), minTextAdapt: true);
-            if (width <= 450) {
-              return _smallBuildLayout();
-            } else {
-              return const Text("Large");
-            }
-          },
+
+    final popscopess = context.read<PopScopeProvider>();
+    return WillPopScope(
+      onWillPop: ()=> popscopess.popgetout(context),
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: RefreshIndicator(
+          onRefresh: refreshData,
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              height = constraints.maxHeight;
+              width = constraints.maxWidth;
+              ScreenUtil.init(context, designSize: Size(width, height), minTextAdapt: true);
+              if (width <= 450) {
+                return _smallBuildLayout();
+              } else {
+                return const Text("Large");
+              }
+            },
+          ),
         ),
       ),
     );
@@ -221,7 +246,7 @@ class _NewproformaVoiceState extends State<NewproformaVoice> {
         print(bank_list);
         bank_list = bank_list;
         setState(() {
-          // Assuming title_list is updated after fetching data
+          // Assuming title_list is updated after fetching data //
           bank_list = bank_list;
         });
 
@@ -248,8 +273,6 @@ class _NewproformaVoiceState extends State<NewproformaVoice> {
           Uri.parse('https://erp.wellknownssyndicate.com/api/resource/Employee?fields=[%22name%22,%22employee_name%22]&limit_page_length=50000'),headers: {"Authorization": "token c5a479b60dd48ad:d8413be73e709b6"});
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body)["data"];
-
-
         for (var item in responseData) {
           if (item["name"] != null) {
             saless.add( DropDownValueModel(name: item["employee_name"], value: item["name"]));
@@ -258,12 +281,12 @@ class _NewproformaVoiceState extends State<NewproformaVoice> {
         print(saless);
         saless = saless;
         setState(() {
-          // Assuming title_list is updated after fetching data
+          // Assuming title_list is updated after fetching data //
           saless = saless;
         });
 
       } else {
-        // Handle error
+           // Handle error //
         print('Failed to load Wallet Title data');
         print(response.statusCode );
         print(response.body );
@@ -281,10 +304,9 @@ class _NewproformaVoiceState extends State<NewproformaVoice> {
 
     try {
       final response = await ioClient.get(
-          Uri.parse('https://erp.wellknownssyndicate.com/api/resource/Customer?fields=[%22gstin%22,"%22customer_type%22"]&limit_page_length=500000'),headers: {"Authorization": "token c5a479b60dd48ad:d8413be73e709b6"});
+          Uri.parse('https://erp.wellknownssyndicate.com/api/resource/Customer?fields=[%22gstin%22,%22customer_type%22]&limit_page_length=500000'),headers: {"Authorization": "token c5a479b60dd48ad:d8413be73e709b6"});
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body)["data"];
-
 
         for (var item in responseData) {
           if (item["customer_type"] != null) {
@@ -294,12 +316,12 @@ class _NewproformaVoiceState extends State<NewproformaVoice> {
         print(gst);
         gst = gst;
         setState(() {
-          // Assuming title_list is updated after fetching data
+          // Assuming title_list is updated after fetching data //
           gst = gst;
         });
 
       } else {
-        // Handle error
+        //  Handle error //
         print('Failed to load Wallet Title data');
         print(response.statusCode );
         print(response.body );
@@ -308,75 +330,49 @@ class _NewproformaVoiceState extends State<NewproformaVoice> {
       throw Exception('Failed to load document IDs: $e');
     }
   }
-                             //Willpop Scope //
-  Future<bool> _onWillPop() async{
-    return await Get.dialog(
-        AlertDialog(
-          title: const Subhead(text: "Are you sure want to go back?", colo: Colors.blue, weight: FontWeight.w500,),
-          actions: [
-            GestureDetector(
-                onTap: (){
-                  Get.back(result: true);
-                },
-                child: Buttons(heigh: height/22.h, width: width/6.w, color: Colors.green, text: "Yes", radius: BorderRadius.circular(12.r))),
-            GestureDetector(
-                onTap: (){
-                  Get.back(result: false);
-                },
-                child: Buttons(heigh: height/22.h, width: width/6.w, color: Colors.red.shade600, text: "No", radius: BorderRadius.circular(12.r))),
-          ],
-        )
-
-    );
-  }
 
   Widget _smallBuildLayout() {
-    return WillPopScope(
-      onWillPop:()=> _onWillPop(),
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-          toolbarHeight: 80,
-          leading: GestureDetector(
-            onTap: () {
-             _onWillPop();
-            },
-            child: const Icon(Icons.arrow_back, color: Colors.black),
-          ),
-          title: const Headingtext(
-            text: "New Proforma Invoice",
-            color: Colors.black,
-            weight: FontWeight.w400,
-          ),
-          centerTitle: true,
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      appBar: AppBar(
+        toolbarHeight: 80,
+        title: const Headingtext(
+          text: "New Proforma Invoice",
+          color: Colors.black,
+          weight: FontWeight.w400,
         ),
-        body: SizedBox(
-          height: double.infinity,
-          width: double.infinity,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(height: 30.h,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: height/16.h,
-                      width: width/1.1.w,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                              color: Colors.green
-                          )
-                      ),
+        centerTitle: true,
+      ),
+      body: SizedBox(
+        height: double.infinity,
+        width: double.infinity,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(height: 30.h,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    height: height/16.h,
+                    width: width/1.1.w,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                            color: Colors.grey.shade600
+                        )
+                    ),
+                    child: Padding(
+                      padding:  EdgeInsets.only(top: ScreenUtil().setHeight(6.0)),
                       child: DropDownTextField(
+                        // controller: customerController,
                         textFieldDecoration:InputDecoration(
                             prefix: const Text('     '),
                             hintText: 'Customer Name',
-                            hintStyle: GoogleFonts.roboto(
+                            hintStyle: GoogleFonts.poppins(
                               textStyle: const TextStyle(
-                                fontSize: 17,
+                                fontSize: 15.5,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.black,
                               ),
@@ -410,29 +406,32 @@ class _NewproformaVoiceState extends State<NewproformaVoice> {
                         },
                       ),
                     ),
-                  ],
-                ),
-                SizedBox(height: 20.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: height/16.h,
-                      width: width/1.1.w,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                              color: Colors.green
-                          )
-                      ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    height: height/16.h,
+                    width: width/1.1.w,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                            color: Colors.grey.shade600
+                        )
+                    ),
+                    child: Padding(
+                      padding:  EdgeInsets.only(top: ScreenUtil().setHeight(6.0)),
                       child: DropDownTextField(
                         textFieldDecoration:InputDecoration(
                             prefix: const Text('     '),
                             hintText: 'Employee Name',
-                            hintStyle: GoogleFonts.roboto(
+                            hintStyle: GoogleFonts.poppins(
                               textStyle: const TextStyle(
-                                fontSize: 17,
+                                fontSize: 15.5,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.black,
                               ),
@@ -466,178 +465,210 @@ class _NewproformaVoiceState extends State<NewproformaVoice> {
                         },
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
 
-                SizedBox(height: 20.h),
-                GestureDetector(
-                  onTap: () {
-                    _selectDate(context);
-                  },
-                  child: Container(
-                    height: 50,
-                    width: width / 1.1.w,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.green),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.date_range, color: Colors.blue),
-                          const SizedBox(width: 5),
-                          Text(
-                            ' ${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
-                            style: GoogleFonts.poppins(
-                              textStyle: const TextStyle(
-                                fontSize: 15.8,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                              ),
+              SizedBox(height: 20.h),
+              GestureDetector(
+                onTap: () {
+                  _selectDate(context);
+                  date;
+                },
+                child: Container(
+                  height: height/16.h,
+                  width: width / 1.1.w,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey.shade600),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.date_range, color: Colors.blue),
+                        const SizedBox(width: 10),
+                        Text(
+                          ' $formattedDate',
+                          style: GoogleFonts.poppins(
+                            textStyle: const TextStyle(
+                              fontSize: 15.5,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10.h),
-                const SizedBox(height: 5),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: height/16.h,
-                      width: width/1.1.w,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                              color: Colors.green
-                          )
-                      ),
-                      child: DropDownTextField(
-                        textFieldDecoration:InputDecoration(
-                            prefix: const Text('     '),
-                            hintText: 'Gst In ',
-                            hintStyle: GoogleFonts.roboto(
-                              textStyle: const TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                            ),
-                            border: InputBorder.none
-                          // Use OutlineInputBorder for outline border
                         ),
-                        clearOption: false,
-                        textFieldFocusNode: FocusNode(),
-                        // searchFocusNode: searchFocusNode,
-                        // searchAutofocus: true,
-                        dropDownItemCount: 8,
-                        searchShowCursor: false,
-                        enableSearch: true,
-                        searchKeyboardType: TextInputType.name,
-                        dropDownList:gst,
-                        // onChanged: (value) {
-                        //   setState(() {
-                        //     dropdownValue = value!;
-                        //     cash = value;
-                        //   });
-                        // },
-                        onChanged: (dynamic value) {
-                          setState(() {
-                            gsttaxe = value.value;
-                          });
-                          print(gsttaxe);
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 5),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.place_outlined, color: Color(0xffff035e32)),
-                      labelText: "Rate",
-                      labelStyle: GoogleFonts.poppins(
-                        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
-                      ),
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
-                      ),
+                      ],
                     ),
                   ),
                 ),
-                const SizedBox(height: 5),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.compare, color: Color(0xffff035e32)),
-                      labelText: "Company",
-                      labelStyle: GoogleFonts.poppins(
-                        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
-                      ),
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
-                      ),
+              ),
+              SizedBox(height: 10.h),
+              const SizedBox(height: 5),
+              Container(
+                height: height/16.h,
+                width: width/1.1.w,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                        color: Colors.grey.shade600
+                    )
+                ),
+                child: Padding(
+                  padding:  EdgeInsets.only(top: ScreenUtil().setHeight(6.0)),
+                  child: DropDownTextField(
+                    textFieldDecoration:InputDecoration(
+                        prefix: const Text('    '),
+                        hintText: 'Gst In ',
+                        hintStyle: GoogleFonts.poppins(
+                          textStyle: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
+                          ),
+                        ),
+                        border: InputBorder.none
+                      // Use OutlineInputBorder for outline border
+                    ),
+                    clearOption: false,
+                    textFieldFocusNode: FocusNode(),
+                    // searchFocusNode: searchFocusNode,
+                    // searchAutofocus: true,
+                    dropDownItemCount: 8,
+                    searchShowCursor: false,
+                    enableSearch: true,
+                    searchKeyboardType: TextInputType.name,
+                    dropDownList:gst,
+                    // onChanged: (value) {
+                    //   setState(() {
+                    //     dropdownValue = value!;
+                    //     cash = value;
+                    //   });
+                    // },
+                    onChanged: (dynamic value) {
+                      setState(() {
+                        gsttaxe = value.value;
+                      });
+                      print(gsttaxe);
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 5,),
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: TextFormField(
+                  controller: companyController,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.compare, color: Color(0xffff035e32)),
+                    labelText: "Company",
+                    labelStyle: GoogleFonts.poppins(
+                      textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black),
+                    ),
+                    border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
                   ),
                 ),
-                const SizedBox(height: 5),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.drive_file_rename_outline, color: Color(0xffff035e32)),
-                      labelText: "Contact Name",
-                      labelStyle: GoogleFonts.poppins(
-                        textStyle: const TextStyle (fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
-                      ),
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
-                      ),
+
+              ),
+              // const SizedBox(height: 5,),
+              // Padding(
+              //   padding:  EdgeInsets.only(left: ScreenUtil().setWidth(12.0.w),right: ScreenUtil().setWidth(12.0.w),),
+              //   child: TextFormField(
+              //     controller: customerController,
+              //     // keyboardType: TextInputType.number,
+              //     decoration: InputDecoration(
+              //       prefixIcon: const Icon(Icons.person_2_outlined, color: Color(0xffff035e32)),
+              //       labelText: "Customer",
+              //       labelStyle: GoogleFonts.poppins(
+              //         textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black),
+              //       ),
+              //       border: const OutlineInputBorder(
+              //         borderRadius: BorderRadius.all(Radius.circular(12)),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              const SizedBox(height: 20,),
+              Padding(
+                padding:  EdgeInsets.only(left: ScreenUtil().setWidth(12.0.w),right: ScreenUtil().setWidth(12.0.w),),
+                child: TextFormField(
+                  controller: customerAddressController,
+                  // keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.location_city_outlined, color: Color(0xffff035e32)),
+                    labelText: "Customer Address",
+                    labelStyle: GoogleFonts.poppins(
+                      textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black),
+                    ),
+                    border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
                   ),
                 ),
-                const SizedBox(height: 5),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: TextFormField(
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.call, color: Color(0xffff035e32)),
-                      labelText: "Contact Number",
-                      labelStyle: GoogleFonts.poppins(
-                        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
-                      ),
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
-                      ),
+              ),
+              const SizedBox(height: 20,),
+              Padding(
+                padding:  EdgeInsets.only(left: ScreenUtil().setWidth(12.0.w),right: ScreenUtil().setWidth(12.0.w)),
+                child: TextFormField(
+                  controller: contactNameController,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.drive_file_rename_outline, color: Color(0xffff035e32)),
+                    labelText: "Contact Name",
+                    labelStyle: GoogleFonts.poppins(
+                      textStyle: const TextStyle (fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black),
+                    ),
+                    border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
                   ),
                 ),
-                const SizedBox(height: 15),
-                GestureDetector(
-                  onTap: () {
-                   Get.to(const Newinvoice());
-                   //  mobileDocument(context);
-                  },
-                  child: Buttons(
-                    heigh: MediaQuery.of(context).size.height / 20,
-                    width: MediaQuery.of(context).size.width / 1.8,
-                    color: const Color(0xffff035e32),
-                    text: "Next",
-                    radius: BorderRadius.circular(16),
+              ),
+              SizedBox(height: 20.h,),
+              Padding(
+                padding:  EdgeInsets.only(left: ScreenUtil().setWidth(12.0.w),right: ScreenUtil().setWidth(12.0.w)),
+                child: TextFormField(
+                  controller: contactNumberController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.call, color: Color(0xffff035e32)),
+                    labelText: "Contact Number",
+                    labelStyle: GoogleFonts.poppins(
+                      textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.black),
+                    ),
+                    border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 30),
-            ],
-            ),
+              ),
+              const SizedBox(height: 30),
+              GestureDetector(
+                onTap: () {
+                 Get.to( Newinvoice());
+                  mobileDocument(context);
+                  if (kDebugMode) {
+                    print("salesperson${salesPersonController.text}");
+                  }
+                  print("attendedBy${attendedByController.text}");
+                  print("billingPerson${billingController.text}");
+                  print("company ${companyController.text}");
+                  print(customerController);
+                  print(customerAddressController);
+                  print(contactNameController);
+                  print(contactNumberController);
+                },
+                child: Buttons(
+                  heigh: MediaQuery.of(context).size.height / 20,
+                  width: MediaQuery.of(context).size.width / 1.8,
+                  color: const Color(0xffff035e32),
+                  text: "Next",
+                  radius: BorderRadius.circular(16),
+                ),
+              ),
+              const SizedBox(height: 30),
+          ],
           ),
         ),
       ),

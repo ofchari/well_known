@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -14,7 +13,6 @@ import 'package:well_known/Widgets/subhead.dart';
 import 'package:well_known/Widgets/text.dart';
 import 'package:well_known/models/item_listss.dart';
 import 'dart:math';
-
 import '../Utils/refreshdata.dart';
 import '../Widgets/heading_text.dart';
 
@@ -147,6 +145,7 @@ class _ItemlistState extends State<Itemlist> {
     super.initState();
     _initializeItems();
     searchController.addListener(_filterItems);
+
   }
 
   Future<void> _initializeItems() async {
@@ -318,237 +317,231 @@ class _ItemlistState extends State<Itemlist> {
         ),
         Expanded(
           child: filteredItems.isNotEmpty
-              ? SizedBox(
-            height: height / 1.1.h,
-            width: width / 1.w,
-            child: ListView.builder(
-              itemCount: filteredItems.length,
-              itemBuilder: (context, index) {
-                Item itemliss = filteredItems[index];
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    height: height / 2.9.h,
-                    width: width / 1.98.w,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      border: Border.all(
-                        color: Colors.blue,
-                        width: 2,
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 7),
-                        Mytext(
-                          text: itemliss.itemName.toString(),
+              ? ListView.builder(
+                itemCount: filteredItems.length,
+                itemBuilder: (context, index) {
+                  Item itemliss = filteredItems[index];
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      height: height / 2.9.h,
+                      width: width / 1.98.w,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(
                           color: Colors.blue,
+                          width: 2,
                         ),
-                        const Divider(
-                          height: 1,
-                          thickness: 0.1,
-                          color: Colors.black,
-                        ),
-                        const SizedBox(height: 20),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              Transform.rotate(
-                                angle: 0 * pi / 180,
-                                child: Container(
-                                  height: height / 7.h,
-                                  width: width / 3.4.w,
-                                  decoration: BoxDecoration(
-                                    borderRadius:
-                                    BorderRadius.circular(15),
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                        'https://erp.wellknownssyndicate.com${itemliss.image?.toString() ?? "/files/bimage.png"}',
-                                        headers: {
-                                          "Authorization":
-                                          "token c5a479b60dd48ad:d8413be73e709b6"
-                                        },
+                      ),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 7),
+                          Mytext(
+                            text: itemliss.itemName.toString(),
+                            color: Colors.blue,
+                          ),
+                          const Divider(
+                            height: 1,
+                            thickness: 0.1,
+                            color: Colors.black,
+                          ),
+                          const SizedBox(height: 20),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Transform.rotate(
+                                  angle: 0 * pi / 180,
+                                  child: Container(
+                                    height: height / 7.h,
+                                    width: width / 3.4.w,
+                                    decoration: BoxDecoration(
+                                      borderRadius:
+                                      BorderRadius.circular(15),
+                                      image: DecorationImage(
+                                        image: NetworkImage(
+                                          'https://erp.wellknownssyndicate.com${itemliss.image?.toString() ?? "/files/bimage.png"}',
+                                          headers: {
+                                            "Authorization":
+                                            "token c5a479b60dd48ad:d8413be73e709b6"
+                                          },
+                                        ),
+                                        fit: BoxFit.cover,
                                       ),
-                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                 ),
-                              ),
-                              Column(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      left:
-                                      ScreenUtil().setWidth(30.0),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment
-                                          .spaceBetween,
-                                      children: [
-                                        const Subhead(
-                                          text: "Part-No : ",
-                                          colo: Colors.black,
-                                          weight: FontWeight.w500,
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                            left: ScreenUtil()
-                                                .setWidth(8.0),
-                                          ),
-                                          child: Mytext(
-                                            text: itemliss.part_no
-                                                .toString(),
-                                            color: Colors.blue,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      left:
-                                      ScreenUtil().setWidth(30.0),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        const Mytext(
-                                          text: "HSN/SAC :",
-                                          color: Colors.black,
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                            left: ScreenUtil()
-                                                .setWidth(8.0),
-                                          ),
-                                          child: Mytext(
-                                            text: itemliss
-                                                .gst_hsn_code
-                                                .toString(),
-                                            color: Colors.blue,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      left:
-                                      ScreenUtil().setWidth(30.0),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        const Mytext(
-                                          text: "UOM :",
-                                          color: Colors.black,
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                            left: ScreenUtil()
-                                                .setWidth(8.0),
-                                          ),
-                                          child: Mytext(
-                                            text: itemliss.stock_uom
-                                                .toString(),
-                                            color: Colors.blue,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                         SizedBox(height: 20.h),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 15.0, right: 15.0),
-                          child: Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: Row(
+                                Column(
                                   children: [
-                                    const Mytext(
-                                      text: "Brand :",
-                                      color: Colors.black,
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        left: ScreenUtil().setWidth(30.0),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment
+                                            .spaceBetween,
+                                        children: [
+                                          const Subhead(
+                                            text: "Part-No : ",
+                                            colo: Colors.black,
+                                            weight: FontWeight.w500,
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                              left: ScreenUtil()
+                                                  .setWidth(8.0),
+                                            ),
+                                            child: Mytext(
+                                              text: itemliss.part_no
+                                                  .toString(),
+                                              color: Colors.blue,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    Mytext(
-                                      text: itemliss.brand.toString(),
-                                      color: Colors.blue,
+                                    const SizedBox(height: 10),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        left:
+                                        ScreenUtil().setWidth(30.0),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          const Mytext(
+                                            text: "HSN/SAC :",
+                                            color: Colors.black,
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                              left: ScreenUtil()
+                                                  .setWidth(8.0),
+                                            ),
+                                            child: Mytext(
+                                              text: itemliss
+                                                  .gst_hsn_code
+                                                  .toString(),
+                                              color: Colors.blue,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        left:
+                                        ScreenUtil().setWidth(30.0),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          const Mytext(
+                                            text: "UOM :",
+                                            color: Colors.black,
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                              left: ScreenUtil()
+                                                  .setWidth(8.0),
+                                            ),
+                                            child: Mytext(
+                                              text: itemliss.stock_uom
+                                                  .toString(),
+                                              color: Colors.blue,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
-                              ),
-                              Container(
-                                height: height / 20.h,
-                                width: width / 4.w,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Colors.blue, width: 1),
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                    hintText: "QTY",
-                                    hintStyle: GoogleFonts.poppins(
-                                      textStyle: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                    border: InputBorder.none,
-                                    contentPadding:
-                                    const EdgeInsets.only(
-                                        left: 10, right: 10),
-                                  ),
-                                  keyboardType: TextInputType.number,
-                                  onChanged: (value) {
-                                    quantities[index] = int.tryParse(value) ?? 0;
-                                  },
-                                ),
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  _addSelectedItem(itemliss, quantities[index]);
-                                  Get.snackbar(
-                                    "Item Added",
-                                    "${itemliss.itemName} added successfully!",
-                                    snackPosition: SnackPosition.BOTTOM,
-                                    backgroundColor: Colors.blue,
-                                    colorText: Colors.white,
-                                  );
-                                  _getItems();
-
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor:  Colors.blue.shade400,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                child: const Text('+',style: TextStyle(fontSize: 30,color: Colors.white),),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                           SizedBox(height: 20.h),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 15.0, right: 15.0),
+                            child: Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: Row(
+                                    children: [
+                                      const Mytext(
+                                        text: "Brand :",
+                                        color: Colors.black,
+                                      ),
+                                      Mytext(
+                                        text: itemliss.brand.toString(),
+                                        color: Colors.blue,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  height: height / 20.h,
+                                  width: width / 4.w,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.blue, width: 1),
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: TextFormField(
+                                    decoration: InputDecoration(
+                                      hintText: "QTY",
+                                      hintStyle: GoogleFonts.poppins(
+                                        textStyle: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      border: InputBorder.none,
+                                      contentPadding:
+                                      const EdgeInsets.only(
+                                          left: 10, right: 10),
+                                    ),
+                                    keyboardType: TextInputType.number,
+                                    onChanged: (value) {
+                                      quantities[index] = int.tryParse(value) ?? 0;
+                                    },
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    _addSelectedItem(itemliss, quantities[index]);
+                                    Get.snackbar(
+                                      "Item Added",
+                                      "${itemliss.itemName} added successfully!",
+                                      snackPosition: SnackPosition.BOTTOM,
+                                      backgroundColor: Colors.blue,
+                                      colorText: Colors.white,
+                                    );
+                                    _getItems();
+
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:  Colors.blue.shade400,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    )
+                                  ),
+                                  child: const Text('+',style: TextStyle(fontSize: 30,color: Colors.white),),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
-            ),
-          )
-              : const Center(
-            child: CircularProgressIndicator(),
+                  );
+                },
+              )
+              : const Center(child: CircularProgressIndicator(),
           ),
         ),
         SizedBox(height: 30.h,),

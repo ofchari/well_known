@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -93,7 +92,7 @@ class _LogoutState extends State<Logout> {
     height = size.height;
     width = size.width;
     
-    // Intailize Screen Util //
+    // Initialize Screen Util //
     ScreenUtil.init(context,designSize: Size(width, height),minTextAdapt: true);
 
     return Scaffold(
@@ -306,7 +305,6 @@ class _LogoutState extends State<Logout> {
                 ),
               ),
               SizedBox(height: 30.h,),
-
               Container(
                 height: 50,
                 width: 180,

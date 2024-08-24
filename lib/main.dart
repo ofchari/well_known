@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:well_known/Screens/purchase_inward.dart';
-import 'package:well_known/Screens/sales.dart';
+import 'package:provider/provider.dart';
 import 'package:well_known/Screens/welcome.dart';
-import 'package:well_known/Services/sales_api.dart';
-import 'package:well_known/test/animation.dart';
-import 'package:well_known/test/spin.dart';
+import 'package:well_known/provider/future_handlers/popscope.dart';
 
 
 void main() {
-  // WidgetsFlutterBinding.ensureInitialized();
-
-  // debugPaintSizeEnabled = true;
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+              create: (_)=>PopScopeProvider()
+          ),
+        ],
+        child: const MyApp()
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -29,7 +32,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
         // home: const Purchaseorder()
-        home:   Welcome()
+        home:   const Welcome()
     );
   }
 }
